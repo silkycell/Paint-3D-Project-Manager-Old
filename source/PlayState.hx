@@ -343,6 +343,7 @@ class PlayState extends FlxState
 					fDial.onCancel.add(function()
 					{
 						closeSubState();
+						persistentUpdate = false;
 						canInteract = true;
 						trace('Project Exporting Cancelled');
 						Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
@@ -351,6 +352,7 @@ class PlayState extends FlxState
 					fDial.onSave.add(function(file:String)
 					{
 						closeSubState();
+						persistentUpdate = false;
 						trace('Project Exporting Completed!');
 						canInteract = true;
 					});
@@ -390,84 +392,99 @@ class PlayState extends FlxState
 				return;
 			}
 
-			var entries = new StringMap<ZipEntry>();
-
-			var zip = new ZipReader(File.getBytes(file));
-			var entry:ZipEntry;
-
-			while ((entry = zip.getNextEntry()) != null)
-				entries.set(entry.fileName, entry);
-
-			for (entry in entries.keys())
-				@await zipFiles(entry, entries);
-
-			var missingFiles:Array<String> = [];
-			if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
+			persistentUpdate = true;
+			var message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				'Importing...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
+			for (i in message.buttons)
 			{
-				for (i in File.getContent(_folderPath + '\\zipExport\\fileCheck.txt').split('\n'))
+				i.x += 54934358; // juuust in case
+				i.visible = false;
+			}
+			openSubState(message);
+
+			Timer.delay(function() // Ditto reason as export
+			{
+				var entries = new StringMap<ZipEntry>();
+
+				var zip = new ZipReader(File.getBytes(file));
+				var entry:ZipEntry;
+
+				while ((entry = zip.getNextEntry()) != null)
+					entries.set(entry.fileName, entry);
+
+				for (entry in entries.keys())
+					@await zipFiles(entry, entries);
+
+				var missingFiles:Array<String> = [];
+				if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
 				{
-					@async
-					function checkMissing()
+					for (i in File.getContent(_folderPath + '\\zipExport\\fileCheck.txt').split('\n'))
 					{
-						if (!FileSystem.exists(_folderPath + '\\zipExport\\' + i))
-							missingFiles.push(i);
+						@async
+						function checkMissing()
+						{
+							if (!FileSystem.exists(_folderPath + '\\zipExport\\' + i))
+								missingFiles.push(i);
+						}
+
+						@await checkMissing();
+					}
+				}
+
+				var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
+
+				function continueImporting()
+				{
+					for (entry in entries.keys())
+						@await moveFiles(entry, entries);
+
+					Util.deleteDirRecursively(_folderPath + '\\zipExport');
+
+					var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
+
+					for (project in concatJson)
+					{
+						if (project.Id == '-1')
+							concatJson.remove(project);
 					}
 
-					@await checkMissing();
-				}
-			}
+					FileSystem.deleteDirectory(_folderPath + '\\zipExport');
+					FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
+					File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
 
-			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
+					canInteract = true;
+					trace('Finished Importing Projects!');
 
-			function continueImporting()
-			{
-				for (entry in entries.keys())
-					@await moveFiles(entry, entries);
-
-				Util.deleteDirRecursively(_folderPath + '\\zipExport');
-
-				var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
-
-				for (project in concatJson)
-				{
-					if (project.Id == '-1')
-						concatJson.remove(project);
-				}
-
-				FileSystem.deleteDirectory(_folderPath + '\\zipExport');
-				FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
-				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
-
-				canInteract = true;
-				trace('Finished Importing Projects!');
-
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null, null,
-					function()
+					closeSubState();
+					persistentUpdate = false;
+					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null,
+						null, function()
 					{
 						loadJson(_folderPath + '\\Projects.json');
 					}));
-			}
+				}
 
-			if (missingFiles.length > 0)
-			{
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-					'Woah there! This project has ' + missingFiles.length +
-					' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
-					'Continue', 'Cancel', null, function()
+				if (missingFiles.length > 0)
+				{
+					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+						'Woah there! This project has ' + missingFiles.length +
+						' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
+						'Continue', 'Cancel', null, function()
+					{
+						continueImporting();
+					}, function()
+					{
+						Util.deleteDirRecursively(_folderPath + '\\zipExport');
+
+						canInteract = true;
+						return;
+					}));
+				}
+				else
 				{
 					continueImporting();
-				}, function()
-				{
-					Util.deleteDirRecursively(_folderPath + '\\zipExport');
-
-					canInteract = true;
-					return;
-				}));
-			}
-			else
-			{
-				continueImporting();
-			}
+				}
+			}, 100);
 		});
 
 		fDial.onCancel.add(function()
