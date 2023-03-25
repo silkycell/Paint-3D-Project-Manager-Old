@@ -32,6 +32,14 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var importButtonBG:FlxSprite;
 	var importButtonText:FlxText;
 
+	var browseButton:FlxSpriteGroup = new FlxSpriteGroup();
+	var browseButtonBG:FlxSprite;
+	var browseButtonText:FlxText;
+
+	var pathButton:FlxSpriteGroup = new FlxSpriteGroup();
+	var pathButtonBG:FlxSprite;
+	var pathButtonText:FlxText;
+
 	var thumb:FlxSprite;
 	var bg:FlxUI9SliceSprite;
 	var defaultColor:FlxColor;
@@ -111,8 +119,46 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		importButton.x = exportButton.x;
 		importButton.y = exportButton.y - importButtonBG.height - 20;
 
+		// Browse
+
+		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		browseButtonBG.color = defaultColor;
+
+		browseButtonText = new FlxText(0, 0, 0, 'Browse');
+		browseButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
+
+		browseButtonText.updateHitbox();
+		browseButtonText.x = (browseButtonBG.width / 2) - (browseButtonText.width / 2);
+		browseButtonText.y = (browseButtonBG.height / 2) - (browseButtonText.textField.height / 2);
+
+		browseButton.add(browseButtonBG);
+		browseButton.add(browseButtonText);
+
+		browseButton.x = importButton.x;
+		browseButton.y = importButton.y - browseButtonBG.height - 20;
+
+		// Path
+
+		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		pathButtonBG.color = defaultColor;
+
+		pathButtonText = new FlxText(0, 0, 450 / 2.2, 'Appdata Path');
+		pathButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
+
+		pathButtonText.updateHitbox();
+		pathButtonText.x = (pathButtonBG.width / 2) - (pathButtonText.width / 2);
+		pathButtonText.y = (pathButtonBG.height / 2) - (pathButtonText.textField.height / 2);
+
+		pathButton.add(pathButtonBG);
+		pathButton.add(pathButtonText);
+
+		pathButton.x = importButton.x + (importButton.width / 2) + (importButton.width / 23);
+		pathButton.y = importButton.y - pathButtonBG.height - 20;
+
 		add(exportButton);
 		add(importButton);
+		add(browseButton);
+		add(pathButton);
 
 		add(thumb);
 		add(texts);
@@ -147,6 +193,30 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			importButtonBG.color = defaultColor;
 		}
+
+		if (FlxG.mouse.overlaps(browseButton))
+		{
+			browseButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
+
+			if (FlxG.mouse.justPressed && instance.canReload)
+				FlxG.resetState();
+		}
+		else
+		{
+			browseButtonBG.color = defaultColor;
+		}
+
+		if (FlxG.mouse.overlaps(pathButton))
+		{
+			pathButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
+
+			if (FlxG.mouse.justPressed)
+				Sys.command("explorer.exe " + PlayState._folderPath);
+		}
+		else
+		{
+			pathButtonBG.color = defaultColor;
+		}
 	}
 
 	public function loadProject(project:ProjectFile)
@@ -176,6 +246,12 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		importButtonBG.color = defaultColor;
 		importButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+
+		browseButtonBG.color = defaultColor;
+		browseButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+
+		pathButtonBG.color = defaultColor;
+		pathButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
 
 		for (text in texts.members)
 			text.color = Util.getDarkerColor(defaultColor, 1.4);

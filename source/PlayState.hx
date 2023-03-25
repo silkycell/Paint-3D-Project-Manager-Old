@@ -28,8 +28,9 @@ class PlayState extends FlxState
 {
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
-	var canReload:Bool = true;
 	var projectFilePath:String;
+
+	public var canReload:Bool = true;
 
 	public static var curSelected:ProjectFile;
 
@@ -85,12 +86,6 @@ class PlayState extends FlxState
 			}
 		}
 
-		if (FlxG.keys.justPressed.I)
-		{
-			if (canReload)
-				FlxG.resetState();
-		}
-
 		#if debug
 		if (FlxG.keys.pressed.MINUS)
 			FlxG.camera.zoom -= 0.01;
@@ -108,28 +103,31 @@ class PlayState extends FlxState
 
 	function showFileDialog()
 	{
-		if (canReload)
-		{
-			trace('Loading Project File...');
-			canReload = false;
-			var fDial = new FileDialog();
-			fDial.onSelect.add(function(file)
-			{
-				loadJson(file);
-			});
+		if (!canReload)
+			return;
 
-			fDial.onCancel.add(function()
-			{
-				trace('Project File Cancelled');
-				canReload = true;
-				Util.sendMsgBox("File Dialogue was cancelled, please press \"i\" to re-open it.");
-			});
-			fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
-		}
+		trace('Loading Project File...');
+		canReload = false;
+		var fDial = new FileDialog();
+		fDial.onSelect.add(function(file)
+		{
+			canReload = true;
+			loadJson(file);
+		});
+
+		fDial.onCancel.add(function()
+		{
+			trace('Project File Cancelled');
+			canReload = true;
+		});
+		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
 	}
 
 	function loadJson(file:String)
 	{
+		if (!canReload)
+			return;
+
 		try
 		{
 			var pathArray = file.split('\\');
@@ -192,6 +190,9 @@ class PlayState extends FlxState
 
 	public function exportProjects()
 	{
+		if (!canReload)
+			return;
+
 		trace('Exporting Projects...');
 		canReload = false;
 
@@ -210,10 +211,11 @@ class PlayState extends FlxState
 				projectsToExport = [curSelected];
 
 			var exportZip = new ZipWriter();
+			var filteredFilename = '';
 
 			for (project in projectsToExport)
 			{
-				var filteredFilename = '';
+				filteredFilename = '';
 				var projectClone = Reflect.copy(project);
 
 				if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
@@ -271,6 +273,9 @@ class PlayState extends FlxState
 
 	public function importProjects()
 	{
+		if (!canReload)
+			return;
+
 		trace('Importing Projects...');
 		canReload = false;
 
