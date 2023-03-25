@@ -49,6 +49,7 @@ class PlayState extends FlxState
 		FlxG.mouse.useSystemCursor = true;
 		FlxG.autoPause = false;
 		FlxG.camera.antialiasing = true;
+		FlxG.watch.add(this, 'canReload');
 
 		gridBG = new FlxBackdrop('assets/images/grid.png');
 		gridBG.antialiasing = true;
