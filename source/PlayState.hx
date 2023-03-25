@@ -15,6 +15,7 @@ import haxe.Json;
 import haxe.Timer;
 import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
+import lime.app.Promise;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
 import lime.utils.Resource;
@@ -76,7 +77,10 @@ class PlayState extends FlxState
 		github.x = FlxG.width - github.width - 5;
 		add(github);
 
-		showFileDialog();
+		if (FlxG.save.data.projectFilePath == null)
+			showFileDialog();
+		else
+			loadJson(FlxG.save.data.projectFilePath);
 	}
 
 	override public function update(elapsed:Float)
@@ -162,6 +166,9 @@ class PlayState extends FlxState
 
 		try
 		{
+			if (!FileSystem.exists(file))
+				return;
+
 			var pathArray = file.split('\\');
 			pathArray.pop();
 
@@ -176,6 +183,7 @@ class PlayState extends FlxState
 			}
 
 			projectFilePath = file;
+			FlxG.save.data.projectFilePath = projectFilePath;
 			_projects = ProjectFileUtil.parseProjectJson(ProjectFileUtil.removeDuplicates(Json.parse(sys.io.File.getContent(file))));
 
 			drawButtons(_projects);
@@ -290,7 +298,14 @@ class PlayState extends FlxState
 							filteredFilename += letter;
 						}
 
+						filteredFilename = filteredFilename.substring(0, 260);
 						var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
+
+						var validFileCheck:String = '';
+						for (i in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+							validFileCheck += projDir + '\\' + i + '\n';
+
+						exportZip.addString(validFileCheck, 'fileCheck.txt', true);
 
 						projectClone.Path = 'Projects\\' + projDir;
 						projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
@@ -314,6 +329,7 @@ class PlayState extends FlxState
 
 					fDial.onCancel.add(function()
 					{
+						closeSubState();
 						canInteract = true;
 						trace('Project Exporting Cancelled');
 						Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
@@ -370,23 +386,7 @@ class PlayState extends FlxState
 				entries.set(entry.fileName, entry);
 
 			for (entry in entries.keys())
-			{
-				var entryPath:String = '';
-
-				for (path in entry.split('\\'))
-				{
-					if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
-						break;
-
-					entryPath += path;
-				}
-				entryPath = '\\' + entryPath;
-
-				if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
-					FileSystem.createDirectory(_folderPath + entryPath);
-
-				File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
-			}
+				@await zipFiles(entry, entries);
 
 			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
 			var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
@@ -410,5 +410,97 @@ class PlayState extends FlxState
 					loadJson(_folderPath + '\\Projects.json');
 				}));
 		});
+
+		fDial.onCancel.add(function()
+		{
+			canInteract = true;
+		});
+	}
+
+	@async
+	function zipFiles(entry:String, entries:StringMap<ZipEntry>)
+	{
+		var entryPath:String = '';
+
+		for (path in entry.split('\\'))
+		{
+			if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
+				break;
+
+			entryPath += path;
+		}
+		entryPath = '\\' + entryPath;
+
+		if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
+			FileSystem.createDirectory(_folderPath + entryPath);
+
+		File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
+	}
+
+	public function deleteProject()
+	{
+		if (!canInteract)
+			return;
+
+		canInteract = false;
+
+		var projectsToDelete:Array<ProjectFile> = [];
+
+		for (button in buttons)
+		{
+			if (button.checkboxSelected)
+				projectsToDelete.push(button.project);
+		}
+
+		if (projectsToDelete.length == 0)
+			projectsToDelete = [curSelected];
+
+		var messageAppend:String = '';
+
+		for (i in projectsToDelete)
+		{
+			if (projectsToDelete.indexOf(i) != projectsToDelete.length - 1)
+				messageAppend += i.Name + ', ';
+			else
+				messageAppend += i.Name;
+		}
+
+		openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+			'Are you sure you want to delete the following projects?\n' + messageAppend, 'Yes', 'No', null, function()
+		{
+			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				'Are you *REALLY* sure? You will not be able to recover these projects unless you made a backup!', 'Yes', 'No', null, function()
+			{
+				for (project in projectsToDelete)
+				{
+					var dir = ProjectFileUtil.getCheckpointFolder(project);
+					if (FileSystem.exists(dir))
+					{
+						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+							FileSystem.deleteFile(dir + '\\' + file);
+
+						FileSystem.deleteDirectory(dir);
+					}
+					_projects.remove(project);
+				}
+
+				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(_projects)));
+
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Deletion Complete!', 'Ok', null, null,
+					function()
+					{
+						canInteract = true;
+						loadJson(_folderPath + '\\Projects.json');
+					}));
+			}, function()
+			{
+				canInteract = true;
+				return;
+			}));
+		}, function()
+		{
+			canInteract = true;
+			return;
+		}));
 	}
 }

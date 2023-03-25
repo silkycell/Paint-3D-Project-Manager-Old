@@ -32,6 +32,10 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var importButtonBG:FlxSprite;
 	var importButtonText:FlxText;
 
+	var deleteButton:FlxSpriteGroup = new FlxSpriteGroup();
+	var deleteButtonBG:FlxSprite;
+	var deleteButtonText:FlxText;
+
 	var browseButton:FlxSpriteGroup = new FlxSpriteGroup();
 	var browseButtonBG:FlxSprite;
 	var browseButtonText:FlxText;
@@ -103,7 +107,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Import
 
-		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450, 150), [33, 33, (33 * 2), (33 * 2)]);
+		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
 		importButtonBG.color = defaultColor;
 
 		importButtonText = new FlxText(0, 0, 0, 'Import');
@@ -118,6 +122,24 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		importButton.x = exportButton.x;
 		importButton.y = exportButton.y - importButtonBG.height - 20;
+
+		// Delete
+
+		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		deleteButtonBG.color = defaultColor;
+
+		deleteButtonText = new FlxText(0, 0, 0, 'Delete');
+		deleteButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
+
+		deleteButtonText.updateHitbox();
+		deleteButtonText.x = (deleteButtonBG.width / 2) - (deleteButtonText.width / 2);
+		deleteButtonText.y = (deleteButtonBG.height / 2) - (deleteButtonText.textField.height / 2);
+
+		deleteButton.add(deleteButtonBG);
+		deleteButton.add(deleteButtonText);
+
+		deleteButton.x = exportButton.x + (exportButton.width / 2) + (exportButton.width / 23);
+		deleteButton.y = exportButton.y - deleteButtonBG.height - 20;
 
 		// Browse
 
@@ -152,11 +174,12 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		pathButton.add(pathButtonBG);
 		pathButton.add(pathButtonText);
 
-		pathButton.x = importButton.x + (importButton.width / 2) + (importButton.width / 23);
+		pathButton.x = exportButton.x + (exportButton.width / 2) + (exportButton.width / 23);
 		pathButton.y = importButton.y - pathButtonBG.height - 20;
 
 		add(exportButton);
 		add(importButton);
+		add(deleteButton);
 		add(browseButton);
 		add(pathButton);
 
@@ -217,6 +240,18 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			pathButtonBG.color = defaultColor;
 		}
+
+		if (FlxG.mouse.overlaps(deleteButton))
+		{
+			deleteButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
+
+			if (FlxG.mouse.justPressed && instance.canInteract)
+				instance.deleteProject();
+		}
+		else
+		{
+			deleteButtonBG.color = defaultColor;
+		}
 	}
 
 	public function loadProject(project:ProjectFile)
@@ -246,6 +281,9 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		importButtonBG.color = defaultColor;
 		importButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+
+		deleteButtonBG.color = defaultColor;
+		deleteButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
 
 		browseButtonBG.color = defaultColor;
 		browseButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
