@@ -58,14 +58,9 @@ class ProjectFileUtil
 		try
 		{
 			if (BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png') != null)
-			{
 				return BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png');
-			}
 			else
-			{
-				trace("getThumbnail Error: " + getCheckpointFolder(project) + '\\Thumbnail.png' + ' is null!');
 				return BitmapData.fromFile('assets/images/thumbFallback.png');
-			}
 		}
 		catch (e)
 		{
