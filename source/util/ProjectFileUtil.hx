@@ -73,4 +73,28 @@ class ProjectFileUtil
 	{
 		return PlayState._folderPath + '\\' + project.Path.substr(9);
 	}
+
+	public static function removeDuplicates(objects:Array<ProjectFile>)
+	{
+		var unique:Array<ProjectFile> = [];
+
+		for (obj1 in objects)
+		{
+			var isDuplicate = false;
+			for (obj2 in unique)
+			{
+				if (obj1.Id == obj2.Id)
+				{
+					trace('Dupe Found! ' + obj1.Name + ' is a dupe of ' + obj2.Name);
+					isDuplicate = true;
+					break;
+				}
+			}
+
+			if (!isDuplicate)
+				unique.push(obj1);
+		}
+
+		return unique;
+	}
 }
