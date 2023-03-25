@@ -16,6 +16,7 @@ import haxe.Timer;
 import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
 import lime.app.Promise;
+import lime.system.System;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
 import lime.utils.Resource;
@@ -30,6 +31,8 @@ import zip.ZipWriter;
 
 class PlayState extends FlxState
 {
+	public static var version:String = '0.1.0b';
+
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
 	var projectFilePath:String;
@@ -77,6 +80,30 @@ class PlayState extends FlxState
 		github.y = 10;
 		github.x = FlxG.width - github.width - 5;
 		add(github);
+
+		var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
+
+		http.onData = function(data:String)
+		{
+			if (data != version)
+			{
+				trace('version online: ' + data + ', your version: ' + version);
+				openSubState(new MessageBox(FlxColor.GRAY,
+					'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!',
+					'Update', 'Ignore', null, function()
+				{
+					FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/Releases");
+					System.exit(0);
+				}, function() {}));
+			}
+		}
+
+		http.onError = function(error)
+		{
+			trace('error: $error');
+		}
+
+		http.request();
 
 		if (FlxG.save.data.projectFilePath != null && !init)
 			loadJson(FlxG.save.data.projectFilePath)
