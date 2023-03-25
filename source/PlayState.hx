@@ -30,7 +30,7 @@ class PlayState extends FlxState
 	var sideBar:SideBar;
 	var projectFilePath:String;
 
-	public var canReload:Bool = true;
+	public var canInteract:Bool = true;
 
 	public static var curSelected:ProjectFile;
 
@@ -50,7 +50,7 @@ class PlayState extends FlxState
 		FlxG.mouse.useSystemCursor = true;
 		FlxG.autoPause = false;
 		FlxG.camera.antialiasing = true;
-		FlxG.watch.add(this, 'canReload');
+		FlxG.watch.add(this, 'canInteract');
 
 		gridBG = new FlxBackdrop('assets/images/grid.png');
 		gridBG.antialiasing = true;
@@ -103,15 +103,15 @@ class PlayState extends FlxState
 
 	function showFileDialog()
 	{
-		if (!canReload)
+		if (!canInteract)
 			return;
 
 		trace('Loading Project File...');
-		canReload = false;
+		canInteract = false;
 		var fDial = new FileDialog();
 		fDial.onSelect.add(function(file)
 		{
-			canReload = true;
+			canInteract = true;
 			loadJson(file);
 		});
 
@@ -119,13 +119,14 @@ class PlayState extends FlxState
 		{
 			trace('Project File Cancelled');
 			canReload = true;
+			canInteract = true;
 		});
 		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
 	}
 
 	function loadJson(file:String)
 	{
-		if (!canReload)
+		if (!canInteract)
 			return;
 
 		try
@@ -150,7 +151,7 @@ class PlayState extends FlxState
 		}
 		catch (e)
 		{
-			canReload = true;
+			canInteract = true;
 			Util.sendMsgBox("Error Parsing Json!\n\"" + e + "\"");
 		}
 	}
@@ -176,7 +177,7 @@ class PlayState extends FlxState
 
 		trace('Finished loading Project File!');
 
-		canReload = true;
+		canInteract = true;
 	}
 
 	public function selectProject(project:ProjectFile)
@@ -190,11 +191,11 @@ class PlayState extends FlxState
 
 	public function exportProjects()
 	{
-		if (!canReload)
+		if (!canInteract)
 			return;
 
 		trace('Exporting Projects...');
-		canReload = false;
+		canInteract = false;
 
 		try
 		{
@@ -260,24 +261,23 @@ class PlayState extends FlxState
 
 			fDial.onSave.add(function(file:String)
 			{
-				trace('Project Exporting Completed!');
-				canReload = true;
+				return;
 			});
 		}
 		catch (e)
 		{
-			canReload = true;
+			canInteract = true;
 			Util.sendMsgBox("Error Exporting!\n\"" + e + "\"");
 		}
 	}
 
 	public function importProjects()
 	{
-		if (!canReload)
+		if (!canInteract)
 			return;
 
 		trace('Importing Projects...');
-		canReload = false;
+		canInteract = false;
 
 		try
 		{
@@ -289,7 +289,7 @@ class PlayState extends FlxState
 				if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
 				{
 					Util.sendMsgBox('This is not a P3D file!');
-					canReload = true;
+					canInteract = true;
 					return;
 				}
 
@@ -304,7 +304,7 @@ class PlayState extends FlxState
 				if (entries.get('exportProject.json') == null)
 				{
 					Util.sendMsgBox('This is not a P3D file!\n(exportProject.json could not be found.)');
-					canReload = true;
+					canInteract = true;
 					return;
 				}
 
@@ -341,18 +341,18 @@ class PlayState extends FlxState
 				FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
 
 				loadJson(_folderPath + '\\Projects.json');
-				canReload = true;
+				canInteract = true;
 				trace('Finished Importing Projects!');
 			});
 
 			fDial.onCancel.add(function()
 			{
-				canReload = true;
+				canInteract = true;
 			});
 		}
 		catch (e)
 		{
-			canReload = true;
+			canInteract = true;
 			Util.sendMsgBox("Error Importing!\n\"" + e + "\"");
 		}
 	}

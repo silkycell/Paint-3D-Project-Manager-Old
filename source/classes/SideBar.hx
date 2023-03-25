@@ -198,7 +198,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			browseButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed && instance.canReload)
+			if (FlxG.mouse.justPressed && instance.canInteract)
 				FlxG.resetState();
 		}
 		else

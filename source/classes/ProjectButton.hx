@@ -80,7 +80,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			{
 				checkBox.color = Util.getDarkerColor(defaultColor, 1.2);
 
-				if (FlxG.mouse.justPressed)
+				if (FlxG.mouse.justPressed && instance.canInteract)
 				{
 					checkboxSelected = !checkboxSelected;
 					checkBox.animation.play('check', true, !checkboxSelected);
