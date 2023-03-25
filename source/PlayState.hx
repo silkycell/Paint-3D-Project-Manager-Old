@@ -129,24 +129,31 @@ class PlayState extends FlxState
 
 	function loadJson(file:String)
 	{
-		var pathArray = file.split('\\');
-		pathArray.pop();
-
-		_folderPath = '';
-
-		for (i in pathArray)
+		try
 		{
-			if (pathArray.indexOf(i) != pathArray.length - 1)
-				_folderPath += i + "\\";
-			else
-				_folderPath += i;
-		}
+			var pathArray = file.split('\\');
+			pathArray.pop();
 
-		projectFilePath = file;
-		_projects = ProjectFileUtil.parseProjectJson(Json.parse(sys.io.File.getContent(file)));
+			_folderPath = '';
+
+			for (i in pathArray)
+			{
+				if (pathArray.indexOf(i) != pathArray.length - 1)
+					_folderPath += i + "\\";
+				else
+					_folderPath += i;
+			}
+
+			projectFilePath = file;
 			_projects = ProjectFileUtil.parseProjectJson(ProjectFileUtil.removeDuplicates(Json.parse(sys.io.File.getContent(file))));
 
-		drawButtons(_projects);
+			drawButtons(_projects);
+		}
+		catch (e)
+		{
+			canReload = true;
+			Util.sendMsgBox("Error Parsing Json!\n\"" + e + "\"");
+		}
 	}
 
 	function drawButtons(projects:Array<ProjectFile>)
@@ -186,120 +193,157 @@ class PlayState extends FlxState
 	{
 		trace('Exporting Projects...');
 		canReload = false;
-		var projectsToExport:Array<ProjectFile> = [];
-		var projectClones:Array<ProjectFile> = [];
 
-		for (button in buttons)
+		try
 		{
-			if (button.checkboxSelected)
-				projectsToExport.push(button.project);
-		}
+			var projectsToExport:Array<ProjectFile> = [];
+			var projectClones:Array<ProjectFile> = [];
 
-		if (projectsToExport.length == 0)
-			projectsToExport = [curSelected];
-
-		var exportZip = new ZipWriter();
-
-		for (project in projectsToExport)
-		{
-			var filteredFilename = '';
-
-			for (letter in project.Name.split(''))
+			for (button in buttons)
 			{
-				if (ProjectFileUtil.disallowedChars.contains(letter))
-					letter = '_';
-
-				filteredFilename += letter;
+				if (button.checkboxSelected)
+					projectsToExport.push(button.project);
 			}
 
-			var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
+			if (projectsToExport.length == 0)
+				projectsToExport = [curSelected];
 
-			var projectClone = Reflect.copy(project);
+			var exportZip = new ZipWriter();
 
-			if (StringTools.contains(projectClone.Name.toLowerCase(), 'workingfolder'))
-				projectClone.Name = '(WF) ' + projectClone.Name;
+			for (project in projectsToExport)
+			{
+				var filteredFilename = '';
+				var projectClone = Reflect.copy(project);
 
-			projectClone.Path = 'Projects\\' + projDir;
-			projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
-			projectClone.SourceId = '';
-			projectClone.SourceFilePath = '';
+				if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
+					projectClone.Name = '(WF) ' + projectClone.Name;
 
-			projectClones.push(projectClone);
+				for (letter in projectClone.Name.split(''))
+				{
+					if (ProjectFileUtil.disallowedChars.contains(letter))
+						letter = '_';
 
-			for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
-				exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+					filteredFilename += letter;
+				}
+
+				var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
+
+				projectClone.Path = 'Projects\\' + projDir;
+				projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
+				projectClone.SourceId = '';
+				projectClone.SourceFilePath = '';
+
+				projectClones.push(projectClone);
+
+				for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+					exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+			}
+
+			exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
+
+			var fDial = new FileDialog();
+			fDial.save(exportZip.finalize(), 'p3d', _folderPath + '\\Projects.p3d', 'Save your exported projects.');
+
+			fDial.onCancel.add(function()
+			{
+				canReload = true;
+				trace('Project Exporting Cancelled');
+				Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
+			});
+
+			fDial.onSave.add(function(file:String)
+			{
+				trace('Project Exporting Completed!');
+				canReload = true;
+			});
 		}
-
-		exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
-
-		var fDial = new FileDialog();
-		fDial.save(exportZip.finalize(), 'p3d', _folderPath + '\\Projects.p3d', 'Save your exported projects.');
-
-		fDial.onCancel.add(function()
+		catch (e)
 		{
 			canReload = true;
-			trace('Project Exporting Cancelled');
-			Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
-		});
-
-		fDial.onSave.add(function(file:String)
-		{
-			trace('Project Exporting Completed!');
-			canReload = true;
-		});
+			Util.sendMsgBox("Error Exporting!\n\"" + e + "\"");
+		}
 	}
 
 	public function importProjects()
 	{
 		trace('Importing Projects...');
 		canReload = false;
-		var fDial = new FileDialog();
-		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
-		fDial.onSelect.add(function(file)
+
+		try
 		{
-			var entries = new StringMap<ZipEntry>();
-
-			var zip = new ZipReader(File.getBytes(file));
-			var entry:ZipEntry;
-
-			while ((entry = zip.getNextEntry()) != null)
-				entries.set(entry.fileName, entry);
-
-			for (entry in entries.keys())
+			var fDial = new FileDialog();
+			fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
+			fDial.onSelect.add(function(file)
 			{
-				var entryPath:String = '';
-
-				for (path in entry.split('\\'))
+				// this is an array because i may add more support for file types later
+				if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
 				{
-					if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
-						break;
-
-					entryPath += path;
+					Util.sendMsgBox('This is not a P3D file!');
+					canReload = true;
+					return;
 				}
-				entryPath = '\\' + entryPath;
 
-				if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
-					FileSystem.createDirectory(_folderPath + entryPath);
+				var entries = new StringMap<ZipEntry>();
 
-				File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
-			}
+				var zip = new ZipReader(File.getBytes(file));
+				var entry:ZipEntry;
 
-			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
-			var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
+				while ((entry = zip.getNextEntry()) != null)
+					entries.set(entry.fileName, entry);
 
-			for (project in concatJson)
-			{
-				if (project.Id == '-1')
-					concatJson.remove(project);
-			}
+				if (entries.get('exportProject.json') == null)
+				{
+					Util.sendMsgBox('This is not a P3D file!\n(exportProject.json could not be found.)');
+					canReload = true;
+					return;
+				}
 
-			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(concatJson));
-			FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
+				for (entry in entries.keys())
+				{
+					var entryPath:String = '';
+
+					for (path in entry.split('\\'))
+					{
+						if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
+							break;
+
+						entryPath += path;
+					}
+					entryPath = '\\' + entryPath;
+
+					if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
+						FileSystem.createDirectory(_folderPath + entryPath);
+
+					File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
+				}
+
+				var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
+				var exportJson:Array<ProjectFile> = Json.parse(File.getContent(_folderPath + '\\exportProjects.json'));
+				var concatJson:Array<ProjectFile> = projectFile.concat(exportJson);
+
+				for (project in concatJson)
+				{
+					if (project.Id == '-1')
+						concatJson.remove(project);
+				}
+
 				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
+				FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
 
-			loadJson(_folderPath + '\\Projects.json');
+				loadJson(_folderPath + '\\Projects.json');
+				canReload = true;
+				trace('Finished Importing Projects!');
+			});
+
+			fDial.onCancel.add(function()
+			{
+				canReload = true;
+			});
+		}
+		catch (e)
+		{
 			canReload = true;
-			trace('Finished Importing Projects!');
-		});
+			Util.sendMsgBox("Error Importing!\n\"" + e + "\"");
+		}
 	}
 }
