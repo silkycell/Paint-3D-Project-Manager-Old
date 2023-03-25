@@ -36,6 +36,7 @@ class PlayState extends FlxState
 
 	public var canInteract:Bool = true;
 
+	public static var init:Bool;
 	public static var curSelected:ProjectFile;
 
 	public static var _projects:Array<ProjectFile> = [];
@@ -77,10 +78,12 @@ class PlayState extends FlxState
 		github.x = FlxG.width - github.width - 5;
 		add(github);
 
-		if (FlxG.save.data.projectFilePath == null)
-			showFileDialog();
+		if (FlxG.save.data.projectFilePath != null && !init)
+			loadJson(FlxG.save.data.projectFilePath)
 		else
-			loadJson(FlxG.save.data.projectFilePath);
+			showFileDialog();
+
+		init = true;
 	}
 
 	override public function update(elapsed:Float)
@@ -185,8 +188,14 @@ class PlayState extends FlxState
 			projectFilePath = file;
 			FlxG.save.data.projectFilePath = projectFilePath;
 
-			if (!FileSystem.exists(file + '.bak'))
-				File.saveContent(_folderPath + '\\Projects.json.bak', File.getContent(file));
+			if (!FileSystem.exists(_folderPath + '\\.Bak'))
+				FileSystem.createDirectory(_folderPath + '\\.Bak');
+
+			var repeat:Int = 0;
+			while (FileSystem.exists(_folderPath + '\\.Bak\\Projects.json.bak' + repeat))
+				repeat += 1;
+
+			File.saveContent(_folderPath + '\\.Bak\\Projects.json.bak' + repeat, File.getContent(file));
 
 			_projects = ProjectFileUtil.parseProjectJson(ProjectFileUtil.removeDuplicates(Json.parse(sys.io.File.getContent(file))));
 
@@ -281,6 +290,7 @@ class PlayState extends FlxState
 				}
 				openSubState(message);
 
+				var validFileCheck:String = '';
 				Timer.delay(function() // Allows for screen to update
 				{
 					var exportZip = new ZipWriter();
@@ -305,11 +315,8 @@ class PlayState extends FlxState
 						filteredFilename = filteredFilename.substring(0, 260);
 						var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
 
-						var validFileCheck:String = '';
 						for (i in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
 							validFileCheck += projDir + '\\' + i + '\n';
-
-						exportZip.addString(validFileCheck, 'fileCheck.txt', true);
 
 						projectClone.Path = 'Projects\\' + projDir;
 						projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
@@ -321,6 +328,8 @@ class PlayState extends FlxState
 						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
 							exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
 					}
+
+					exportZip.addString(validFileCheck, 'fileCheck.txt', true);
 
 					exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
 
@@ -392,26 +401,73 @@ class PlayState extends FlxState
 			for (entry in entries.keys())
 				@await zipFiles(entry, entries);
 
-			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
-			var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
-
-			for (project in concatJson)
+			var missingFiles:Array<String> = [];
+			if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
 			{
-				if (project.Id == '-1')
-					concatJson.remove(project);
+				for (i in File.getContent(_folderPath + '\\zipExport\\fileCheck.txt').split('\n'))
+				{
+					@async
+					function checkMissing()
+					{
+						if (!FileSystem.exists(_folderPath + '\\zipExport\\' + i))
+							missingFiles.push(i);
+					}
+
+					@await checkMissing();
+				}
 			}
 
-			FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
-			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
+			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
 
-			canInteract = true;
-			trace('Finished Importing Projects!');
+			function continueImporting()
+			{
+				for (entry in entries.keys())
+					@await moveFiles(entry, entries);
 
-			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null, null,
-				function()
+				Util.deleteDirRecursively(_folderPath + '\\zipExport');
+
+				var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
+
+				for (project in concatJson)
 				{
-					loadJson(_folderPath + '\\Projects.json');
+					if (project.Id == '-1')
+						concatJson.remove(project);
+				}
+
+				FileSystem.deleteDirectory(_folderPath + '\\zipExport');
+				FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
+				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
+
+				canInteract = true;
+				trace('Finished Importing Projects!');
+
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null, null,
+					function()
+					{
+						loadJson(_folderPath + '\\Projects.json');
+					}));
+			}
+
+			if (missingFiles.length > 0)
+			{
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+					'Woah there! This project has ' + missingFiles.length +
+					' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
+					'Continue', 'Cancel', null, function()
+				{
+					continueImporting();
+				}, function()
+				{
+					Util.deleteDirRecursively(_folderPath + '\\zipExport');
+
+					canInteract = true;
+					return;
 				}));
+			}
+			else
+			{
+				continueImporting();
+			}
 		});
 
 		fDial.onCancel.add(function()
@@ -434,10 +490,30 @@ class PlayState extends FlxState
 		}
 		entryPath = '\\' + entryPath;
 
-		if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
+		if (entryPath != '\\' && !FileSystem.exists(_folderPath + '\\zipExport' + entryPath))
+			FileSystem.createDirectory(_folderPath + '\\zipExport' + entryPath);
+
+		File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
+	}
+
+	@async
+	function moveFiles(entry:String, entries:StringMap<ZipEntry>)
+	{
+		var entryPath:String = '';
+
+		for (path in entry.split('\\'))
+		{
+			if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
+				break;
+
+			entryPath += path;
+		}
+		entryPath = '\\' + entryPath;
+
+		if (entryPath != '\\' && !FileSystem.exists(_folderPath + entryPath))
 			FileSystem.createDirectory(_folderPath + entryPath);
 
-		File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
+		File.saveBytes(_folderPath + '\\' + entry, File.getBytes(_folderPath + '\\zipExport\\' + entry));
 	}
 
 	public function deleteProject()

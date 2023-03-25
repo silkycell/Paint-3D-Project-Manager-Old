@@ -95,4 +95,24 @@ class Util
 	{
 		return res;
 	}
+
+	public static function deleteDirRecursively(path:String)
+	{
+		if (FileSystem.exists(path) && FileSystem.isDirectory(path))
+		{
+			var entries = FileSystem.readDirectory(path);
+			for (entry in entries)
+			{
+				if (FileSystem.isDirectory(path + '/' + entry))
+				{
+					deleteDirRecursively(path + '/' + entry);
+					FileSystem.deleteDirectory(path + '/' + entry);
+				}
+				else
+				{
+					FileSystem.deleteFile(path + '/' + entry);
+				}
+			}
+		}
+	}
 }
