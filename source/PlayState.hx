@@ -1,5 +1,6 @@
 package;
 
+import classes.MessageBox;
 import classes.ProjectButton;
 import classes.SideBar;
 import flixel.FlxG;
@@ -10,6 +11,7 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import haxe.Json;
+import haxe.Timer;
 import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
 import lime.ui.FileDialog;
@@ -118,7 +120,6 @@ class PlayState extends FlxState
 		fDial.onCancel.add(function()
 		{
 			trace('Project File Cancelled');
-			canReload = true;
 			canInteract = true;
 		});
 		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
@@ -211,58 +212,93 @@ class PlayState extends FlxState
 			if (projectsToExport.length == 0)
 				projectsToExport = [curSelected];
 
-			var exportZip = new ZipWriter();
-			var filteredFilename = '';
+			var messageAppend:String = '';
 
-			for (project in projectsToExport)
+			for (i in projectsToExport)
 			{
-				filteredFilename = '';
-				var projectClone = Reflect.copy(project);
-
-				if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
-					projectClone.Name = '(WF) ' + projectClone.Name;
-
-				for (letter in projectClone.Name.split(''))
-				{
-					if (ProjectFileUtil.disallowedChars.contains(letter))
-						letter = '_';
-
-					filteredFilename += letter;
-				}
-
-				var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
-
-				projectClone.Path = 'Projects\\' + projDir;
-				projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
-				projectClone.SourceId = '';
-				projectClone.SourceFilePath = '';
-
-				projectClones.push(projectClone);
-
-				for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
-					exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+				if (projectsToExport.indexOf(i) != projectsToExport.length - 1)
+					messageAppend += i.Name + ', ';
+				else
+					messageAppend += i.Name;
 			}
 
-			exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
-
-			var fDial = new FileDialog();
-			fDial.save(exportZip.finalize(), 'p3d', _folderPath
-				+ '\\'
-				+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
-				+ '.p3d',
-				'Save your exported projects.');
-
-			fDial.onCancel.add(function()
+			var message;
+			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				"Are you sure you want to export these projects?\n" + messageAppend, 'Yes', 'No', null, function()
 			{
-				canReload = true;
-				trace('Project Exporting Cancelled');
-				Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
-			});
+				persistentUpdate = true;
 
-			fDial.onSave.add(function(file:String)
+				message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+					'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
+				for (i in message.buttons)
+				{
+					i.x += 54934358; // juuust in case
+					i.visible = false;
+				}
+				openSubState(message);
+
+				Timer.delay(function() // Allows for screen to update
+				{
+					var exportZip = new ZipWriter();
+					var filteredFilename = '';
+
+					for (project in projectsToExport)
+					{
+						filteredFilename = '';
+						var projectClone = Reflect.copy(project);
+
+						if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
+							projectClone.Name = '(WF) ' + projectClone.Name;
+
+						for (letter in projectClone.Name.split(''))
+						{
+							if (ProjectFileUtil.disallowedChars.contains(letter))
+								letter = '_';
+
+							filteredFilename += letter;
+						}
+
+						var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
+
+						projectClone.Path = 'Projects\\' + projDir;
+						projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
+						projectClone.SourceId = '';
+						projectClone.SourceFilePath = '';
+
+						projectClones.push(projectClone);
+
+						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+							exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+					}
+
+					exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
+
+					var fDial = new FileDialog();
+					fDial.save(exportZip.finalize(), 'p3d', _folderPath
+						+ '\\'
+						+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
+						+ '.p3d',
+						'Save your exported projects.');
+
+					fDial.onCancel.add(function()
+					{
+						canInteract = true;
+						trace('Project Exporting Cancelled');
+						Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
+					});
+
+					fDial.onSave.add(function(file:String)
+					{
+						closeSubState();
+						trace('Project Exporting Completed!');
+						canInteract = true;
+					});
+				}, 100);
+			}, function()
 			{
+				canInteract = true;
 				return;
-			});
+			}, 0x36FFFFFF));
 		}
 		catch (e)
 		{
