@@ -9,6 +9,7 @@ import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import haxe.Json;
 import haxe.Timer;
@@ -41,6 +42,8 @@ class PlayState extends FlxState
 
 	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10, 10);
 
+	var github:FlxSprite;
+
 	override public function create()
 	{
 		super.create();
@@ -64,6 +67,15 @@ class PlayState extends FlxState
 		add(sideBar);
 
 		add(buttons);
+
+		github = new FlxSprite().loadGraphic("assets/images/github.png");
+		github.setGraphicSize(Std.int(50));
+		github.updateHitbox();
+		github.antialiasing = true;
+		github.y = 10;
+		github.x = FlxG.width - github.width - 5;
+		add(github);
+
 		showFileDialog();
 	}
 
@@ -86,6 +98,24 @@ class PlayState extends FlxState
 				button.checkboxSelected = !button.checkboxSelected;
 				button.checkBox.animation.play('check', true, !button.checkboxSelected);
 			}
+		}
+
+		if (FlxG.mouse.overlaps(github))
+		{
+			github.alpha = 1;
+			github.scale.x = FlxMath.lerp(github.scale.x, 0.12, 0.2);
+			github.scale.y = FlxMath.lerp(github.scale.y, 0.12, 0.2);
+			github.angle = FlxMath.lerp(github.angle, -5, 0.2);
+
+			if (FlxG.mouse.justPressed)
+				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
+		}
+		else
+		{
+			github.alpha = 0.5;
+			github.scale.x = FlxMath.lerp(github.scale.x, 0.098, 0.2);
+			github.scale.y = FlxMath.lerp(github.scale.y, 0.098, 0.2);
+			github.angle = FlxMath.lerp(github.angle, 0, 0.2);
 		}
 
 		#if debug
@@ -188,6 +218,8 @@ class PlayState extends FlxState
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
+
+		github.color = Util.getDarkerColor(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project)), 1.3);
 	}
 
 	public function exportProjects()
