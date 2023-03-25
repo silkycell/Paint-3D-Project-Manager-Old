@@ -184,6 +184,10 @@ class PlayState extends FlxState
 
 			projectFilePath = file;
 			FlxG.save.data.projectFilePath = projectFilePath;
+
+			if (!FileSystem.exists(file + '.bak'))
+				File.saveContent(_folderPath + '\\Projects.json.bak', File.getContent(file));
+
 			_projects = ProjectFileUtil.parseProjectJson(ProjectFileUtil.removeDuplicates(Json.parse(sys.io.File.getContent(file))));
 
 			drawButtons(_projects);
@@ -397,7 +401,6 @@ class PlayState extends FlxState
 					concatJson.remove(project);
 			}
 
-			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(concatJson));
 			FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
 			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
 
