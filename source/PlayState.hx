@@ -312,84 +312,66 @@ class PlayState extends FlxState
 		if (!canInteract)
 			return;
 
-		trace('Importing Projects...');
 		canInteract = false;
 
-		try
+		trace('Importing Projects...');
+		var fDial = new FileDialog();
+		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
+		fDial.onSelect.add(function(file)
 		{
-			var fDial = new FileDialog();
-			fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
-			fDial.onSelect.add(function(file)
+			if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
 			{
-				// this is an array because i may add more support for file types later
-				if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'This is not a P3D file!', 'Ok', null,
+					null, function()
 				{
-					Util.sendMsgBox('This is not a P3D file!');
 					canInteract = true;
-					return;
-				}
+				}));
+				return;
+			}
 
-				var entries = new StringMap<ZipEntry>();
+			var entries = new StringMap<ZipEntry>();
 
-				var zip = new ZipReader(File.getBytes(file));
-				var entry:ZipEntry;
+			var zip = new ZipReader(File.getBytes(file));
+			var entry:ZipEntry;
 
-				while ((entry = zip.getNextEntry()) != null)
-					entries.set(entry.fileName, entry);
+			while ((entry = zip.getNextEntry()) != null)
+				entries.set(entry.fileName, entry);
 
-				if (entries.get('exportProject.json') == null)
-				{
-					Util.sendMsgBox('This is not a P3D file!\n(exportProject.json could not be found.)');
-					canInteract = true;
-					return;
-				}
-
-				for (entry in entries.keys())
-				{
-					var entryPath:String = '';
-
-					for (path in entry.split('\\'))
-					{
-						if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
-							break;
-
-						entryPath += path;
-					}
-					entryPath = '\\' + entryPath;
-
-					if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
-						FileSystem.createDirectory(_folderPath + entryPath);
-
-					File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
-				}
-
-				var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
-				var exportJson:Array<ProjectFile> = Json.parse(File.getContent(_folderPath + '\\exportProjects.json'));
-				var concatJson:Array<ProjectFile> = projectFile.concat(exportJson);
-
-				for (project in concatJson)
-				{
-					if (project.Id == '-1')
-						concatJson.remove(project);
-				}
-
-				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
-				FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
-
-				loadJson(_folderPath + '\\Projects.json');
-				canInteract = true;
-				trace('Finished Importing Projects!');
-			});
-
-			fDial.onCancel.add(function()
+			for (entry in entries.keys())
 			{
-				canInteract = true;
-			});
-		}
-		catch (e)
-		{
+				var entryPath:String = '';
+
+				for (path in entry.split('\\'))
+				{
+					if (entry.split('\\').indexOf(path) == entry.split('\\').length - 1)
+						break;
+
+					entryPath += path;
+				}
+				entryPath = '\\' + entryPath;
+
+				if (entryPath != '' && !FileSystem.exists(_folderPath + entryPath))
+					FileSystem.createDirectory(_folderPath + entryPath);
+
+				File.saveBytes(_folderPath + '\\' + entry, Zip.getBytes(entries.get(entry)));
+			}
+
+			var projectFile:Array<ProjectFile> = Json.parse(File.getContent(projectFilePath));
+			var concatJson:Array<ProjectFile> = projectFile.concat(Json.parse(File.getContent(_folderPath + '\\exportProjects.json')));
+
+			for (project in concatJson)
+			{
+				if (project.Id == '-1')
+					concatJson.remove(project);
+			}
+
+			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(concatJson));
+			FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
+			File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));
+
 			canInteract = true;
-			Util.sendMsgBox("Error Importing!\n\"" + e + "\"");
-		}
+			trace('Finished Importing Projects!');
+			loadJson(_folderPath + '\\Projects.json');
+		});
 	}
 }
