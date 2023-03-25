@@ -403,7 +403,12 @@ class PlayState extends FlxState
 
 			canInteract = true;
 			trace('Finished Importing Projects!');
-			loadJson(_folderPath + '\\Projects.json');
+
+			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null, null,
+				function()
+				{
+					loadJson(_folderPath + '\\Projects.json');
+				}));
 		});
 	}
 }
