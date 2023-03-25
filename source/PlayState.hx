@@ -243,7 +243,11 @@ class PlayState extends FlxState
 			exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
 
 			var fDial = new FileDialog();
-			fDial.save(exportZip.finalize(), 'p3d', _folderPath + '\\Projects.p3d', 'Save your exported projects.');
+			fDial.save(exportZip.finalize(), 'p3d', _folderPath
+				+ '\\'
+				+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
+				+ '.p3d',
+				'Save your exported projects.');
 
 			fDial.onCancel.add(function()
 			{
