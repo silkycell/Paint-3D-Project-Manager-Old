@@ -36,5 +36,7 @@ Check your Discord Rich Presence, it should say the files/projects remaining und
 ### All of my projects in Paint 3D are gone!
 Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\Projects\.Bak` and copy the json with the highest number (eg: Projects.json.bak6), then replace the Projects.json with the file you copied (make sure to name it exactly the same!) 
 
+If your projects are still gone, keep doing this same method but with the 2nd highest, then 3rd highest, and so on
+
 ### My issue isn't listed here!
 Please make a new issue under the "Issues" tab, or contact me on [discord (foxel#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
