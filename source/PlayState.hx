@@ -198,6 +198,8 @@ class PlayState extends FlxState
 		if (!canInteract)
 			return;
 
+		Util.deleteDirRecursively(_folderPath + '\\zipExport');
+
 		buttons.y = 10;
 
 		try
@@ -459,6 +461,8 @@ class PlayState extends FlxState
 				}));
 				return;
 			}
+
+			Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
 			importTime = Std.int(Date.now().getTime() / 1000);
 			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
