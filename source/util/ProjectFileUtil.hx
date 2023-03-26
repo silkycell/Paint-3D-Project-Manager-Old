@@ -84,7 +84,7 @@ class ProjectFileUtil
 			var isDuplicate = false;
 			for (obj2 in unique)
 			{
-				if (obj1.Id == obj2.Id && obj1.Path == obj2.Path)
+				if (obj1.Id == obj2.Id || obj1.Path == obj2.Path)
 				{
 					trace('Dupe Found! ' + obj1.Name + ' is a dupe of ' + obj2.Name);
 					isDuplicate = true;
