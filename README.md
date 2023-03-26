@@ -14,7 +14,7 @@ When you open the program for the first time, it'll open a window dialogue to ch
 3. Wait
 4. Open Paint 3D to see the project!
 
-## Troubleshooting
+## Troubleshooting/Q&A
 ### I cant find my Projects.json!
 Press the "Appdata Path" on the main menu, then copy the file path. 
 Then, press "Browse" and paste it into the file dialouge.
@@ -29,6 +29,9 @@ It is still possible to continue importing, but i _highly_ discourage it. Try as
 
 ### My Paint 3D crashes on startup after importing the project!
 Delete the project you imported in the P3DPM, and ask for a new one from the person you got it from.
+
+### How do I know how much time is left on an Import/Export?
+Check your Discord Rich Presence, it should say the files/projects remaining under there (don't question it)
 
 ### All of my projects in Paint 3D are gone!
 Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\Projects\.Bak` and copy the json with the highest number (eg: Projects.json.bak6), then replace the Projects.json with the file you copied (make sure to name it exactly the same!) 

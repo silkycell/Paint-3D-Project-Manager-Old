@@ -22,6 +22,7 @@ import lime.ui.FileDialogType;
 import lime.utils.Resource;
 import sys.FileSystem;
 import sys.io.File;
+import util.Discord;
 import util.ProjectFileUtil;
 import util.Util;
 import zip.Zip;
@@ -61,6 +62,9 @@ class PlayState extends FlxState
 		FlxG.autoPause = false;
 		FlxG.camera.antialiasing = true;
 		FlxG.watch.add(this, 'canInteract');
+
+		if (!init)
+			Discord.initialize();
 
 		gridBG = new FlxBackdrop('assets/images/grid.png');
 		gridBG.antialiasing = true;
@@ -270,6 +274,8 @@ class PlayState extends FlxState
 		github.color = Util.getDarkerColor(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project)), 1.3);
 	}
 
+	var exportTime:Int = 0;
+
 	public function exportProjects()
 	{
 		if (!canInteract)
@@ -280,6 +286,8 @@ class PlayState extends FlxState
 
 		try
 		{
+			exportTime = 0;
+
 			var projectsToExport:Array<ProjectFile> = [];
 			var projectClones:Array<ProjectFile> = [];
 
@@ -291,6 +299,9 @@ class PlayState extends FlxState
 
 			if (projectsToExport.length == 0)
 				projectsToExport = [curSelected];
+
+			Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
+				'icon', 'Version ' + version, 'export', 'Exporting');
 
 			var messageAppend:String = '';
 
@@ -307,6 +318,9 @@ class PlayState extends FlxState
 				"Are you sure you want to export these projects?\n" + messageAppend, 'Yes', 'No', null, function()
 			{
 				persistentUpdate = true;
+				exportTime = Std.int(Date.now().getTime() / 1000);
+				Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, exportTime,
+					null, 'icon', 'Version ' + version, 'export', 'Exporting');
 
 				message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
 					'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
@@ -352,13 +366,28 @@ class PlayState extends FlxState
 
 						projectClones.push(projectClone);
 
+						var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
 						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+						{
+							Discord.updatePresence((dir.indexOf(file) + 1)
+								+ ' files out of '
+								+ (dir.length - 1),
+								'Exporting '
+								+ (projectsToExport.indexOf(project) + 1)
+								+ ' out of '
+								+ projectsToExport.length
+								+ ' Projects ', exportTime,
+								null, 'icon', 'Version '
+								+ version, 'export', 'Exporting');
 							exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+						}
 					}
 
 					exportZip.addString(validFileCheck, 'fileCheck.txt', true);
-
 					exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
+
+					Discord.updatePresence('Saving ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
+						'icon', 'Version ' + version, 'export', 'Exporting');
 
 					var fDial = new FileDialog();
 					fDial.save(exportZip.finalize(), 'p3d', _folderPath
@@ -369,6 +398,7 @@ class PlayState extends FlxState
 
 					fDial.onCancel.add(function()
 					{
+						Discord.updatePresenceDPO(Discord.defaultRich);
 						closeSubState();
 						persistentUpdate = false;
 						canInteract = true;
@@ -378,6 +408,7 @@ class PlayState extends FlxState
 
 					fDial.onSave.add(function(file:String)
 					{
+						Discord.updatePresenceDPO(Discord.defaultRich);
 						closeSubState();
 						persistentUpdate = false;
 						trace('Project Exporting Completed!');
@@ -386,23 +417,30 @@ class PlayState extends FlxState
 				}, 100);
 			}, function()
 			{
+				Discord.updatePresenceDPO(Discord.defaultRich);
 				canInteract = true;
 				return;
 			}, 0x36FFFFFF));
 		}
 		catch (e)
 		{
+			Discord.updatePresenceDPO(Discord.defaultRich);
 			canInteract = true;
 			Util.sendMsgBox("Error Exporting!\n\"" + e + "\"");
 		}
 	}
+
+	var importTime:Int = 0;
 
 	public function importProjects()
 	{
 		if (!canInteract)
 			return;
 
+		importTime = 0;
 		canInteract = false;
+
+		Discord.updatePresence('Importing Projects', null, null, null, 'icon', 'Version ' + version, 'import', 'Importing');
 
 		trace('Importing Projects...');
 		var fDial = new FileDialog();
@@ -411,6 +449,7 @@ class PlayState extends FlxState
 		{
 			if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
 			{
+				Discord.updatePresenceDPO(Discord.defaultRich);
 				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'This is not a P3D file!', 'Ok', null,
 					null, function()
 				{
@@ -418,6 +457,9 @@ class PlayState extends FlxState
 				}));
 				return;
 			}
+
+			importTime = Std.int(Date.now().getTime() / 1000);
+			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
 
 			persistentUpdate = true;
 			var message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
@@ -439,8 +481,12 @@ class PlayState extends FlxState
 				while ((entry = zip.getNextEntry()) != null)
 					entries.set(entry.fileName, entry);
 
+				var loopTable = [];
+				for (key in entries.keys())
+					@await loopTable.push(key);
+
 				for (entry in entries.keys())
-					@await zipFiles(entry, entries);
+					@await zipFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
 
 				var missingFiles:Array<String> = [];
 				if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
@@ -463,7 +509,7 @@ class PlayState extends FlxState
 				function continueImporting()
 				{
 					for (entry in entries.keys())
-						@await moveFiles(entry, entries);
+						@await moveFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
 
 					Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
@@ -482,6 +528,7 @@ class PlayState extends FlxState
 					canInteract = true;
 					trace('Finished Importing Projects!');
 
+					Discord.updatePresenceDPO(Discord.defaultRich);
 					closeSubState();
 					persistentUpdate = false;
 					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null,
@@ -521,8 +568,9 @@ class PlayState extends FlxState
 	}
 
 	@async
-	function zipFiles(entry:String, entries:StringMap<ZipEntry>)
+	function zipFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
+		Discord.updatePresence('$cur files out of $max', 'Importing Projects', importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
 		var entryPath:String = '';
 
 		for (path in entry.split('\\'))
@@ -541,8 +589,9 @@ class PlayState extends FlxState
 	}
 
 	@async
-	function moveFiles(entry:String, entries:StringMap<ZipEntry>)
+	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
+		Discord.updatePresence('$cur files out of $max', 'Moving Projects', importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
 		var entryPath:String = '';
 
 		for (path in entry.split('\\'))
