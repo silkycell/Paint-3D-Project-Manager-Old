@@ -39,7 +39,7 @@ class MessageBox extends FlxSubState
 		text.setFormat('assets/fonts/comic.ttf', 25, Util.getDarkerColor(mainColor, 1.4), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.screenCenter();
-		text.y -= 100;
+		text.y -= 60;
 
 		add(text);
 
