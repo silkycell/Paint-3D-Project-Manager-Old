@@ -17,7 +17,7 @@ When you open the program for the first time, it'll open a window dialogue to ch
 ## Troubleshooting
 ### I cant find my Projects.json!
 Press the "Appdata Path" on the main menu, then copy the file path. 
-Then, press "Browser" and paste it into the file dialouge.
+Then, press "Browse" and paste it into the file dialouge.
 
 ### My issue isn't listed here!
 Please make a new issue under the "Issues" tab, or contact me on [discord (foxel#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
