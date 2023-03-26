@@ -82,6 +82,7 @@ class PlayState extends FlxState
 		github.x = FlxG.width - github.width - 5;
 		add(github);
 
+		#if !debug
 		var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
 
 		http.onData = function(data:String)
@@ -105,6 +106,7 @@ class PlayState extends FlxState
 		}
 
 		http.request();
+		#end
 
 		if (FlxG.save.data.projectFilePath != null && !init)
 			loadJson(FlxG.save.data.projectFilePath)
