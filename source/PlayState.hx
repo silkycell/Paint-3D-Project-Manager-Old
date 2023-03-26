@@ -156,6 +156,30 @@ class PlayState extends FlxState
 			github.angle = FlxMath.lerp(github.angle, 0, 0.2);
 		}
 
+		if (FlxG.keys.justPressed.R)
+		{
+			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', null, function()
+			{
+				var safeFolders = [];
+				for (project in _projects)
+					safeFolders.push(ProjectFileUtil.getCheckpointFolder(project));
+
+				safeFolders.push(_folderPath + '\\.Bak');
+
+				for (file in FileSystem.readDirectory(_folderPath))
+				{
+					if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
+					{
+						@await
+						Util.deleteDirRecursively(_folderPath + '\\' + file);
+
+						FileSystem.deleteDirectory(_folderPath + '\\' + file);
+					}
+				}
+			}));
+		}
+
 		#if debug
 		if (FlxG.keys.pressed.MINUS)
 			FlxG.camera.zoom -= 0.01;
