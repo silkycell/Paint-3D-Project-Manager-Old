@@ -198,6 +198,8 @@ class PlayState extends FlxState
 		if (!canInteract)
 			return;
 
+		buttons.y = 10;
+
 		try
 		{
 			if (!FileSystem.exists(file))
