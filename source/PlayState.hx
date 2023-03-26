@@ -119,7 +119,7 @@ class PlayState extends FlxState
 
 		if (FlxG.mouse.screenX < 400)
 		{
-			if (buttons.y > 0 && FlxG.mouse.wheel > 0)
+			if (buttons.y > 0 && FlxG.mouse.wheel > 0 || !canInteract)
 				return;
 
 			buttons.y += (FlxG.mouse.wheel * 50);
