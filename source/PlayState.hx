@@ -93,43 +93,48 @@ class PlayState extends FlxState
 			}
 
 			#if !debug
-			var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
-
-			http.onData = function(data:String)
+			if (!init)
 			{
-				if (!StringTools.contains(data, version))
+				var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
+
+				http.onData = function(data:String)
 				{
-					trace('version online: ' + data + ', your version: ' + version);
-					openSubState(new MessageBox(FlxColor.GRAY,
-						'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!\nYour version: $version\n Current version: $data',
-						'Update', 'Ignore', null, function()
+					if (!StringTools.contains(data, version))
 					{
-						FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
-						System.exit(0);
-					}, function()
+						trace('version online: ' + data + ', your version: ' + version);
+						openSubState(new MessageBox(FlxColor.GRAY,
+							'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!\nYour version: $version\n Current version: $data',
+							'Update', 'Ignore', null, function()
+						{
+							FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
+							System.exit(0);
+						}, function()
+						{
+							loadData();
+						}));
+					}
+					else
 					{
 						loadData();
-					}));
+					}
 				}
-				else
+
+				http.onError = function(error)
 				{
 					loadData();
+					trace('error: $error');
 				}
-			}
 
-			http.onError = function(error)
-			{
+				http.request();
+			}
+			else
 				loadData();
-				trace('error: $error');
-			}
-
-			http.request();
+			#else
+			loadData();
 			#end
 		}
 
-		trace(FlxG.save.data.hasSeenReadMeNotif);
-
-		if (FlxG.save.data.hasSeenReadMeNotif != true)
+		if (FlxG.save.data.hasSeenReadMeNotif != true && !init)
 		{
 			FlxG.save.data.hasSeenReadMeNotif = true;
 			openSubState(new MessageBox(FlxColor.GRAY,
