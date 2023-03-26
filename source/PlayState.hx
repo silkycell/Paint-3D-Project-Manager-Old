@@ -32,7 +32,7 @@ import zip.ZipWriter;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.1b';
+	public static var version:String = '0.1.3b';
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
@@ -96,7 +96,7 @@ class PlayState extends FlxState
 					'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!',
 					'Update', 'Ignore', null, function()
 				{
-					FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/Releases");
+					FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases");
 					System.exit(0);
 				}, function() {}));
 			}
