@@ -326,7 +326,7 @@ class PlayState extends FlxState
 				projectsToExport = [curSelected];
 
 			Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
-				'icon', 'Version ' + version, 'export', 'Exporting');
+				'icon', Discord.versionInfo, 'export', 'Exporting');
 
 			var messageAppend:String = '';
 
@@ -345,7 +345,7 @@ class PlayState extends FlxState
 				persistentUpdate = true;
 				exportTime = Std.int(Date.now().getTime() / 1000);
 				Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, exportTime,
-					null, 'icon', 'Version ' + version, 'export', 'Exporting');
+					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
 				message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
 					'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
@@ -412,7 +412,7 @@ class PlayState extends FlxState
 					exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
 
 					Discord.updatePresence('Saving ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
-						'icon', 'Version ' + version, 'export', 'Exporting');
+						'icon', Discord.versionInfo, 'export', 'Exporting');
 
 					var fDial = new FileDialog();
 					fDial.save(exportZip.finalize(), 'p3d', _folderPath
@@ -465,7 +465,7 @@ class PlayState extends FlxState
 		importTime = 0;
 		canInteract = false;
 
-		Discord.updatePresence('Importing Projects', null, null, null, 'icon', 'Version ' + version, 'import', 'Importing');
+		Discord.updatePresence('Importing Projects', null, null, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 
 		trace('Importing Projects...');
 		var fDial = new FileDialog();
@@ -486,7 +486,7 @@ class PlayState extends FlxState
 			Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
 			importTime = Std.int(Date.now().getTime() / 1000);
-			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
+			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 
 			persistentUpdate = true;
 			var message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
@@ -605,7 +605,7 @@ class PlayState extends FlxState
 	@async
 	function zipFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
-		Discord.updatePresence('$cur files out of $max', 'Importing Projects', importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
+		Discord.updatePresence('$cur files out of $max', 'Importing Projects', importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 		var entryPath:String = '';
 
 		for (path in entry.split('\\'))
@@ -626,7 +626,7 @@ class PlayState extends FlxState
 	@async
 	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
-		Discord.updatePresence('$cur files out of $max', 'Moving Projects', importTime, null, 'icon', 'Version ' + version, 'import', 'Importing');
+		Discord.updatePresence('$cur files out of $max', 'Moving Projects', importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 		var entryPath:String = '';
 
 		for (path in entry.split('\\'))

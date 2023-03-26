@@ -5,10 +5,16 @@ import discord_rpc.DiscordRpc;
 
 class Discord
 {
+	#if debug
+	public static var versionInfo = 'Version ' + PlayState.version + ' (dev)';
+	#else
+	public static var versionInfo = 'Version ' + PlayState.version;
+	#end
+
 	public static var defaultRich = {
 		details: 'Viewing projects',
 		largeImageKey: 'icon',
-		largeImageText: 'Version ' + PlayState.version
+		largeImageText: versionInfo
 	};
 
 	public function new()
