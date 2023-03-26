@@ -31,7 +31,7 @@ import zip.ZipWriter;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.0b';
+	public static var version:String = '0.1.1b';
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
