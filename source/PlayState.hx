@@ -85,7 +85,7 @@ class PlayState extends FlxState
 
 		http.onData = function(data:String)
 		{
-			if (data != version)
+			if (!StringTools.contains(data, version))
 			{
 				trace('version online: ' + data + ', your version: ' + version);
 				openSubState(new MessageBox(FlxColor.GRAY,
