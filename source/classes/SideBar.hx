@@ -234,7 +234,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			pathButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
 			if (FlxG.mouse.justPressed)
-				Sys.command("explorer.exe " + PlayState._folderPath);
+				Sys.command("explorer.exe " + '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
 		}
 		else
 		{
