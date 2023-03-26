@@ -17,6 +17,7 @@ import haxe.format.JsonPrinter;
 import lime.system.System;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
+import openfl.utils.Assets;
 import sys.FileSystem;
 import sys.io.File;
 import util.Discord;
@@ -29,7 +30,7 @@ import zip.ZipWriter;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.3b';
+	public static var version:String = '0.1.4b';
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
@@ -337,6 +338,14 @@ class PlayState extends FlxState
 		sideBar.loadProject(project);
 
 		github.color = Util.getDarkerColor(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project)), 1.3);
+
+		switch (project.Id.toLowerCase()) // secrettts
+		{
+			case '{45eb3df0-671c-4070-8c06-3ef6b5431383}' | '{4666098b-23ba-48e7-b348-e66d0a292542}':
+				FlxG.sound.play(Assets.getSound('embed/Trickery.ogg'), 0.15);
+			case '{e5a8d381-909f-42f8-abfa-37dd2fe26d5a}':
+				FlxG.sound.play(Assets.getSound('embed/Jumpman25.ogg'), 0.15);
+		}
 	}
 
 	var exportTime:Int = 0;

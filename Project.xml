@@ -34,6 +34,7 @@
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 	<source path="source" />
 	<assets path="assets" />
+	<assets path="embed" embed="true" preload="true" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
