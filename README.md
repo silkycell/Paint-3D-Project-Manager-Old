@@ -40,7 +40,7 @@ Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\Projec
 If your projects are still gone, keep doing this same method but with the 2nd highest, then 3rd highest, and so on. checking each time you replace it to see if your projects have come back or not
 
 ### Theres a bunch of duplicate folders in my projects folder!
-On the main menu, press `R` and hit yes to delete all projects that are not linked to a folder. (WARNING: This will delete _ALL_ folders (except for .Bak) that are not linked to a project)
+On the main menu, press `R` and hit yes to delete all projects that are not linked to a folder. (WARNING: This will delete _ALL_ folders under your projects folder (except for .Bak) that are not linked to a project)
 
 ### My issue isn't listed here!
 Please make a new issue under the "Issues" tab, or contact me on [discord (foxel#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
