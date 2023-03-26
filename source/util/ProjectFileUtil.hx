@@ -2,8 +2,6 @@ package util;
 
 import PlayState;
 import openfl.display.BitmapData;
-import sys.FileSystem;
-import util.Util;
 
 typedef ProjectFile =
 {

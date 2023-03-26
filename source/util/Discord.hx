@@ -2,7 +2,6 @@ package util;
 
 import Sys.sleep;
 import discord_rpc.DiscordRpc;
-import haxe.Int64;
 
 class Discord
 {
