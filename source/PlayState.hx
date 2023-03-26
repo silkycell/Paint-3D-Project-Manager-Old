@@ -551,6 +551,14 @@ class PlayState extends FlxState
 							concatJson.remove(project);
 					}
 
+					for (project in Util.getArrayDifference(ProjectFileUtil.removeDuplicates(concatJson), concatJson))
+					{
+						@await
+						Util.deleteDirRecursively(ProjectFileUtil.getCheckpointFolder(project));
+
+						FileSystem.deleteDirectory(ProjectFileUtil.getCheckpointFolder(project));
+					}
+
 					FileSystem.deleteDirectory(_folderPath + '\\zipExport');
 					FileSystem.deleteFile(_folderPath + '\\exportProjects.json');
 					File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(concatJson)));

@@ -115,4 +115,23 @@ class Util
 			}
 		}
 	}
+
+	public static function getArrayDifference(arr1:Array<Dynamic>, arr2:Array<Dynamic>)
+	{
+		var diff:Array<Dynamic> = [];
+
+		for (i in arr1)
+		{
+			if (!arr2.contains(i))
+				diff.push(i);
+		}
+
+		for (i in arr2)
+		{
+			if (!arr1.contains(i) && !diff.contains(i))
+				diff.push(i);
+		}
+
+		return diff;
+	}
 }
