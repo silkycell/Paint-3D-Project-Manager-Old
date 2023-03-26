@@ -82,36 +82,68 @@ class PlayState extends FlxState
 		github.x = FlxG.width - github.width - 5;
 		add(github);
 
-		#if !debug
-		var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
-
-		http.onData = function(data:String)
+		function doFirstLoad()
 		{
-			if (!StringTools.contains(data, version))
+			function loadData()
 			{
-				trace('version online: ' + data + ', your version: ' + version);
-				openSubState(new MessageBox(FlxColor.GRAY,
-					'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!\nYour version: $version\n Current version: $data',
-					'Update', 'Ignore', null, function()
-				{
-					FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
-					System.exit(0);
-				}, function() {}));
+				if (FlxG.save.data.projectFilePath != null && !init)
+					loadJson(FlxG.save.data.projectFilePath)
+				else
+					showFileDialog();
 			}
+
+			#if !debug
+			var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
+
+			http.onData = function(data:String)
+			{
+				if (!StringTools.contains(data, version))
+				{
+					trace('version online: ' + data + ', your version: ' + version);
+					openSubState(new MessageBox(FlxColor.GRAY,
+						'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!\nYour version: $version\n Current version: $data',
+						'Update', 'Ignore', null, function()
+					{
+						FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
+						System.exit(0);
+					}, function()
+					{
+						loadData();
+					}));
+				}
+				else
+				{
+					loadData();
+				}
+			}
+
+			http.onError = function(error)
+			{
+				loadData();
+				trace('error: $error');
+			}
+
+			http.request();
+			#end
 		}
 
-		http.onError = function(error)
+		trace(FlxG.save.data.hasSeenReadMeNotif);
+
+		if (FlxG.save.data.hasSeenReadMeNotif != true)
 		{
-			trace('error: $error');
+			FlxG.save.data.hasSeenReadMeNotif = true;
+			openSubState(new MessageBox(FlxColor.GRAY,
+				'Hello and welcome to P3D Project Manager!\nWould you like me to take you to the instructions/info page?', 'Yes', 'No', null, function()
+			{
+				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/blob/main/README.md");
+				doFirstLoad();
+			}, function()
+			{
+				doFirstLoad();
+			}));
 		}
-
-		http.request();
-		#end
-
-		if (FlxG.save.data.projectFilePath != null && !init)
-			loadJson(FlxG.save.data.projectFilePath)
 		else
-			showFileDialog();
+			doFirstLoad();
 
 		init = true;
 	}
@@ -245,6 +277,7 @@ class PlayState extends FlxState
 
 			projectFilePath = file;
 			FlxG.save.data.projectFilePath = projectFilePath;
+			FlxG.save.flush();
 
 			if (!FileSystem.exists(_folderPath + '\\.Bak'))
 				FileSystem.createDirectory(_folderPath + '\\.Bak');
