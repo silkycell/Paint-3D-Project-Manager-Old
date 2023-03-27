@@ -2,6 +2,4 @@
 - Discord server
 - Settings menu
 - New icon
-- Thumbnail changing
-- Make thumbnails be exact size
 - Add sorting options (eg: sort by date, sort by file size, ect)

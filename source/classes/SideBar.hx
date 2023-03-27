@@ -10,8 +10,12 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
+import lime.ui.FileDialog;
+import lime.ui.FileDialogType;
+import openfl.Assets;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
+import sys.io.File;
 import util.ProjectFileUtil;
 import util.Util;
 
@@ -44,15 +48,17 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var pathButtonBG:FlxSprite;
 	var pathButtonText:FlxText;
 
-	var thumb:FlxSprite;
+	var thumb:Thumbnail;
 	var bg:FlxUI9SliceSprite;
 	var defaultColor:FlxColor;
 
 	var defaultX:Float;
 
-	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0)
+	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0, instance:PlayState)
 	{
 		super(x, y, MaxSize);
+
+		this.instance = instance;
 
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
@@ -61,16 +67,16 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		bg.color = defaultColor;
 		add(bg);
 
-		thumb = new FlxSprite().makeGraphic(294, 165);
-		thumb.updateHitbox();
-		thumb.x = bg.width - thumb.width - 43;
-		thumb.y = bg.height - thumb.height - 10;
+		thumb = new Thumbnail(instance);
+		thumb.thumbnail.updateHitbox();
+		thumb.thumbnail.x = bg.width - thumb.thumbnail.width - 43;
+		thumb.thumbnail.y = bg.height - thumb.thumbnail.height - 10;
 
-		var thumbHint = new FlxText(thumb.x, thumb.y, thumb.width, 'Thumbnail:');
+		var thumbHint = new FlxText(thumb.thumbnail.x, thumb.thumbnail.y, thumb.thumbnail.width, 'Thumbnail:');
 		thumbHint.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 		thumbHint.updateHitbox();
 		thumbHint.y -= thumbHint.height + 1;
-		thumbHint.x += (thumb.width / 2) - (thumbHint.width / 2);
+		thumbHint.x += (thumb.thumbnail.width / 2) - (thumbHint.width / 2);
 
 		texts.add(thumbHint);
 
@@ -294,6 +300,74 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		for (text in texts.members)
 			text.color = Util.getDarkerColor(defaultColor, 1.4);
 
-		thumb.loadGraphic(ProjectFileUtil.getThumbnail(project));
+		thumb.thumbnail.loadGraphic(ProjectFileUtil.getThumbnail(project));
+		thumb.thumbnail.scale.set(294 / thumb.thumbnail.width, 165 / thumb.thumbnail.height);
+		thumb.thumbnail.updateHitbox();
+	}
+}
+
+class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
+{
+	public var thumbnail:FlxSprite;
+
+	var greyOverlay:FlxSpriteGroup;
+	var instance:PlayState;
+
+	public function new(instance:PlayState, x:Float = 0, y:Float = 0, maxSize:Int = 0)
+	{
+		super(x, y, maxSize);
+
+		this.instance = instance;
+
+		thumbnail = new FlxSprite().makeGraphic(294, 165);
+		add(thumbnail);
+
+		greyOverlay = new FlxSpriteGroup();
+		greyOverlay.alpha = 0;
+		add(greyOverlay);
+
+		var grey = new FlxSprite().makeGraphic(294, 165, FlxColor.BLACK);
+		greyOverlay.add(grey);
+
+		var uploadIcon = new FlxSprite().loadGraphic("assets/images/upload.png");
+		uploadIcon.scale.set(.6, .6);
+		uploadIcon.updateHitbox();
+		uploadIcon.x = (grey.width / 2) - (uploadIcon.width / 2);
+		uploadIcon.y = (grey.height / 2) - (uploadIcon.height / 2);
+		greyOverlay.add(uploadIcon);
+	}
+
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (FlxG.mouse.overlaps(greyOverlay) && instance.canInteract)
+		{
+			greyOverlay.alpha = 0.5;
+
+			if (FlxG.mouse.justPressed)
+			{
+				instance.canInteract = false;
+				var fDial = new FileDialog();
+				fDial.onSelect.add(function(file:String)
+				{
+					File.saveBytes(ProjectFileUtil.getCheckpointFolder(PlayState.curSelected) + '\\Thumbnail.png', File.getBytes(file));
+
+					instance.canInteract = true;
+					instance.loadJson(instance.projectFilePath);
+				});
+				fDial.onCancel.add(function()
+				{
+					instance.canInteract = true;
+				});
+				fDial.browse(FileDialogType.OPEN, 'png', null, "Select a PNG file to replace this project's thumbnail.");
+			}
+		}
+		else
+		{
+			greyOverlay.alpha = 0;
+		}
+
+		greyOverlay.setPosition(thumbnail.x, thumbnail.y);
 	}
 }

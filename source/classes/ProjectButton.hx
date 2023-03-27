@@ -39,8 +39,8 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		bg.color = defaultColor;
 		add(bg);
 
-		thumb = new FlxSprite(bg.width / 10, 0).loadGraphic(ProjectFileUtil.getThumbnail(project));
-		thumb.scale.set(0.4, 0.4);
+		thumb = new FlxSprite(bg.width / 13, 0).loadGraphic(ProjectFileUtil.getThumbnail(project));
+		thumb.scale.set((294 / thumb.width) * 0.4, (165 / thumb.height) * 0.4);
 		thumb.updateHitbox();
 		thumb.y = (bg.height / 2) - (thumb.height / 2);
 		add(thumb);

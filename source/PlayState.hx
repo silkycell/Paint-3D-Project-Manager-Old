@@ -33,7 +33,8 @@ class PlayState extends FlxState
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
-	var projectFilePath:String;
+
+	public var projectFilePath:String;
 
 	public var canInteract:Bool = true;
 
@@ -68,8 +69,7 @@ class PlayState extends FlxState
 		gridBG.scale.set(2, 2);
 		add(gridBG);
 
-		sideBar = new SideBar(400);
-		sideBar.instance = this;
+		sideBar = new SideBar(400, 0, 0, this);
 		add(sideBar);
 
 		add(buttons);
@@ -253,7 +253,7 @@ class PlayState extends FlxState
 		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
 	}
 
-	function loadJson(file:String)
+	public function loadJson(file:String)
 	{
 		if (!canInteract)
 			return;
