@@ -5,12 +5,16 @@ import flixel.FlxSubState;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import openfl.geom.Rectangle;
 import util.Util;
 
 class MessageBox extends FlxSubState
 {
+	var box:FlxSpriteGroup = new FlxSpriteGroup();
+
 	public var oneCallback:Void->Void;
 	public var twoCallback:Void->Void;
 
@@ -33,7 +37,7 @@ class MessageBox extends FlxSubState
 		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 700, 400), [33, 33, (33 * 2), (33 * 2)]);
 		bg.color = mainColor;
 		bg.screenCenter();
-		add(bg);
+		box.add(bg);
 
 		text = new FlxText(0, 0, bg.width / 1.15, messageText);
 		text.setFormat('assets/fonts/comic.ttf', 25, Util.getDarkerColor(mainColor, 1.4), FlxTextAlign.CENTER);
@@ -41,7 +45,7 @@ class MessageBox extends FlxSubState
 		text.screenCenter();
 		text.y -= 60;
 
-		add(text);
+		box.add(text);
 
 		for (i in 0...(optionTwo != null ? 2 : 1))
 		{
@@ -70,7 +74,9 @@ class MessageBox extends FlxSubState
 			button.add(buttonBg);
 			button.add(text);
 
-			add(button);
+			box.add(button);
+
+			add(box);
 		}
 	}
 
@@ -90,7 +96,7 @@ class MessageBox extends FlxSubState
 						button.visible = false;
 
 					(buttons.indexOf(button) == 0 ? oneCallback() : twoCallback());
-					close();
+					closeAnim();
 				}
 			}
 			else
@@ -98,6 +104,17 @@ class MessageBox extends FlxSubState
 				getTypeFromGroup(button, FlxUI9SliceSprite).color = mainColor;
 			}
 		}
+	}
+
+	public function closeAnim()
+	{
+		FlxTween.tween(box, {"scale.x": 2, "scale.y": 0}, 0.3, {
+			ease: FlxEase.cubeOut,
+			onComplete: function(twn:FlxTween)
+			{
+				close();
+			}
+		});
 	}
 
 	function getTypeFromGroup(group:FlxSpriteGroup, object:Dynamic)

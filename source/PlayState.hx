@@ -472,7 +472,7 @@ class PlayState extends FlxState
 					fDial.onCancel.add(function()
 					{
 						Discord.updatePresenceDPO(Discord.defaultRich);
-						closeSubState();
+						message.closeAnim();
 						persistentUpdate = false;
 						canInteract = true;
 						trace('Project Exporting Cancelled');
@@ -482,7 +482,7 @@ class PlayState extends FlxState
 					fDial.onSave.add(function(file:String)
 					{
 						Discord.updatePresenceDPO(Discord.defaultRich);
-						closeSubState();
+						message.closeAnim();
 						persistentUpdate = false;
 						trace('Project Exporting Completed!');
 						canInteract = true;
@@ -612,7 +612,7 @@ class PlayState extends FlxState
 					trace('Finished Importing Projects!');
 
 					Discord.updatePresenceDPO(Discord.defaultRich);
-					closeSubState();
+					message.closeAnim();
 					persistentUpdate = false;
 					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null,
 						null, function()
