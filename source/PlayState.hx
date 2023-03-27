@@ -14,7 +14,6 @@ import haxe.Json;
 import haxe.Timer;
 import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
-import lime.system.System;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
 import openfl.utils.Assets;
