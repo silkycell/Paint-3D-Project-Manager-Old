@@ -86,7 +86,7 @@ class PlayState extends FlxState
 		{
 			function loadData()
 			{
-				if (FlxG.save.data.projectFilePath != null && !init)
+				if (FlxG.save.data.projectFilePath != null)
 					loadJson(FlxG.save.data.projectFilePath)
 				else
 					showFileDialog();
@@ -157,23 +157,6 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
-		if (FlxG.mouse.screenX < 400)
-		{
-			if (buttons.y > 0 && FlxG.mouse.wheel > 0 || !canInteract)
-				return;
-
-			buttons.y += (FlxG.mouse.wheel * 50);
-		}
-
-		if (FlxG.keys.justPressed.S)
-		{
-			for (button in buttons)
-			{
-				button.checkboxSelected = !button.checkboxSelected;
-				button.checkBox.animation.play('check', true, !button.checkboxSelected);
-			}
-		}
-
 		if (FlxG.mouse.overlaps(github))
 		{
 			github.alpha = 1;
@@ -190,6 +173,26 @@ class PlayState extends FlxState
 			github.scale.x = FlxMath.lerp(github.scale.x, 0.098, 0.2);
 			github.scale.y = FlxMath.lerp(github.scale.y, 0.098, 0.2);
 			github.angle = FlxMath.lerp(github.angle, 0, 0.2);
+		}
+
+		if (FlxG.mouse.screenX < 400)
+		{
+			if (buttons.y > 0 && FlxG.mouse.wheel > 0 || !canInteract)
+				return;
+
+			buttons.y += (FlxG.mouse.wheel * 50);
+		}
+
+		if (FlxG.keys.justPressed.F5)
+			FlxG.resetState();
+
+		if (FlxG.keys.justPressed.S)
+		{
+			for (button in buttons)
+			{
+				button.checkboxSelected = !button.checkboxSelected;
+				button.checkBox.animation.play('check', true, !button.checkboxSelected);
+			}
 		}
 
 		if (FlxG.keys.justPressed.R)
