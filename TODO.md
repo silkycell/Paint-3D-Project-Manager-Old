@@ -4,3 +4,4 @@
 - New icon
 - Add sorting options (eg: sort by date, sort by file size, ect)
 - Add project merging
+- Add preloading/not make the thumbnails fucking reload every time so mr T5mpler's computer doesnt turn into Golden apple New Wireframe background
