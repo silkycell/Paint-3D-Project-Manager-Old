@@ -47,7 +47,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		text = new FlxText(thumb.x + thumb.width + .5, 0, 150,
 			(StringTools.contains(project.Path.toLowerCase(), 'workingfolder') ? '(WF) ' + project.Name : project.Name));
-		text.setFormat('assets/fonts/comic.ttf', 15, Util.getDarkerColor(defaultColor, 1.4), FlxTextAlign.CENTER);
+		text.setFormat('assets/fonts/comic.ttf', 15, Util.colorCheck(defaultColor, Util.getDarkerColor(defaultColor, 1.3)), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.y = (bg.height / 2) - (text.textField.height / 2);
 

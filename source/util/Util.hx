@@ -134,4 +134,21 @@ class Util
 
 		return diff;
 	}
+
+	public static function colorCheck(color:FlxColor, bg:FlxColor)
+	{
+		var r1:Int = bg.red;
+		var g1:Int = bg.green;
+		var b1:Int = bg.blue;
+		var r2:Int = color.red;
+		var g2:Int = color.green;
+		var b2:Int = color.blue;
+
+		var diff:Float = Math.sqrt(Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2));
+
+		if (diff < 75)
+			color.brightness = 1 - (color.brightness / (color.brightness * 5));
+
+		return color;
+	}
 }
