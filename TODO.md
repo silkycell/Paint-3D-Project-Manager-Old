@@ -4,4 +4,8 @@
 - New icon
 - Add sorting options (eg: sort by date, sort by file size, ect)
 - Add project merging
-- Add preloading/not make the thumbnails fucking reload every time so mr T5mpler's computer doesnt turn into Golden apple New Wireframe background
+- Make thumbnails load once on project file loading
+- Add failsafe for not importing json
+- Add error screen (make it parody other error screens amd have there be multiple)
+- Add tutorial
+- Add "this project already exists" notif
