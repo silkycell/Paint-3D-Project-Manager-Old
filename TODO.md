@@ -6,3 +6,4 @@
 - Add project merging
 - Make thumbnails load once on project file loading
 - Add failsafe for not importing json
+- Add error screen 
