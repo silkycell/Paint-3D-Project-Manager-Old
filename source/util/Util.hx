@@ -3,6 +3,7 @@ package util;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
 import sys.FileSystem;
 
 #if windows
@@ -21,6 +22,9 @@ import sys.FileSystem;
 #end
 class Util
 {
+	public static var sliceSmallBounds = [14, 18, 135, 153];
+	public static var bigSliceBounds = [46, 46, 1007, 463];
+
 	public static function calculateAverageColor(image:BitmapData)
 	{
 		var r:Float = 0;

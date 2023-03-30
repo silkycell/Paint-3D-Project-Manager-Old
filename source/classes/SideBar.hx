@@ -63,7 +63,8 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height), [33, 33, (33 * 2), (33 * 2)]);
+		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height),
+			Util.sliceSmallBounds);
 		bg.color = defaultColor;
 		add(bg);
 
@@ -91,11 +92,11 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		texts.add(infoText);
 
 		for (text in texts.members)
-			text.color = Util.getDarkerColor(defaultColor, 1.4);
+			text.color = Util.colorCheck(defaultColor, bg.color);
 
 		// Export
 
-		exportButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450, 150), [33, 33, (33 * 2), (33 * 2)]);
+		exportButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450, 150), Util.sliceSmallBounds);
 		exportButtonBG.color = defaultColor;
 
 		exportButtonText = new FlxText(0, 0, 0, 'Export');
@@ -113,7 +114,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Import
 
-		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
 		importButtonBG.color = defaultColor;
 
 		importButtonText = new FlxText(0, 0, 0, 'Import');
@@ -131,7 +132,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Delete
 
-		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
 		deleteButtonBG.color = defaultColor;
 
 		deleteButtonText = new FlxText(0, 0, 0, 'Delete');
@@ -149,7 +150,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Browse
 
-		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
 		browseButtonBG.color = defaultColor;
 
 		browseButtonText = new FlxText(0, 0, 0, 'Browse');
@@ -167,7 +168,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Path
 
-		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 450 / 2.2, 150), [33, 33, (33 * 2), (33 * 2)]);
+		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
 		pathButtonBG.color = defaultColor;
 
 		pathButtonText = new FlxText(0, 0, 450 / 2.2, 'Appdata Path');
@@ -282,23 +283,23 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		bg.color = Util.getDarkerColor(defaultColor, 0.8);
 
-		exportButtonBG.color = defaultColor;
-		exportButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+		exportButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
+		exportButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), exportButtonBG.color);
 
-		importButtonBG.color = defaultColor;
-		importButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+		importButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
+		importButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), importButtonBG.color);
 
-		deleteButtonBG.color = defaultColor;
-		deleteButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+		deleteButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
+		deleteButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), deleteButtonBG.color);
 
-		browseButtonBG.color = defaultColor;
-		browseButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+		browseButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
+		browseButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), browseButtonBG.color);
 
-		pathButtonBG.color = defaultColor;
-		pathButtonText.color = Util.getDarkerColor(defaultColor, 1.4);
+		pathButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
+		pathButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), pathButtonBG.color);
 
 		for (text in texts.members)
-			text.color = Util.getDarkerColor(defaultColor, 1.4);
+			text.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.2), bg.color);
 
 		thumb.thumbnail.loadGraphic(ProjectFileUtil.getThumbnail(project));
 		thumb.thumbnail.scale.set(294 / thumb.thumbnail.width, 165 / thumb.thumbnail.height);

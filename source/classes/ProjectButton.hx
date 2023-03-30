@@ -35,7 +35,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		defaultColor = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/button.png', new Rectangle(0, 0, 380, 100), [33, 33, (33 * 2), (33 * 2)]);
+		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 380, 100), Util.sliceSmallBounds);
 		bg.color = defaultColor;
 		add(bg);
 

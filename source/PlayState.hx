@@ -339,7 +339,8 @@ class PlayState extends FlxState
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
 
-		github.color = Util.getDarkerColor(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project)), 1.3);
+		var mainColor = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
+		github.color = Util.colorCheck(mainColor, Util.getDarkerColor(mainColor, 1.3));
 
 		switch (project.Id.toLowerCase()) // secrettts
 		{
