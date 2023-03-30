@@ -324,11 +324,34 @@ class PlayState extends FlxState
 			buttons.add(button);
 		}
 
+		sortButtons(buttons.members);
 		selectProject(projects[0]);
 
 		trace('Finished loading Project File!');
 
 		canInteract = true;
+	}
+
+	public function sortButtons(buttons:Array<ProjectButton>)
+	{
+		var projectArray:Array<ProjectFile> = [];
+
+		for (project in _projects)
+		{
+			for (button in buttons)
+			{
+				if (button.project == project)
+					projectArray.push(project);
+			}
+		}
+
+		projectArray.sort(ProjectFileUtil.sortDate);
+
+		for (button in buttons)
+		{
+			var index = projectArray.indexOf(button.project);
+			button.y = 110 * index;
+		}
 	}
 
 	public function selectProject(project:ProjectFile)

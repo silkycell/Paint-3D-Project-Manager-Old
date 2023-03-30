@@ -1,6 +1,7 @@
 package util;
 
 import PlayState;
+import flixel.util.FlxSort;
 import openfl.display.BitmapData;
 
 typedef ProjectFile =
@@ -94,5 +95,41 @@ class ProjectFileUtil
 		}
 
 		return unique;
+	}
+
+	public static function sortDate(a:ProjectFile, b:ProjectFile)
+	{
+		if (a.DateTime > b.DateTime)
+			return -1;
+		else if (a.DateTime < b.DateTime)
+			return 1;
+		else
+			return 0;
+	}
+
+	public static function sortSize(a:ProjectFile, b:ProjectFile)
+	{
+		var aS = Std.parseFloat(Util.getDirectorySize(getCheckpointFolder(a)));
+		var bS = Std.parseFloat(Util.getDirectorySize(getCheckpointFolder(b)));
+
+		if (aS > bS)
+			return -1;
+		else if (aS < bS)
+			return 1;
+		else
+			return 0;
+	}
+
+	public static function sortAlphabetically(a:ProjectFile, b:ProjectFile)
+	{
+		var aN = a.Name.toUpperCase();
+		var bN = b.Name.toUpperCase();
+
+		if (aN < bN)
+			return -1;
+		else if (aN > bN)
+			return 1;
+		else
+			return 0;
 	}
 }
