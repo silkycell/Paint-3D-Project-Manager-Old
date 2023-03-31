@@ -71,7 +71,7 @@ class Util
 			for (file in FileSystem.readDirectory(path))
 				size += FileSystem.stat(path + '\\' + file).size;
 
-			return FlxMath.roundDecimal(size / 1024 / 1024, 1) + 'MB';
+			return FlxMath.roundDecimal(size / 1024 / 1024, 1) + 'BALDIBYTES';
 		}
 		else
 		{

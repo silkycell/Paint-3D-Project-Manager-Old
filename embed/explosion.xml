@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="explosion.png">
+	<!-- Created with Adobe Animate version 22.0.8.217 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="explode0000" x="0" y="0" width="148" height="125"/>
+	<SubTexture name="explode0001" x="0" y="0" width="148" height="125"/>
+	<SubTexture name="explode0002" x="0" y="0" width="148" height="125"/>
+	<SubTexture name="explode0003" x="153" y="0" width="148" height="125"/>
+	<SubTexture name="explode0004" x="153" y="0" width="148" height="125"/>
+	<SubTexture name="explode0005" x="153" y="0" width="148" height="125"/>
+	<SubTexture name="explode0006" x="306" y="0" width="148" height="125"/>
+	<SubTexture name="explode0007" x="306" y="0" width="148" height="125"/>
+	<SubTexture name="explode0008" x="306" y="0" width="148" height="125"/>
+	<SubTexture name="explode0009" x="459" y="0" width="148" height="125"/>
+	<SubTexture name="explode0010" x="459" y="0" width="148" height="125"/>
+	<SubTexture name="explode0011" x="459" y="0" width="148" height="125"/>
+	<SubTexture name="explode0012" x="612" y="0" width="148" height="125"/>
+	<SubTexture name="explode0013" x="612" y="0" width="148" height="125"/>
+	<SubTexture name="explode0014" x="612" y="0" width="148" height="125"/>
+	<SubTexture name="explode0015" x="765" y="0" width="148" height="125"/>
+	<SubTexture name="explode0016" x="765" y="0" width="148" height="125"/>
+	<SubTexture name="explode0017" x="765" y="0" width="148" height="125"/>
+	<SubTexture name="explode0018" x="0" y="130" width="148" height="125"/>
+	<SubTexture name="explode0019" x="0" y="130" width="148" height="125"/>
+	<SubTexture name="explode0020" x="0" y="130" width="148" height="125"/>
+	<SubTexture name="explode0021" x="153" y="130" width="148" height="125"/>
+	<SubTexture name="explode0022" x="153" y="130" width="148" height="125"/>
+	<SubTexture name="explode0023" x="153" y="130" width="148" height="125"/>
+	<SubTexture name="explode0024" x="306" y="130" width="148" height="125"/>
+	<SubTexture name="explode0025" x="306" y="130" width="148" height="125"/>
+	<SubTexture name="explode0026" x="306" y="130" width="148" height="125"/>
+	<SubTexture name="explode0027" x="459" y="130" width="148" height="125"/>
+	<SubTexture name="explode0028" x="459" y="130" width="148" height="125"/>
+	<SubTexture name="explode0029" x="459" y="130" width="148" height="125"/>
+	<SubTexture name="explode0030" x="612" y="130" width="148" height="125"/>
+	<SubTexture name="explode0031" x="612" y="130" width="148" height="125"/>
+	<SubTexture name="explode0032" x="612" y="130" width="148" height="125"/>
+	<SubTexture name="explode0033" x="765" y="130" width="148" height="125"/>
+	<SubTexture name="explode0034" x="765" y="130" width="148" height="125"/>
+	<SubTexture name="explode0035" x="765" y="130" width="148" height="125"/>
+	<SubTexture name="explode0036" x="0" y="260" width="148" height="125"/>
+	<SubTexture name="explode0037" x="0" y="260" width="148" height="125"/>
+	<SubTexture name="explode0038" x="0" y="260" width="148" height="125"/>
+	<SubTexture name="explode0039" x="153" y="260" width="148" height="125"/>
+	<SubTexture name="explode0040" x="153" y="260" width="148" height="125"/>
+	<SubTexture name="explode0041" x="153" y="260" width="148" height="125"/>
+	<SubTexture name="explode0042" x="306" y="260" width="148" height="125"/>
+	<SubTexture name="explode0043" x="306" y="260" width="148" height="125"/>
+	<SubTexture name="explode0044" x="306" y="260" width="148" height="125"/>
+	<SubTexture name="explode0045" x="459" y="260" width="148" height="125"/>
+	<SubTexture name="explode0046" x="459" y="260" width="148" height="125"/>
+	<SubTexture name="explode0047" x="459" y="260" width="148" height="125"/>
+	<SubTexture name="explode0048" x="612" y="260" width="148" height="125"/>
+	<SubTexture name="explode0049" x="612" y="260" width="148" height="125"/>
+	<SubTexture name="explode0050" x="612" y="260" width="148" height="125"/>
+</TextureAtlas>

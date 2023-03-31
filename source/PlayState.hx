@@ -3,12 +3,15 @@ package;
 import classes.MessageBox;
 import classes.ProjectButton;
 import classes.SideBar;
+import classes.WalkingMan;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.system.FlxSound;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import haxe.Json;
 import haxe.Timer;
@@ -30,11 +33,20 @@ import zip.ZipWriter;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.4b';
+	public static var version:String = 'BALDI';
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
 	var projectFilePath:String;
+
+	var sounds:Array<FlxSound> = [];
+	var elapsedTime:Float = 0;
+	var manChance = 1000;
+	var panicMode:Bool = false;
+	var fadingOut:Bool = false;
+	var panicSound:FlxSound;
+
+	public var theMen:Array<WalkingMan> = [];
 
 	public var canInteract:Bool = true;
 
@@ -60,6 +72,7 @@ class PlayState extends FlxState
 		FlxG.autoPause = false;
 		FlxG.camera.antialiasing = true;
 		FlxG.watch.add(this, 'canInteract');
+		FlxG.watch.add(this, 'manChance');
 
 		if (!init)
 			Discord.initialize();
@@ -139,7 +152,7 @@ class PlayState extends FlxState
 		{
 			FlxG.save.data.hasSeenReadMeNotif = true;
 			openSubState(new MessageBox(FlxColor.GRAY,
-				'Hello and welcome to P3D Project Manager!\nWould you like me to take you to the instructions/info page?', 'Yes', 'No', null, function()
+				'Hello and welcome to BALDI Project Manager!\nWould you like me to take you to the instructions/info page?', 'Yes', 'No', null, function()
 			{
 				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/blob/main/README.md");
 				doFirstLoad();
@@ -152,11 +165,57 @@ class PlayState extends FlxState
 			doFirstLoad();
 
 		init = true;
+
+		panicSound = new FlxSound().loadEmbedded(Assets.getSound('embed/panic.ogg'));
+		panicSound.volume = 0.7;
+		panicSound.looped = true;
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		elapsedTime += elapsed;
+
+		for (sound in sounds)
+		{
+			var imABaldiBalderYeah = Math.sin((elapsedTime + (sounds.indexOf(sound) * 100) * 2)) * FlxG.random.float(-2, 2);
+			sound.pitch += imABaldiBalderYeah;
+		}
+
+		var myOverlapingGlands = false;
+		for (man in theMen)
+		{
+			if (FlxG.mouse.overlaps(man))
+				myOverlapingGlands = true;
+		}
+
+		if (myOverlapingGlands)
+			canInteract = false;
+		else
+			canInteract = true;
+
+		if (panicMode && theMen.length == 0 && !fadingOut)
+		{
+			fadingOut = true;
+			panicSound.fadeOut(2, 0, function(twn:FlxTween)
+			{
+				panicMode = false;
+				fadingOut = false;
+			});
+		}
+
+		if ((FlxG.random.int(0, manChance) == 1) && !panicMode)
+		{
+			var walk = new WalkingMan(FlxG.random.int(1, 8), this);
+			add(walk);
+			theMen.push(walk);
+
+			manChance -= Std.int((manChance / 50));
+		}
+
+		if (manChance < 1)
+			manChance = 1;
 
 		if (FlxG.mouse.screenX < 400)
 		{
@@ -251,7 +310,7 @@ class PlayState extends FlxState
 			trace('Project File Cancelled');
 			canInteract = true;
 		});
-		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
+		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your BALDI Projects.json file.');
 	}
 
 	function loadJson(file:String)
@@ -339,12 +398,16 @@ class PlayState extends FlxState
 
 		github.color = Util.getDarkerColor(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project)), 1.3);
 
-		switch (project.Id.toLowerCase()) // secrettts
+		manChance -= 1;
+
+		var sound:FlxSound = new FlxSound().loadEmbedded(Assets.getSound('embed/bal' + FlxG.random.int(0, 20) + '.ogg'));
+		sound.volume = FlxG.random.float(0, 1);
+		sounds.push(sound);
+		sound.play(true);
+		sound.onComplete = function()
 		{
-			case '{45eb3df0-671c-4070-8c06-3ef6b5431383}' | '{4666098b-23ba-48e7-b348-e66d0a292542}':
-				FlxG.sound.play(Assets.getSound('embed/Trickery.ogg'), 0.15);
-			case '{e5a8d381-909f-42f8-abfa-37dd2fe26d5a}':
-				FlxG.sound.play(Assets.getSound('embed/Jumpman25.ogg'), 0.15);
+			sounds.remove(sound);
+			sound.destroy();
 		}
 	}
 
@@ -397,7 +460,7 @@ class PlayState extends FlxState
 					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
 				message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-					'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
+					'Exporting...\n(BALDIPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
 				for (i in message.buttons)
 				{
 					i.x += 54934358; // juuust in case
@@ -518,13 +581,13 @@ class PlayState extends FlxState
 
 		trace('Importing Projects...');
 		var fDial = new FileDialog();
-		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
+		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a BALDI Project file.');
 		fDial.onSelect.add(function(file)
 		{
 			if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
 			{
 				Discord.updatePresenceDPO(Discord.defaultRich);
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'This is not a P3D file!', 'Ok', null,
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'This is not a BALDI file!', 'Ok', null,
 					null, function()
 				{
 					canInteract = true;
@@ -539,7 +602,7 @@ class PlayState extends FlxState
 
 			persistentUpdate = true;
 			var message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-				'Importing...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
+				'Importing...\n(BALDIPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
 			for (i in message.buttons)
 			{
 				i.x += 54934358; // juuust in case
@@ -758,5 +821,20 @@ class PlayState extends FlxState
 			canInteract = true;
 			return;
 		}));
+	}
+
+	public function murderFunny(x:Float)
+	{
+		if (panicMode || theMen.length == 1)
+			return;
+
+		manChance += Std.int((manChance / 3));
+
+		panicSound.volume = 0.7;
+		panicSound.play(true);
+
+		panicMode = true;
+		for (man in theMen)
+			man.panic(x);
 	}
 }
