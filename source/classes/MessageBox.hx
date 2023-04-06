@@ -95,7 +95,8 @@ class MessageBox extends FlxSubState
 					for (button in buttons)
 						button.visible = false;
 
-					(buttons.indexOf(button) == 0 ? oneCallback() : twoCallback());
+					if ((buttons.indexOf(button) == 0 ? oneCallback : twoCallback) != null)
+						(buttons.indexOf(button) == 0 ? oneCallback() : twoCallback());
 					closeAnim();
 				}
 			}
