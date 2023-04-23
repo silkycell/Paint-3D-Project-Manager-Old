@@ -6,7 +6,7 @@
 - Add project merging
 - Make thumbnails load once on project file loading
 - Add failsafe for not importing json
-- Add error screen (make it parody other error screens amd have there be multiple)
+- Add error screen (make it parody other error screens and have there be multiple)
 - Add tutorial
 - Add "this project already exists" notif
 - Fix NOL on deleting all projects (and importing...?)
