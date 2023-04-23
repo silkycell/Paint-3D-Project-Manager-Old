@@ -208,7 +208,7 @@ class PlayState extends FlxState
 					for (folder in FileSystem.readDirectory(_folderPath))
 					{
 						if (folder.toLowerCase() == ".bak")
-							return;
+							continue;
 
 						if (FileSystem.isDirectory(_folderPath + '\\' + folder))
 						{
