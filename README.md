@@ -45,4 +45,6 @@ If you've done all of that, or your .Bak folder is missing. Press CTRL + R and h
 On the main menu, press `R` and hit yes to delete all projects that are not linked to a folder. (WARNING: This will delete _ALL_ folders that are in the same directory of your Projects.json (except for .Bak) that are not linked to a project)
 
 ### My issue isn't listed here!
-Please make a new issue under the "Issues" tab, or contact me on [discord (foxel#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
+Please make a new issue under the "Issues" tab, or contact me on [discord (sylvia#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
+
+
