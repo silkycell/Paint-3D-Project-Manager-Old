@@ -95,7 +95,7 @@ class Util
         );
     ')
 	#end
-	static public function sendMsgBox(desc:String = "", res:Int = 0) // TODO: Linux and macOS (will do soon)
+	static public function sendMsgBox(desc:String = "", res:Int = 0)
 	{
 		return res;
 	}
