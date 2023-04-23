@@ -9,3 +9,4 @@
 - Add error screen (make it parody other error screens amd have there be multiple)
 - Add tutorial
 - Add "this project already exists" notif
+- Fix NOL on deleting all projects (and importing...?)
