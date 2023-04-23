@@ -197,26 +197,65 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.justPressed.R)
 		{
-			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-				'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', null, function()
+			if (FlxG.keys.pressed.CONTROL)
 			{
-				var safeFolders = [];
-				for (project in _projects)
-					safeFolders.push(ProjectFileUtil.getCheckpointFolder(project));
-
-				safeFolders.push(_folderPath + '\\.Bak');
-
-				for (file in FileSystem.readDirectory(_folderPath))
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+					'Would you like to rebuild your Projects.json? (WARNING: THIS WILL ERASE ALL OF YOUR PROJECT NAMES, AND OTHER ISSUES MAY OCCOUR)', 'Yes',
+					'No', null, function()
 				{
-					if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
-					{
-						@await
-						Util.deleteDirRecursively(_folderPath + '\\' + file);
+					var newProjectJson:Array<ProjectFile> = [];
 
-						FileSystem.deleteDirectory(_folderPath + '\\' + file);
+					for (folder in FileSystem.readDirectory(_folderPath))
+					{
+						if (folder.toLowerCase() == ".bak")
+							return;
+
+						if (FileSystem.isDirectory(_folderPath + '\\' + folder))
+						{
+							var ereg:EReg = ~/\s*[(][^)]*[)]$/;
+							newProjectJson.push({
+								"Id": ProjectFileUtil.generateID(),
+								"SourceId": "",
+								"Name": ereg.replace(folder, ""),
+								"URI": 'ms-appdata:///local/Projects/$folder/Thumbnail.png',
+								"DateTime": 0,
+								"Path": 'Projects\\$folder',
+								"SourceFilePath": "",
+								"Version": 0.21,
+								"IsRecovered": false,
+								"IsPreviouslySaved": true
+							});
+						}
 					}
-				}
-			}));
+
+					File.saveContent(_folderPath + '\\Projects.json', Json.stringify(newProjectJson));
+					loadJson(_folderPath + '\\Projects.json');
+				}));
+			}
+			else
+			{
+				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+					'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', null,
+					function()
+					{
+						var safeFolders = [];
+						for (project in _projects)
+							safeFolders.push(ProjectFileUtil.getCheckpointFolder(project));
+
+						safeFolders.push(_folderPath + '\\.Bak');
+
+						for (file in FileSystem.readDirectory(_folderPath))
+						{
+							if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
+							{
+								@await
+								Util.deleteDirRecursively(_folderPath + '\\' + file);
+
+								FileSystem.deleteDirectory(_folderPath + '\\' + file);
+							}
+						}
+					}));
+			}
 		}
 
 		#if debug

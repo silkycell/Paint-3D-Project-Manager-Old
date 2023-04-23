@@ -1,6 +1,7 @@
 package util;
 
 import PlayState;
+import flixel.FlxG;
 import flixel.util.FlxSort;
 import openfl.display.BitmapData;
 
@@ -131,5 +132,33 @@ class ProjectFileUtil
 			return 1;
 		else
 			return 0;
+	}
+
+	public static function generateID()
+	{
+		var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		var result = "";
+
+		result += '{';
+
+		for (i in 0...8)
+			result += chars.charAt(FlxG.random.int(0, chars.length));
+
+		for (i in 1...3)
+		{
+			result += '-';
+
+			for (i in 0...4)
+				result += chars.charAt(FlxG.random.int(0, chars.length));
+		}
+
+		result += '-';
+
+		for (i in 0...12)
+			result += chars.charAt(FlxG.random.int(0, chars.length));
+
+		result += '}';
+
+		return result;
 	}
 }

@@ -39,6 +39,8 @@ Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\Projec
 
 If your projects are still gone, keep doing this same method but with the 2nd highest, then 3rd highest, and so on. checking each time you replace it to see if your projects have come back or not
 
+If you've done all of that, or your .Bak folder is missing. Press CTRL + R and hit yes to rebuilding your Projects.json (WARNING: I WOULD HIGHLY RECCOMEND MANUALLY BACKING UP YOUR PROJECTS BEFORE DOING THIS AND PLACING IT SOMEWHERE SAFE!!)
+
 ### Theres a bunch of duplicate folders in my projects folder!
 On the main menu, press `R` and hit yes to delete all projects that are not linked to a folder. (WARNING: This will delete _ALL_ folders that are in the same directory of your Projects.json (except for .Bak) that are not linked to a project)
 
