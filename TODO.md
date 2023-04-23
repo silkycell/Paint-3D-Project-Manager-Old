@@ -2,7 +2,6 @@
 - Author system
 - Discord server
 - Settings menu
-- New icon
 - Add sorting options (eg: sort by date, sort by file size, ect)
 - Add project merging
 - Make thumbnails load once on project file loading
