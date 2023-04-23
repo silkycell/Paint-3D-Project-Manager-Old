@@ -1,3 +1,4 @@
+- Move .bak to install folder
 - Author system
 - Discord server
 - Settings menu
