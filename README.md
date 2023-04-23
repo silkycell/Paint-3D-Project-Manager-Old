@@ -48,3 +48,5 @@ On the main menu, press `R` and hit yes to delete all projects that are not link
 Please make a new issue under the "Issues" tab, or contact me on [discord (sylvia#1337)](https://discordapp.com/users/302271402277339146)/[twitter](https://twitter.com/FoxelTheFennic)
 
 
+# Credits:
+Icon by [stev](https://twitter.com/weeweecrease)
