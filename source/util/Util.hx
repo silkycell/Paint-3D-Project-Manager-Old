@@ -83,6 +83,15 @@ class Util
 		}
 	}
 
+	// hi guys its me razzytism
+	public static inline function getProjectDate(time:Float):String
+	{
+		if (time <= 0)
+			return '(empty)';
+		else
+			return Date.fromTime((time - 116444736000000000) / 10000).toString();
+	}
+
 	#if windows
 	@:functionCode('
         LPCSTR lwDesc = desc.c_str();

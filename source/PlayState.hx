@@ -107,7 +107,7 @@ class PlayState extends FlxState
 							'Update', 'Ignore', null, function()
 						{
 							FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
-							System.exit(0);
+							Sys.exit(0);
 						}, function()
 						{
 							loadData();

@@ -272,7 +272,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ Util.getDirectorySize(ProjectFileUtil.getCheckpointFolder(project))
 			+ 'MB';
 
-		infoText2.text = "DateTime: " + Util.ifEmptyCheck(project.DateTime) + "\nID: " + Util.ifEmptyCheck(project.Id) + "\nSourceId: "
+		infoText2.text = "DateTime: " + Util.getProjectDate(project.DateTime) + "\nID: " + Util.ifEmptyCheck(project.Id) + "\nSourceId: "
 			+ Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: " + Util.ifEmptyCheck(project.SourceFilePath) + "\nVersion: "
 			+ Util.ifEmptyCheck(project.Version) + "\nIsRecovered: " + Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: "
 			+ Util.ifEmptyCheck(project.IsPreviouslySaved);
