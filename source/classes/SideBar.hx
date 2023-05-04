@@ -7,9 +7,11 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxStringUtil;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
 import openfl.Assets;
@@ -54,6 +56,8 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 	var defaultX:Float;
 
+	var thumbHint:FlxText;
+
 	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0, instance:PlayState)
 	{
 		super(x, y, MaxSize);
@@ -73,7 +77,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		thumb.thumbnail.x = bg.width - thumb.thumbnail.width - 43;
 		thumb.thumbnail.y = bg.height - thumb.thumbnail.height - 10;
 
-		var thumbHint = new FlxText(thumb.thumbnail.x, thumb.thumbnail.y, thumb.thumbnail.width, 'Thumbnail:');
+		thumbHint = new FlxText(thumb.thumbnail.x, thumb.thumbnail.y, 350, 'Thumbnail:');
 		thumbHint.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 		thumbHint.updateHitbox();
 		thumbHint.y -= thumbHint.height + 1;
@@ -81,18 +85,18 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		texts.add(thumbHint);
 
-		infoText2 = new FlxText(bg.width, 10, 300, '');
-		infoText2.setFormat('assets/fonts/comic.ttf', 20, FlxColor.WHITE, FlxTextAlign.CENTER);
+		infoText2 = new FlxText(bg.width, 10, 350, '');
+		infoText2.setFormat('assets/fonts/comic.ttf', 18, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText2);
 
-		infoText = new FlxText(10, 10, 500, '');
+		infoText = new FlxText(10, 10, 700, '');
 		infoText.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText);
 
 		for (text in texts.members)
-			text.color = Util.colorCheck(defaultColor, bg.color);
+			text.color = Util.contrastColor(defaultColor);
 
 		// Export
 
@@ -103,8 +107,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		exportButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		exportButtonText.updateHitbox();
-		exportButtonText.x = (exportButtonBG.width / 2) - (exportButtonText.width / 2);
-		exportButtonText.y = (exportButtonBG.height / 2) - (exportButtonText.textField.height / 2);
+		Util.centerInRect(exportButtonText, FlxRect.weak(exportButtonBG.x, exportButtonBG.y, exportButtonBG.width, exportButtonBG.height));
 
 		exportButton.add(exportButtonBG);
 		exportButton.add(exportButtonText);
@@ -121,8 +124,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		importButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		importButtonText.updateHitbox();
-		importButtonText.x = (importButtonBG.width / 2) - (importButtonText.width / 2);
-		importButtonText.y = (importButtonBG.height / 2) - (importButtonText.textField.height / 2);
+		Util.centerInRect(importButtonText, FlxRect.weak(importButtonBG.x, importButtonBG.y, importButtonBG.width, importButtonBG.height));
 
 		importButton.add(importButtonBG);
 		importButton.add(importButtonText);
@@ -139,8 +141,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		deleteButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		deleteButtonText.updateHitbox();
-		deleteButtonText.x = (deleteButtonBG.width / 2) - (deleteButtonText.width / 2);
-		deleteButtonText.y = (deleteButtonBG.height / 2) - (deleteButtonText.textField.height / 2);
+		Util.centerInRect(deleteButtonText, FlxRect.weak(deleteButtonBG.x, deleteButtonBG.y, deleteButtonBG.width, deleteButtonBG.height));
 
 		deleteButton.add(deleteButtonBG);
 		deleteButton.add(deleteButtonText);
@@ -157,8 +158,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		browseButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		browseButtonText.updateHitbox();
-		browseButtonText.x = (browseButtonBG.width / 2) - (browseButtonText.width / 2);
-		browseButtonText.y = (browseButtonBG.height / 2) - (browseButtonText.textField.height / 2);
+		Util.centerInRect(browseButtonText, FlxRect.weak(browseButtonBG.x, browseButtonBG.y, browseButtonBG.width, browseButtonBG.height));
 
 		browseButton.add(browseButtonBG);
 		browseButton.add(browseButtonText);
@@ -175,8 +175,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		pathButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		pathButtonText.updateHitbox();
-		pathButtonText.x = (pathButtonBG.width / 2) - (pathButtonText.width / 2);
-		pathButtonText.y = (pathButtonBG.height / 2) - (pathButtonText.textField.height / 2);
+		Util.centerInRect(pathButtonText, FlxRect.weak(pathButtonBG.x, pathButtonBG.y, pathButtonBG.width, pathButtonBG.height));
 
 		pathButton.add(pathButtonBG);
 		pathButton.add(pathButtonText);
@@ -198,13 +197,13 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	{
 		super.update(elapsed);
 
-		x = FlxMath.lerp(x, defaultX, 0.2);
+		x = Util.lerp(x, defaultX, 0.2);
 
 		if (FlxG.mouse.overlaps(exportButton))
 		{
 			exportButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justReleased)
 				instance.exportProjects();
 		}
 		else
@@ -216,7 +215,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			importButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justReleased)
 				instance.importProjects();
 		}
 		else
@@ -228,7 +227,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			browseButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed && instance.canInteract)
+			if (FlxG.mouse.justReleased && instance.canInteract)
 				FlxG.resetState();
 		}
 		else
@@ -240,7 +239,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			pathButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justReleased)
 				Sys.command("explorer.exe " + '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
 		}
 		else
@@ -252,7 +251,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		{
 			deleteButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
 
-			if (FlxG.mouse.justPressed && instance.canInteract)
+			if (FlxG.mouse.justReleased && instance.canInteract)
 				instance.deleteProject();
 		}
 		else
@@ -269,42 +268,74 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ "\nPath: "
 			+ Util.ifEmptyCheck(project.Path.substr(9))
 			+ "\nSize: "
-			+ Util.getDirectorySize(ProjectFileUtil.getCheckpointFolder(project))
-			+ 'MB';
+			+ FlxStringUtil.formatBytes(Util.getDirectorySize(ProjectFileUtil.getCheckpointFolder(project)), 2)
+			+ "\nLast Modified: "
+			+ Util.getProjectDate(project.DateTime);
 
-		infoText2.text = "DateTime: " + Util.getProjectDate(project.DateTime) + "\nID: " + Util.ifEmptyCheck(project.Id) + "\nSourceId: "
-			+ Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: " + Util.ifEmptyCheck(project.SourceFilePath) + "\nVersion: "
-			+ Util.ifEmptyCheck(project.Version) + "\nIsRecovered: " + Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: "
-			+ Util.ifEmptyCheck(project.IsPreviouslySaved);
+		infoText.updateHitbox();
+		Util.centerInRect(infoText, FlxRect.weak(exportButtonBG.x, 0, exportButtonBG.width, browseButtonBG.y));
+
+		if (StringTools.contains(project.Path.toLowerCase(), 'workingfolder'))
+			infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id) + "\nSource ID: " + Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: "
+				+ Util.ifEmptyCheck(project.SourceFilePath) + "\nVersion: " + Util.ifEmptyCheck(project.Version) + "\nIsRecovered: "
+				+ Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: " + Util.ifEmptyCheck(project.IsPreviouslySaved);
+		else
+			infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id) + "\nVersion: " + Util.ifEmptyCheck(project.Version) + "\nIsRecovered: "
+				+ Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: " + Util.ifEmptyCheck(project.IsPreviouslySaved);
 
 		infoText2.updateHitbox();
-		infoText2.x = infoText.x + infoText.textField.width + 5;
 
-		defaultColor = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
+		// I HATE HAXE AUTOFORMATIING WHAT IS THIS
+		Util.centerInRect(infoText2,
+			FlxRect.weak(exportButtonBG.x
+				+ exportButtonBG.width, 20, FlxG.width
+				- exportButtonBG.x
+				+ exportButtonBG.width, thumb.thumbnail.y
+				- 25));
+
+		defaultColor = PlayState.getCurrentColor(project);
 
 		bg.color = Util.getDarkerColor(defaultColor, 0.8);
 
-		exportButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
-		exportButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), exportButtonBG.color);
+		for (e in [exportButtonBG, importButtonBG, deleteButtonBG, browseButtonBG, pathButtonBG])
+			e.color = defaultColor;
 
-		importButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
-		importButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), importButtonBG.color);
-
-		deleteButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
-		deleteButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), deleteButtonBG.color);
-
-		browseButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
-		browseButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), browseButtonBG.color);
-
-		pathButtonBG.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.3), defaultColor);
-		pathButtonText.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 0.8), pathButtonBG.color);
-
-		for (text in texts.members)
-			text.color = Util.colorCheck(Util.getDarkerColor(defaultColor, 1.2), bg.color);
+		updateTextColors();
 
 		thumb.thumbnail.loadGraphic(ProjectFileUtil.getThumbnail(project));
-		thumb.thumbnail.scale.set(294 / thumb.thumbnail.width, 165 / thumb.thumbnail.height);
+		thumb.thumbnail.setGraphicSize(294, 165);
 		thumb.thumbnail.updateHitbox();
+
+		var tempRect:FlxRect = FlxRect.get(exportButtonBG.x + exportButtonBG.width, exportButtonBG.y, 425, 1);
+		tempRect.bottom = FlxG.height - 75;
+
+		// yeaah
+		Util.centerInRect(thumb.thumbnail, tempRect);
+		Util.centerInRect(thumb.greyOverlay, tempRect);
+		Util.centerInRect(thumb.buttonBG, tempRect);
+
+		tempRect.put();
+
+		thumbHint.y = thumb.buttonBG.y - thumbHint.height - 5;
+		thumbHint.x = thumb.buttonBG.x + ((thumb.buttonBG.width - thumbHint.width) / 2);
+
+		thumb.updateColor();
+	}
+
+	public function updateTextColors()
+	{
+		for (text in [
+			// WHY DOES IT FORMAT LIKE THIS WHEN I SAVE!!!
+			exportButtonText,
+			importButtonText,
+			deleteButtonText,
+			browseButtonText,
+			pathButtonText
+		])
+			text.color = Util.contrastColor(bg.color);
+
+		for (text in texts.members)
+			text.color = Util.contrastColor(bg.color);
 	}
 }
 
@@ -312,7 +343,9 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 {
 	public var thumbnail:FlxSprite;
 
-	var greyOverlay:FlxSpriteGroup;
+	public var greyOverlay:FlxSpriteGroup;
+	public var buttonBG:FlxSprite;
+
 	var instance:PlayState;
 
 	public function new(instance:PlayState, x:Float = 0, y:Float = 0, maxSize:Int = 0)
@@ -321,14 +354,22 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 
 		this.instance = instance;
 
-		thumbnail = new FlxSprite().makeGraphic(294, 165);
+		buttonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceSmallBounds);
+		updateColor();
+		add(buttonBG);
+
+		thumbnail = new FlxSprite().makeGraphic(1, 1);
+		thumbnail.setGraphicSize(294, 165);
+		thumbnail.updateHitbox();
 		add(thumbnail);
 
 		greyOverlay = new FlxSpriteGroup();
 		greyOverlay.alpha = 0;
 		add(greyOverlay);
 
-		var grey = new FlxSprite().makeGraphic(294, 165, FlxColor.BLACK);
+		var grey = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+		grey.setGraphicSize(294, 165);
+		grey.updateHitbox();
 		greyOverlay.add(grey);
 
 		var uploadIcon = new FlxSprite().loadGraphic("assets/images/upload.png");
@@ -347,7 +388,7 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 		{
 			greyOverlay.alpha = 0.5;
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justReleased)
 			{
 				instance.canInteract = false;
 				var fDial = new FileDialog();
@@ -371,5 +412,10 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 		}
 
 		greyOverlay.setPosition(thumbnail.x, thumbnail.y);
+	}
+
+	public function updateColor()
+	{
+		buttonBG.color = PlayState.getCurrentColor(PlayState.curSelected);
 	}
 }

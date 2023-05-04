@@ -1,7 +1,9 @@
 package util;
 
 import PlayState;
+import classes.ProjectButton;
 import flixel.FlxG;
+import flixel.math.FlxMath;
 import flixel.util.FlxSort;
 import openfl.display.BitmapData;
 
@@ -40,7 +42,7 @@ class ProjectFileUtil
 			projects.push({
 				"Id": "-1",
 				"SourceId": "",
-				"Name": "You don't have any projects!",
+				"Name": "No Projects Found!",
 				"URI": "",
 				"DateTime": 0,
 				"Path": "",
@@ -98,27 +100,17 @@ class ProjectFileUtil
 		return unique;
 	}
 
-	public static function sortDate(a:ProjectFile, b:ProjectFile)
+	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton)
 	{
-		if (a.DateTime > b.DateTime)
-			return -1;
-		else if (a.DateTime < b.DateTime)
-			return 1;
-		else
-			return 0;
+		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
 	}
 
 	public static function sortSize(a:ProjectFile, b:ProjectFile)
 	{
-		var aS = Std.parseFloat(Util.getDirectorySize(getCheckpointFolder(a)));
-		var bS = Std.parseFloat(Util.getDirectorySize(getCheckpointFolder(b)));
+		var aS = Util.getDirectorySize(getCheckpointFolder(a));
+		var bS = Util.getDirectorySize(getCheckpointFolder(b));
 
-		if (aS > bS)
-			return -1;
-		else if (aS < bS)
-			return 1;
-		else
-			return 0;
+		return FlxMath.signOf(bS - aS);
 	}
 
 	public static function sortAlphabetically(a:ProjectFile, b:ProjectFile)
@@ -126,20 +118,13 @@ class ProjectFileUtil
 		var aN = a.Name.toUpperCase();
 		var bN = b.Name.toUpperCase();
 
-		if (aN < bN)
-			return -1;
-		else if (aN > bN)
-			return 1;
-		else
-			return 0;
+		return aN > bN ? 1 : -1;
 	}
 
 	public static function generateID()
 	{
 		var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		var result = "";
-
-		result += '{';
+		var result = '{';
 
 		for (i in 0...8)
 			result += chars.charAt(FlxG.random.int(0, chars.length));
