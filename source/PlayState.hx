@@ -70,8 +70,6 @@ class PlayState extends FlxState
 		FlxG.sound.soundTrayEnabled = FlxG.autoPause = false;
 		FlxG.mouse.useSystemCursor = FlxG.camera.antialiasing = true;
 		FlxG.watch.add(this, 'canInteract');
-		FlxG.watch.add(this, 'lastPresses');
-		FlxG.watch.add(this, 'buttonsTargetY');
 
 		if (FlxG.save.data.darkModeEnabled == null)
 			FlxG.save.data.darkModeEnabled = false;
