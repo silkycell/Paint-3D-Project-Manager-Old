@@ -1,6 +1,7 @@
 package classes;
 
 import classes.preset.Big9Slice;
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -25,6 +26,7 @@ class MessageBox extends FlxSubState
 
 	public var text:FlxText;
 	public var buttons:Array<FlxSpriteGroup> = [];
+	public var messageCam:FlxCamera;
 
 	public function new(mainColor:FlxColor, messageText:String, optionOne:String, ?optionTwo:String, ?countdown:Int, oneCallback:Void->Void,
 			?twoCallback:Void->Void, BGColor:FlxColor = FlxColor.TRANSPARENT)
@@ -35,17 +37,28 @@ class MessageBox extends FlxSubState
 		this.oneCallback = oneCallback;
 		this.twoCallback = twoCallback;
 
+		messageCam = new FlxCamera();
+		FlxG.cameras.add(messageCam);
+
 		bg = new Big9Slice(900, 600, mainColor);
 		bg.color = mainColor;
 		box.add(bg);
 
 		text = new FlxText(0, 0, bg.width / 1.30, messageText);
-		text.setFormat('assets/fonts/comic.ttf', 25, Util.colorCheck(mainColor, Util.getDarkerColor(mainColor, 1.3)), FlxTextAlign.CENTER);
+		text.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.screenCenter();
 		text.y -= 60;
 
 		box.add(text);
+
+		// if the popup has no buttons
+		if (optionOne == '')
+		{
+			add(box);
+			text.screenCenter();
+			return;
+		}
 
 		for (i in 0...(optionTwo != null ? 2 : 1))
 		{
@@ -61,23 +74,19 @@ class MessageBox extends FlxSubState
 				buttonBg.x += ((buttonBg.width / 2) + 10) * (i == 0 ? -1 : 1);
 
 			text = new FlxText(0, 0, 0, (i == 0 ? optionOne : optionTwo));
-			text.setFormat('assets/fonts/comic.ttf', 40, Util.colorCheck(mainColor, mainColor), FlxTextAlign.CENTER);
+			text.setFormat('assets/fonts/comic.ttf', 40, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 
 			text.updateHitbox();
 
-			text.setPosition(buttonBg.x
-				+ (buttonBg.width / 2)
-				- (text.textField.width / 2), buttonBg.y
-				+ (buttonBg.height / 2)
-				- (text.textField.height / 2));
+			text.setPosition(buttonBg.x + (buttonBg.width / 2) - (text.width / 2), buttonBg.y + (buttonBg.height / 2) - (text.height / 2));
 
 			button.add(buttonBg);
 			button.add(text);
 
 			box.add(button);
-
-			add(box);
 		}
+
+		add(box);
 	}
 
 	override public function update(elapsed:Float)
@@ -90,13 +99,14 @@ class MessageBox extends FlxSubState
 			{
 				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.2);
 
-				if (FlxG.mouse.justPressed)
+				if (FlxG.mouse.justReleased)
 				{
 					for (button in buttons)
 						button.visible = false;
 
-					if ((buttons.indexOf(button) == 0 ? oneCallback : twoCallback) != null)
-						(buttons.indexOf(button) == 0 ? oneCallback() : twoCallback());
+					var funcLol:Void->Void = (buttons.indexOf(button) == 0 ? oneCallback : twoCallback);
+					if (funcLol != null)
+						funcLol();
 					closeAnim();
 				}
 			}

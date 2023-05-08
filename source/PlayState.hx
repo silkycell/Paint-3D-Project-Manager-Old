@@ -8,8 +8,11 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxSpriteGroup;
+import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import flixel.util.FlxSort;
 import haxe.Json;
 import haxe.Timer;
 import haxe.ds.StringMap;
@@ -27,6 +30,8 @@ import zip.ZipEntry;
 import zip.ZipReader;
 import zip.ZipWriter;
 
+using StringTools;
+
 class PlayState extends FlxState
 {
 	public static var version:String = '0.1.4b';
@@ -41,12 +46,18 @@ class PlayState extends FlxState
 	public static var init:Bool;
 	public static var curSelected:ProjectFile;
 
+	public static var colorArray:Array<Null<FlxColor>> = [];
+
 	public static var _projects:Array<ProjectFile> = [];
 	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
 
 	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10, 10);
 
 	var github:FlxSprite;
+
+	public var buttonsTargetY:Float = -15;
+
+	public var lastPresses:Array<FlxKey> = [];
 
 	override public function create()
 	{
@@ -55,18 +66,21 @@ class PlayState extends FlxState
 		curSelected = null;
 		_projects = [];
 
-		FlxG.sound.soundTrayEnabled = false;
-		FlxG.mouse.useSystemCursor = true;
-		FlxG.autoPause = false;
-		FlxG.camera.antialiasing = true;
+		FlxG.sound.soundTrayEnabled = FlxG.autoPause = false;
+		FlxG.mouse.useSystemCursor = FlxG.camera.antialiasing = true;
 		FlxG.watch.add(this, 'canInteract');
+		FlxG.watch.add(this, 'lastPresses');
+		FlxG.watch.add(this, 'buttonsTargetY');
+
+		if (FlxG.save.data.darkModeEnabled == null)
+			FlxG.save.data.darkModeEnabled = false;
 
 		if (!init)
 			Discord.initialize();
 
 		gridBG = new FlxBackdrop('assets/images/grid.png');
-		gridBG.antialiasing = true;
-		gridBG.scale.set(2, 2);
+		gridBG.antialiasing = false;
+		gridBG.scale.set(4, 4);
 		add(gridBG);
 
 		sideBar = new SideBar(400, 0, 0, this);
@@ -75,11 +89,11 @@ class PlayState extends FlxState
 		add(buttons);
 
 		github = new FlxSprite().loadGraphic("assets/images/github.png");
-		github.setGraphicSize(Std.int(50));
+		github.setGraphicSize(50);
 		github.updateHitbox();
 		github.antialiasing = true;
-		github.y = 10;
-		github.x = FlxG.width - github.width - 5;
+		github.y = 25;
+		github.x = FlxG.width - github.width - 15;
 		add(github);
 
 		function doFirstLoad()
@@ -153,53 +167,77 @@ class PlayState extends FlxState
 		init = true;
 	}
 
+	public static var lastPressedTime:Float = 0;
+
+	static var secretArray:Array<FlxKey> = [ZERO, FOUR, ONE, TWO];
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
+
+		// secret DARK MODE
+		if (FlxG.keys.justPressed.ANY)
+		{
+			lastPresses.push(FlxG.keys.firstJustPressed());
+			if (lastPresses.length >= secretArray.length)
+			{
+				while (lastPresses.length > secretArray.length)
+					lastPresses.shift();
+
+				var dookie:Bool = true;
+				for (i => key in lastPresses)
+				{
+					if (key != secretArray[i])
+					{
+						dookie = false;
+						break;
+					}
+				}
+
+				if (dookie)
+				{
+					FlxG.save.data.darkModeEnabled = !FlxG.save.data.darkModeEnabled;
+					FlxG.resetState();
+				}
+			}
+		}
 
 		if (FlxG.mouse.overlaps(github))
 		{
 			github.alpha = 1;
-			github.scale.x = FlxMath.lerp(github.scale.x, 0.12, 0.2);
-			github.scale.y = FlxMath.lerp(github.scale.y, 0.12, 0.2);
-			github.angle = FlxMath.lerp(github.angle, -5, 0.2);
+			github.scale.x = Util.lerp(github.scale.x, 0.12, 0.2);
+			github.scale.y = Util.lerp(github.scale.y, 0.12, 0.2);
+			github.angle = Util.lerp(github.angle, -5, 0.2);
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justReleased)
 				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
 		}
 		else
 		{
 			github.alpha = 0.5;
-			github.scale.x = FlxMath.lerp(github.scale.x, 0.098, 0.2);
-			github.scale.y = FlxMath.lerp(github.scale.y, 0.098, 0.2);
-			github.angle = FlxMath.lerp(github.angle, 0, 0.2);
+			github.scale.x = Util.lerp(github.scale.x, 0.098, 0.2);
+			github.scale.y = Util.lerp(github.scale.y, 0.098, 0.2);
+			github.angle = Util.lerp(github.angle, 0, 0.2);
 		}
 
-		if (FlxG.mouse.screenX < 400)
+		buttonsTargetY = FlxMath.bound(buttonsTargetY, FlxG.height - buttons.height - 5, 15);
+
+		if (canInteract)
 		{
-			if (buttons.y > 0 && FlxG.mouse.wheel > 0 || !canInteract)
-				return;
+			if (FlxG.mouse.screenX < 400 && FlxG.mouse.justMoved && lastPressedTime >= 0.1)
+				buttonsTargetY += FlxG.mouse.deltaScreenY * 1.2;
 
-			buttons.y += (FlxG.mouse.wheel * 50);
+			buttonsTargetY += (FlxG.mouse.wheel * 150);
 		}
 
-		if (FlxG.keys.justPressed.F5)
-			FlxG.resetState();
-
-		if (FlxG.keys.justPressed.S)
-		{
-			for (button in buttons)
-			{
-				button.checkboxSelected = !button.checkboxSelected;
-				button.checkBox.animation.play('check', true, !button.checkboxSelected);
-			}
-		}
+		buttons.y = Util.lerp(buttons.y, buttonsTargetY, 0.2);
 
 		if (FlxG.keys.justPressed.R)
 		{
 			if (FlxG.keys.pressed.CONTROL)
 			{
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				openSubState(new MessageBox(getCurrentColor(curSelected),
 					'Would you like to rebuild your Projects.json? (WARNING: THIS WILL ERASE ALL OF YOUR PROJECT NAMES, AND OTHER ISSUES MAY OCCOUR)', 'Yes',
 					'No', null, function()
 				{
@@ -234,7 +272,7 @@ class PlayState extends FlxState
 			}
 			else
 			{
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+				openSubState(new MessageBox(getCurrentColor(curSelected),
 					'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', null,
 					function()
 					{
@@ -267,10 +305,22 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.pressed.BACKSPACE)
 			FlxG.camera.zoom = 1;
+
+		if (FlxG.keys.justPressed.F5)
+			FlxG.resetState();
+
+		if (FlxG.keys.justPressed.S)
+		{
+			for (button in buttons)
+			{
+				button.checkboxSelected = !button.checkboxSelected;
+				button.checkBox.animation.play('check', true, !button.checkboxSelected);
+			}
+		}
 		#end
 
-		gridBG.x += 0.2;
-		gridBG.y += 0.2;
+		gridBG.x += 12 * elapsed;
+		gridBG.y += 12 * elapsed;
 	}
 
 	function showFileDialog()
@@ -295,6 +345,18 @@ class PlayState extends FlxState
 		fDial.browse(FileDialogType.OPEN, 'json', _folderPath + '\\Projects.json', 'Open your Paint 3D Projects.json file.');
 	}
 
+	public static function getCurrentColor(cur:ProjectFile):FlxColor
+	{
+		if (FlxG.save.data.darkModeEnabled)
+		{
+			return 0x2F2D31;
+		}
+
+		if (colorArray[_projects.indexOf(cur)] == null)
+			colorArray[_projects.indexOf(cur)] = Util.saturatedColor(ProjectFileUtil.getThumbnail(cur));
+		return colorArray[_projects.indexOf(cur)];
+	}
+
 	public function loadJson(file:String)
 	{
 		if (!canInteract)
@@ -302,7 +364,9 @@ class PlayState extends FlxState
 
 		Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
-		buttons.y = 10;
+		buttonsTargetY = 15;
+
+		colorArray = [];
 
 		try
 		{
@@ -342,7 +406,7 @@ class PlayState extends FlxState
 		catch (e)
 		{
 			canInteract = true;
-			Util.sendMsgBox("Error Parsing Json!\n\"" + e + "\"");
+			Util.sendMsgBox("Error Parsing Json!\n\"" + e + "\"\n\"" + e.stack + "\"");
 		}
 	}
 
@@ -350,8 +414,8 @@ class PlayState extends FlxState
 	{
 		for (button in buttons)
 		{
-			button.destroy();
 			buttons.remove(button);
+			button.destroy();
 		}
 
 		for (project in projects)
@@ -363,7 +427,7 @@ class PlayState extends FlxState
 			buttons.add(button);
 		}
 
-		sortButtons(buttons.members);
+		sortButtons(buttons);
 		selectProject(projects[0]);
 
 		trace('Finished loading Project File!');
@@ -371,24 +435,13 @@ class PlayState extends FlxState
 		canInteract = true;
 	}
 
-	public function sortButtons(buttons:Array<ProjectButton>)
+	public function sortButtons(buttons:FlxTypedSpriteGroup<ProjectButton>)
 	{
-		var projectArray:Array<ProjectFile> = [];
-
-		for (project in _projects)
-		{
-			for (button in buttons)
-			{
-				if (button.project == project)
-					projectArray.push(project);
-			}
-		}
-
-		projectArray.sort(ProjectFileUtil.sortDate);
+		buttons.sort(ProjectFileUtil.sortDate, FlxSort.DESCENDING);
 
 		for (button in buttons)
 		{
-			var index = projectArray.indexOf(button.project);
+			var index = buttons.members.indexOf(button);
 			button.y = 110 * index;
 		}
 	}
@@ -396,13 +449,14 @@ class PlayState extends FlxState
 	public function selectProject(project:ProjectFile)
 	{
 		curSelected = project;
-		gridBG.color = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
+
+		var daColor:FlxColor = getCurrentColor(project);
+		gridBG.color = Util.getDarkerColor(daColor, 1.3);
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
 
-		var mainColor = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
-		github.color = Util.colorCheck(mainColor, Util.getDarkerColor(mainColor, 1.3));
+		github.color = Util.contrastColor(daColor);
 
 		switch (project.Id.toLowerCase()) // secrettts
 		{
@@ -453,108 +507,103 @@ class PlayState extends FlxState
 			}
 
 			var message;
-			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-				"Are you sure you want to export these projects?\n" + messageAppend, 'Yes', 'No', null, function()
-			{
-				persistentUpdate = true;
-				exportTime = Std.int(Date.now().getTime() / 1000);
-				Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, exportTime,
-					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
-
-				message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-					'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
-				for (i in message.buttons)
+			openSubState(new MessageBox(getCurrentColor(curSelected), "Are you sure you want to export these projects?\n" + messageAppend, 'Yes', 'No', null,
+				function()
 				{
-					i.x += 54934358; // juuust in case
-					i.visible = false;
-				}
-				openSubState(message);
+					persistentUpdate = true;
+					exportTime = Std.int(Date.now().getTime() / 1000);
+					Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null,
+						exportTime, null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
-				var validFileCheck:String = '';
-				Timer.delay(function() // Allows for screen to update
-				{
-					var exportZip = new ZipWriter();
-					var filteredFilename = '';
-
-					for (project in projectsToExport)
+					message = new MessageBox(getCurrentColor(curSelected),
+						'Exporting...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', '', null, null, null);
+					for (i in message.buttons)
 					{
-						filteredFilename = '';
-						var projectClone = Reflect.copy(project);
-
-						if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
-							projectClone.Name = '(WF) ' + projectClone.Name;
-
-						for (letter in projectClone.Name.split(''))
-						{
-							if (ProjectFileUtil.disallowedChars.contains(letter))
-								letter = '_';
-
-							filteredFilename += letter;
-						}
-
-						filteredFilename = filteredFilename.substring(0, 260);
-						var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
-
-						for (i in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
-							validFileCheck += projDir + '\\' + i + '\n';
-
-						projectClone.Path = 'Projects\\' + projDir;
-						projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
-						projectClone.SourceId = '';
-						projectClone.SourceFilePath = '';
-
-						projectClones.push(projectClone);
-
-						var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
-						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
-						{
-							Discord.updatePresence((dir.indexOf(file) + 1)
-								+ ' files out of '
-								+ (dir.length - 1),
-								'Exporting '
-								+ (projectsToExport.indexOf(project) + 1)
-								+ ' out of '
-								+ projectsToExport.length
-								+ ' Projects ', exportTime,
-								null, 'icon', 'Version '
-								+ version, 'export', 'Exporting');
-							exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
-						}
+						i.x += 54934358; // juuust in case
+						i.visible = false;
 					}
+					openSubState(message);
 
-					exportZip.addString(validFileCheck, 'fileCheck.txt', true);
-					exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
-
-					Discord.updatePresence('Saving ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
-						'icon', Discord.versionInfo, 'export', 'Exporting');
-
-					var fDial = new FileDialog();
-					fDial.save(exportZip.finalize(), 'p3d', _folderPath
-						+ '\\'
-						+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
-						+ '.p3d',
-						'Save your exported projects.');
-
-					fDial.onCancel.add(function()
+					var validFileCheck:String = '';
+					Timer.delay(function() // Allows for screen to update
 					{
-						Discord.updatePresenceDPO(Discord.defaultRich);
-						message.closeAnim();
-						persistentUpdate = false;
-						canInteract = true;
-						trace('Project Exporting Cancelled');
-						Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
-					});
+						var exportZip = new ZipWriter();
+						var filteredFilename = '';
 
-					fDial.onSave.add(function(file:String)
-					{
-						Discord.updatePresenceDPO(Discord.defaultRich);
-						message.closeAnim();
-						persistentUpdate = false;
-						trace('Project Exporting Completed!');
-						canInteract = true;
-					});
-				}, 100);
-			}, function()
+						for (project in projectsToExport)
+						{
+							var projectClone = Reflect.copy(project);
+							filteredFilename = projectClone.Name;
+
+							if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
+								projectClone.Name = '(WF) ' + projectClone.Name;
+
+							for (letter in ProjectFileUtil.disallowedChars)
+								filteredFilename.replace(letter, '_');
+
+							filteredFilename.substring(0, 260);
+							var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
+
+							for (i in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+								validFileCheck += projDir + '\\' + i + '\n';
+
+							projectClone.Path = 'Projects\\' + projDir;
+							projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
+							projectClone.SourceId = '';
+							projectClone.SourceFilePath = '';
+
+							projectClones.push(projectClone);
+
+							var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
+							for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+							{
+								Discord.updatePresence((dir.indexOf(file) + 1)
+									+ ' files out of '
+									+ (dir.length - 1),
+									'Exporting '
+									+ (projectsToExport.indexOf(project) + 1)
+									+ ' out of '
+									+ projectsToExport.length
+									+ ' Projects ', exportTime,
+									null, 'icon', 'Version '
+									+ version, 'export', 'Exporting');
+								exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
+							}
+						}
+
+						exportZip.addString(validFileCheck, 'fileCheck.txt', true);
+						exportZip.addString(JsonPrinter.print(projectClones, null, '	'), "exportProjects.json", true);
+
+						Discord.updatePresence('Saving ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null,
+							null, 'icon', Discord.versionInfo, 'export', 'Exporting');
+
+						var fDial = new FileDialog();
+						fDial.save(exportZip.finalize(), 'p3d', _folderPath
+							+ '\\'
+							+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
+							+ '.p3d',
+							'Save your exported projects.');
+
+						fDial.onCancel.add(function()
+						{
+							Discord.updatePresenceDPO(Discord.defaultRich);
+							message.closeAnim();
+							persistentUpdate = false;
+							canInteract = true;
+							trace('Project Exporting Cancelled');
+							Util.sendMsgBox('File saving either errored, or was cancelled.\nIs there any programs accessing the file you were trying to save it at?');
+						});
+
+						fDial.onSave.add(function(file:String)
+						{
+							Discord.updatePresenceDPO(Discord.defaultRich);
+							message.closeAnim();
+							persistentUpdate = false;
+							trace('Project Exporting Completed!');
+							canInteract = true;
+						});
+					}, 100);
+				}, function()
 			{
 				Discord.updatePresenceDPO(Discord.defaultRich);
 				canInteract = true;
@@ -586,11 +635,11 @@ class PlayState extends FlxState
 		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
 		fDial.onSelect.add(function(file)
 		{
-			if (!['p3d'].contains(file.split('.')[file.split('.').length - 1].toLowerCase()))
+			var splitFile:Array<String>;
+			if (!['p3d'].contains((splitFile = file.split('.'))[splitFile.length - 1].toLowerCase()))
 			{
 				Discord.updatePresenceDPO(Discord.defaultRich);
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'This is not a P3D file!', 'Ok', null,
-					null, function()
+				openSubState(new MessageBox(getCurrentColor(curSelected), 'This is not a P3D file!', 'Ok', null, null, function()
 				{
 					canInteract = true;
 				}));
@@ -603,7 +652,7 @@ class PlayState extends FlxState
 			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 
 			persistentUpdate = true;
-			var message = new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+			var message = new MessageBox(getCurrentColor(curSelected),
 				'Importing...\n(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
 			for (i in message.buttons)
 			{
@@ -680,16 +729,16 @@ class PlayState extends FlxState
 					Discord.updatePresenceDPO(Discord.defaultRich);
 					message.closeAnim();
 					persistentUpdate = false;
-					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Importing Complete!', 'Ok', null,
-						null, function()
+					openSubState(new MessageBox(getCurrentColor(curSelected), 'Importing Complete!', 'Ok', null, null, function()
 					{
-						loadJson(_folderPath + '\\Projects.json');
+						// loadJson(_folderPath + '\\Projects.json');
+						FlxG.resetState();
 					}));
 				}
 
 				if (missingFiles.length > 0)
 				{
-					openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+					openSubState(new MessageBox(getCurrentColor(curSelected),
 						'Woah there! This project has ' + missingFiles.length +
 						' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
 						'Continue', 'Cancel', null, function()
@@ -786,10 +835,10 @@ class PlayState extends FlxState
 				messageAppend += i.Name;
 		}
 
-		openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
-			'Are you sure you want to delete the following projects?\n' + messageAppend, 'Yes', 'No', null, function()
+		openSubState(new MessageBox(getCurrentColor(curSelected), 'Are you sure you want to delete the following projects?\n' + messageAppend, 'Yes', 'No',
+			null, function()
 		{
-			openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)),
+			openSubState(new MessageBox(getCurrentColor(curSelected),
 				'Are you *REALLY* sure? You will not be able to recover these projects unless you made a backup!', 'Yes', 'No', null, function()
 			{
 				for (project in projectsToDelete)
@@ -807,12 +856,12 @@ class PlayState extends FlxState
 
 				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(_projects)));
 
-				openSubState(new MessageBox(Util.calculateAverageColor(ProjectFileUtil.getThumbnail(curSelected)), 'Deletion Complete!', 'Ok', null, null,
-					function()
-					{
-						canInteract = true;
-						loadJson(_folderPath + '\\Projects.json');
-					}));
+				// just using white for this one because otherwise it'll load a null color and it'll be pitch black
+				openSubState(new MessageBox(0xEEEEEE, 'Deletion Complete!', 'Ok', null, null, function()
+				{
+					canInteract = true;
+					FlxG.resetState();
+				}));
 			}, function()
 			{
 				canInteract = true;

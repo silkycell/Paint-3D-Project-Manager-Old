@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
@@ -33,7 +34,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		super(x, y, MaxSize);
 		this.project = project;
 
-		defaultColor = Util.calculateAverageColor(ProjectFileUtil.getThumbnail(project));
+		defaultColor = PlayState.getCurrentColor(project);
 
 		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 380, 100), Util.sliceSmallBounds);
 		bg.color = defaultColor;
@@ -45,11 +46,11 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		thumb.y = (bg.height / 2) - (thumb.height / 2);
 		add(thumb);
 
-		text = new FlxText(thumb.x + thumb.width + .5, 0, 150,
+		text = new FlxText(thumb.x + thumb.width + 5, 0, 155,
 			(StringTools.contains(project.Path.toLowerCase(), 'workingfolder') ? '(WF) ' + project.Name : project.Name));
-		text.setFormat('assets/fonts/comic.ttf', 15, Util.colorCheck(defaultColor, Util.getDarkerColor(defaultColor, 1.3)), FlxTextAlign.CENTER);
+		text.setFormat('assets/fonts/comic.ttf', 15, Util.contrastColor(defaultColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
-		text.y = (bg.height / 2) - (text.textField.height / 2);
+		text.y = (bg.height / 2) - (text.height / 2);
 
 		checkBox = new FlxSprite(bg.width);
 		checkBox.frames = FlxAtlasFrames.fromSparrow('assets/images/checkbox.png', 'assets/images/checkbox.xml');
@@ -61,7 +62,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		checkBox.updateHitbox();
 
 		checkBox.y = (bg.height / 2) - (checkBox.height / 2) - (checkBox.height / 12.5);
-		checkBox.x -= checkBox.width + 8;
+		checkBox.x -= checkBox.width + 12;
 
 		add(checkBox);
 
@@ -80,7 +81,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			{
 				checkBox.color = Util.getDarkerColor(defaultColor, 1.2);
 
-				if (FlxG.mouse.justPressed && instance.canInteract)
+				if (FlxG.mouse.justReleased && instance.canInteract && PlayState.lastPressedTime < 0.1)
 				{
 					checkboxSelected = !checkboxSelected;
 					checkBox.animation.play('check', true, !checkboxSelected);
@@ -88,7 +89,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			}
 			else
 			{
-				if (FlxG.mouse.justPressed && PlayState.curSelected != project)
+				if (FlxG.mouse.justReleased && PlayState.curSelected != project && PlayState.lastPressedTime < 0.1)
 					instance.selectProject(project);
 
 				checkBox.color = defaultColor;
@@ -97,6 +98,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		else
 		{
 			bg.color = defaultColor;
+			checkBox.color = defaultColor;
 		}
 	}
 }

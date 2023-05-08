@@ -1,7 +1,11 @@
 package util;
 
+import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 import sys.FileSystem;
@@ -33,31 +37,111 @@ class Util
 		var t:Float = 0;
 		if (image != null)
 		{
-			for (x in 0...image.width)
+			if (image.transparent)
 			{
-				for (y in 0...image.height)
+				for (x in 0...image.width)
 				{
-					var c:FlxColor = image.getPixel32(x, y);
-					r += c.redFloat * c.lightness * c.alpha;
-					g += c.greenFloat * c.lightness * c.alpha;
-					b += c.blueFloat * c.lightness * c.alpha;
-					t += c.lightness * c.alpha;
+					for (y in 0...image.height)
+					{
+						var c:FlxColor = image.getPixel32(x, y);
+						r += c.redFloat * c.lightness * c.alpha;
+						g += c.greenFloat * c.lightness * c.alpha;
+						b += c.blueFloat * c.lightness * c.alpha;
+						t += c.lightness * c.alpha;
+					}
 				}
 			}
+			else
+			{
+				for (x in 0...image.width)
+				{
+					for (y in 0...image.height)
+					{
+						var c:FlxColor = image.getPixel(x, y);
+						r += c.redFloat * c.lightness;
+						g += c.greenFloat * c.lightness;
+						b += c.blueFloat * c.lightness;
+						t += c.lightness;
+					}
+				}
+			}
+			if (t == 0)
+			{
+				return 0xFFFFFFFF;
+			}
 		}
-		if (t == 0)
+		return FlxColor.fromRGBFloat(r / t, g / t, b / t);
+	}
+
+	public static function saturatedColor(image:BitmapData)
+	{
+		var h:Float = 0;
+		var s:Float = 0;
+		var b:Float = 0;
+		var t:Float = 0;
+		if (image != null)
 		{
-			return 0xFFFFFFFF;
+			if (image.transparent)
+			{
+				for (x in 0...image.width)
+				{
+					for (y in 0...image.height)
+					{
+						var c:FlxColor = image.getPixel32(x, y);
+						h = ((t = c.saturation * c.brightness * c.alphaFloat) > s) ? c.hue : h;
+						s = (t > s) ? c.saturation : s;
+						b = (t > s) ? c.brightness : s;
+					}
+				}
+			}
+			else
+			{
+				for (x in 0...image.width)
+				{
+					for (y in 0...image.height)
+					{
+						var c:FlxColor = image.getPixel(x, y);
+						h = ((t = c.saturation * c.brightness) > s) ? c.hue : h;
+						s = (t > s) ? c.saturation : s;
+						b = (t > s) ? c.brightness : s;
+					}
+				}
+			}
+			if (t == 0)
+			{
+				return 0xFFFFFFFF;
+			}
 		}
-		else
-		{
-			return FlxColor.fromRGBFloat(r / t, g / t, b / t);
-		}
+		return FlxColor.fromHSB(h, s * 0.8, b);
+	}
+
+	public static function centerInRect(obj:FlxObject, rect:FlxRect)
+	{
+		obj.setPosition(((rect.width - obj.width) / 2) + rect.x, ((rect.height - obj.height) / 2) + rect.y);
+
+		// prevent weeird float rounding artifacts
+		obj.x = Std.int(obj.x);
+		obj.y = Std.int(obj.y);
+
+		rect.putWeak();
 	}
 
 	public static function getDarkerColor(color:FlxColor, divAmount:Float = 2)
 	{
 		return FlxColor.fromRGB(Std.int(color.red / divAmount), Std.int(color.green / divAmount), Std.int(color.blue / divAmount));
+	}
+
+	public static function contrastColor(color:FlxColor)
+	{
+		if (FlxG.save.data.darkModeEnabled)
+			return FlxColor.WHITE;
+
+		var newColor:FlxColor = color;
+		newColor.lightness = (color.lightness > 0.7) ? 0.4 : 0.7;
+		newColor.hue += 15;
+		newColor.saturation *= 1.2;
+		newColor = getDarkerColor(newColor, 0.6);
+		return newColor;
 	}
 
 	public static function ifEmptyCheck(value:Dynamic)
@@ -75,11 +159,11 @@ class Util
 			for (file in FileSystem.readDirectory(path))
 				size += FileSystem.stat(path + '\\' + file).size;
 
-			return Std.string(FlxMath.roundDecimal(size / 1024 / 1024, 1));
+			return size;
 		}
 		else
 		{
-			return '(empty)';
+			return 0;
 		}
 	}
 
@@ -93,6 +177,11 @@ class Util
 			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
 			return DateTools.format(date, '%D\n%r');
 		}
+	}
+
+	public static inline function lerp(a:Float, b:Float, t:Float)
+	{
+		return FlxMath.lerp(a, b, FlxMath.bound(t * 60 * FlxG.elapsed, 0, 1));
 	}
 
 	#if windows
