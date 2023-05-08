@@ -24,7 +24,8 @@ import util.Util;
 class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
 	public var instance:PlayState;
-	public var project:ProjectFile;
+
+	var project:ProjectFile;
 
 	var texts:FlxSpriteGroup = new FlxSpriteGroup();
 	var infoText:FlxText;

@@ -17,16 +17,18 @@ class MessageBox extends FlxSubState
 {
 	var box:FlxSpriteGroup = new FlxSpriteGroup();
 
-	public var oneCallback:Void->Void;
-	public var twoCallback:Void->Void;
+	var oneCallback:Void->Void;
+	var twoCallback:Void->Void;
 
 	var mainColor:FlxColor;
 
 	var bg:Big9Slice;
 
-	public var text:FlxText;
+	var text:FlxText;
+
 	public var buttons:Array<FlxSpriteGroup> = [];
-	public var messageCam:FlxCamera;
+
+	var messageCam:FlxCamera;
 
 	public function new(mainColor:FlxColor, messageText:String, optionOne:String, ?optionTwo:String, ?countdown:Int, oneCallback:Void->Void,
 			?twoCallback:Void->Void, BGColor:FlxColor = FlxColor.TRANSPARENT)

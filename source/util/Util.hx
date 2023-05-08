@@ -5,9 +5,7 @@ import flixel.FlxObject;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.util.FlxColor;
-import flixel.util.FlxStringUtil;
 import openfl.display.BitmapData;
-import openfl.geom.Rectangle;
 import sys.FileSystem;
 
 #if windows

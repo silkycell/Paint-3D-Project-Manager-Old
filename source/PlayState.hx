@@ -40,10 +40,9 @@ class PlayState extends FlxState
 	var sideBar:SideBar;
 
 	public var projectFilePath:String;
-
 	public var canInteract:Bool = true;
 
-	public static var init:Bool;
+	static var init:Bool;
 	public static var curSelected:ProjectFile;
 
 	public static var colorArray:Array<Null<FlxColor>> = [];
@@ -56,9 +55,8 @@ class PlayState extends FlxState
 
 	var github:FlxSprite;
 
-	public var buttonsTargetY:Float = -15;
-
-	public var lastPresses:Array<FlxKey> = [];
+	var buttonsTargetY:Float = -15;
+	var lastPresses:Array<FlxKey> = [];
 
 	override public function create()
 	{
