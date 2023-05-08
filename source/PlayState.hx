@@ -100,9 +100,16 @@ class PlayState extends FlxState
 			function loadData()
 			{
 				if (FlxG.save.data.projectFilePath != null)
-					loadJson(FlxG.save.data.projectFilePath)
+				{
+					loadJson(FlxG.save.data.projectFilePath);
+				}
 				else
-					showFileDialog();
+				{
+					if (!FileSystem.exists(_folderPath)) // this should never happen, i think
+						showFileDialog();
+					else
+						loadJson(_folderPath + '\\Projects.json');
+				}
 			}
 
 			#if !debug
@@ -322,7 +329,7 @@ class PlayState extends FlxState
 		gridBG.y += 12 * elapsed;
 	}
 
-	function showFileDialog()
+	public function showFileDialog()
 	{
 		if (!canInteract)
 			return;

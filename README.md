@@ -1,6 +1,6 @@
 # Paint 3D Project Manager
 ## How to use:
-When you open the program for the first time, it'll take you to a window dialogue to choose your Projects.json file. Just hit the open button and it should open automatically
+When you open the program for the first time, it'll take you to a page with all of your projects. (If it takes you to a window dialogue, just choose your "Projects.json" file)
 
 ## Exporting
 1. Choose the project(s) that you'd like to export (you can select multiple using the checkboxes next to the buttons)
