@@ -68,8 +68,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height),
-			Util.sliceSmallBounds);
+		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height), Util.sliceBounds);
 		bg.color = defaultColor;
 		add(bg);
 
@@ -101,7 +100,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Export
 
-		exportButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450, 150), Util.sliceSmallBounds);
+		exportButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450, 150), Util.sliceBounds);
 		exportButtonBG.color = defaultColor;
 
 		exportButtonText = new FlxText(0, 0, 0, 'Export');
@@ -118,7 +117,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Import
 
-		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
+		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
 		importButtonBG.color = defaultColor;
 
 		importButtonText = new FlxText(0, 0, 0, 'Import');
@@ -135,7 +134,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Delete
 
-		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
+		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
 		deleteButtonBG.color = defaultColor;
 
 		deleteButtonText = new FlxText(0, 0, 0, 'Delete');
@@ -152,7 +151,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Browse
 
-		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
+		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
 		browseButtonBG.color = defaultColor;
 
 		browseButtonText = new FlxText(0, 0, 0, 'Browse');
@@ -169,7 +168,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Path
 
-		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceSmallBounds);
+		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
 		pathButtonBG.color = defaultColor;
 
 		pathButtonText = new FlxText(0, 0, 450 / 2.2, 'Appdata Path');
@@ -296,7 +295,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		defaultColor = PlayState.getCurrentColor(project);
 
-		bg.color = Util.getDarkerColor(defaultColor, 0.8);
+		bg.color = Util.getDarkerColor(defaultColor, 1.4);
 
 		for (e in [exportButtonBG, importButtonBG, deleteButtonBG, browseButtonBG, pathButtonBG])
 			e.color = defaultColor;
@@ -355,7 +354,7 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 
 		this.instance = instance;
 
-		buttonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceSmallBounds);
+		buttonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceBounds);
 		updateColor();
 		add(buttonBG);
 

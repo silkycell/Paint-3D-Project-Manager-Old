@@ -24,8 +24,7 @@ import sys.FileSystem;
 #end
 class Util
 {
-	public static var sliceSmallBounds = [14, 18, 135, 153];
-	public static var bigSliceBounds = [46, 46, 1007, 463];
+	public static var sliceBounds = [66, 66, 132, 132];
 
 	public static function calculateAverageColor(image:BitmapData)
 	{

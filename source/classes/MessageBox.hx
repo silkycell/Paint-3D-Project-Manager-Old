@@ -1,6 +1,5 @@
 package classes;
 
-import classes.preset.Big9Slice;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSubState;
@@ -22,7 +21,7 @@ class MessageBox extends FlxSubState
 
 	var mainColor:FlxColor;
 
-	var bg:Big9Slice;
+	var bg:FlxUI9SliceSprite;
 
 	var text:FlxText;
 
@@ -42,7 +41,8 @@ class MessageBox extends FlxSubState
 		messageCam = new FlxCamera();
 		FlxG.cameras.add(messageCam);
 
-		bg = new Big9Slice(900, 600, mainColor);
+		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 700, 400), Util.sliceBounds);
+		bg.screenCenter();
 		bg.color = mainColor;
 		box.add(bg);
 
@@ -67,8 +67,8 @@ class MessageBox extends FlxSubState
 			var button = new FlxSpriteGroup();
 			buttons.push(button);
 
-			var buttonBg = new FlxUI9SliceSprite(0, 0, 'assets/images/9slice/9sliceSmall.png', new Rectangle(0, 0, 200, 130), Util.sliceSmallBounds);
-			buttonBg.color = mainColor;
+			var buttonBg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 200, 130), Util.sliceBounds);
+			buttonBg.color = Util.getDarkerColor(mainColor, 1.2);
 			buttonBg.screenCenter();
 			buttonBg.y += 100;
 
@@ -99,7 +99,7 @@ class MessageBox extends FlxSubState
 		{
 			if (FlxG.mouse.overlaps(button))
 			{
-				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.2);
+				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.4);
 
 				if (FlxG.mouse.justReleased)
 				{
@@ -114,7 +114,7 @@ class MessageBox extends FlxSubState
 			}
 			else
 			{
-				getTypeFromGroup(button, FlxUI9SliceSprite).color = mainColor;
+				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.2);
 			}
 		}
 	}
