@@ -196,16 +196,13 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	{
 		for (b in [
 			// WHY DOES IT FORMAT LIKE THIS WHEN I SAVE!!!
-			exportButton,
-			importButton,
-			deleteButton,
-			browseButton,
-			pathButton
-		])
-			b.text.color = Util.contrastColor(bg.color);
-
-		for (text in texts.members)
-			text.color = Util.contrastColor(bg.color);
+			exportButton.text,
+			importButton.text,
+			deleteButton.text,
+			browseButton.text,
+			pathButton.text
+		].concat(cast texts.members))
+			b.color = Util.contrastColor(bg.color);
 	}
 }
 
