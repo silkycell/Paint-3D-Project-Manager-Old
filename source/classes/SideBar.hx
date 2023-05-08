@@ -90,7 +90,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		texts.add(infoText2);
 
-		infoText = new FlxText(10, 10, 700, '');
+		infoText = new FlxText(10, 10, 450, '');
 		infoText.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText);
