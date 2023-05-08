@@ -66,7 +66,7 @@ class ProjectFileUtil
 		}
 		catch (e)
 		{
-			trace("getThumbnail Error: " + e);
+			trace('Error getting ${project.Name} thumbnail: ' + e);
 			return BitmapData.fromFile('assets/images/thumbFallback.png');
 		}
 	}

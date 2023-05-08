@@ -140,7 +140,7 @@ class PlayState extends FlxState
 				http.onError = function(error)
 				{
 					loadData();
-					trace('error: $error');
+					trace('Http error: $error');
 				}
 
 				http.request();
@@ -332,7 +332,7 @@ class PlayState extends FlxState
 		if (!canInteract)
 			return;
 
-		trace('Loading Project File...');
+		trace('Loading Projects.json File...');
 		canInteract = false;
 		var fDial = new FileDialog();
 		fDial.onSelect.add(function(file)
