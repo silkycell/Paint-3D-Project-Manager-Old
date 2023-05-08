@@ -469,6 +469,9 @@ class PlayState extends FlxState
 				FlxG.sound.play(Assets.getSound('embed/Trickery.ogg'), 0.15);
 			case '{e5a8d381-909f-42f8-abfa-37dd2fe26d5a}':
 				FlxG.sound.play(Assets.getSound('embed/Jumpman25.ogg'), 0.15);
+			case '{f88f74da-6989-42e9-a18c-97ac87beb691}':
+				var random = FlxG.random.int(0, 2);
+				FlxG.sound.play(Assets.getSound('embed/PuffPuff_' + (random == 0 ? 'Ass' : (random == 1 ? 'Bark' : 'Piss')) + '.ogg'), 0.15);
 		}
 	}
 
