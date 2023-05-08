@@ -19,6 +19,7 @@ import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
+import openfl.display.BitmapData;
 import openfl.utils.Assets;
 import sys.FileSystem;
 import sys.io.File;
@@ -47,6 +48,7 @@ class PlayState extends FlxState
 
 	public static var colorArray:Array<Null<FlxColor>> = [];
 	public static var sizeArray:Array<Null<Float>> = [];
+	public static var thumbnailPool:Map<ProjectFile, BitmapData> = [];
 
 	public static var _projects:Array<ProjectFile> = [];
 	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
@@ -372,6 +374,9 @@ class PlayState extends FlxState
 
 		colorArray = [];
 		sizeArray = [];
+
+		for (i in thumbnailPool.keys())
+			thumbnailPool.remove(i);
 
 		try
 		{

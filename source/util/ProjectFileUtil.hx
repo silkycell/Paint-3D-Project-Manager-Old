@@ -57,6 +57,14 @@ class ProjectFileUtil
 
 	public static function getThumbnail(project:ProjectFile)
 	{
+		if (PlayState.thumbnailPool.get(project) == null)
+			return PlayState.thumbnailPool[project] = getThumbnailData(project);
+		else
+			return PlayState.thumbnailPool[project];
+	}
+
+	public static function getThumbnailData(project:ProjectFile)
+	{
 		try
 		{
 			if (BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png') != null)
