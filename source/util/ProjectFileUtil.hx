@@ -105,20 +105,17 @@ class ProjectFileUtil
 		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
 	}
 
-	public static function sortSize(a:ProjectFile, b:ProjectFile)
+	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton)
 	{
-		var aS = Util.getDirectorySize(getCheckpointFolder(a));
-		var bS = Util.getDirectorySize(getCheckpointFolder(b));
-
-		return FlxMath.signOf(bS - aS);
+		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
 	}
 
-	public static function sortAlphabetically(a:ProjectFile, b:ProjectFile)
+	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton)
 	{
-		var aN = a.Name.toUpperCase();
-		var bN = b.Name.toUpperCase();
+		var aN = a.project.Name.toUpperCase();
+		var bN = b.project.Name.toUpperCase();
 
-		return aN > bN ? 1 : -1;
+		return aN > bN ? Order : -Order;
 	}
 
 	public static function generateID()
