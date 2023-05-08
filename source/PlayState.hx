@@ -567,8 +567,7 @@ class PlayState extends FlxState
 									+ ' out of '
 									+ projectsToExport.length
 									+ ' Projects ', exportTime,
-									null, 'icon', 'Version '
-									+ version, 'export', 'Exporting');
+									null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 								exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
 							}
 						}
