@@ -57,11 +57,11 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		checkBox.scale.set(0.3, 0.3);
 
 		checkBox.animation.addByPrefix('check', 'boxAnim', 24, false);
-		checkBox.animation.frameIndex = 1;
+		checkBox.animation.frameIndex = 0;
 		checkBox.color = defaultColor;
 		checkBox.updateHitbox();
 
-		checkBox.y = (bg.height / 2) - (checkBox.height / 2) - (checkBox.height / 12.5);
+		checkBox.y = (bg.height / 2) - (checkBox.height / 2);
 		checkBox.x -= checkBox.width + 12;
 
 		add(checkBox);

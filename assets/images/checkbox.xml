@@ -2,16 +2,12 @@
 <TextureAtlas imagePath="checkbox.png">
 	<!-- Created with Adobe Animate version 22.0.8.217 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="boxAnim0000" x="0" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0001" x="0" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0002" x="217" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0003" x="217" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0004" x="434" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0005" x="434" y="0" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0006" x="651" y="0" width="212" height="260"/>
-	<SubTexture name="boxAnim0007" x="651" y="0" width="212" height="260"/>
-	<SubTexture name="boxAnim0008" x="0" y="265" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0009" x="217" y="265" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0010" x="217" y="265" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
-	<SubTexture name="boxAnim0011" x="434" y="265" width="212" height="218" frameX="0" frameY="-42" frameWidth="212" frameHeight="260"/>
+	<SubTexture name="boxAnim0000" x="234" y="5" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
+	<SubTexture name="boxAnim0001" x="5" y="228" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
+	<SubTexture name="boxAnim0002" x="5" y="228" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
+	<SubTexture name="boxAnim0003" x="5" y="5" width="224" height="218"/>
+	<SubTexture name="boxAnim0004" x="5" y="5" width="224" height="218"/>
+	<SubTexture name="boxAnim0005" x="5" y="451" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
+	<SubTexture name="boxAnim0006" x="5" y="451" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
+	<SubTexture name="boxAnim0007" x="222" y="228" width="212" height="218" frameX="0" frameY="0" frameWidth="224" frameHeight="218"/>
 </TextureAtlas>
