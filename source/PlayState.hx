@@ -368,7 +368,7 @@ class PlayState extends FlxState
 
 		Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
-		buttonsTargetY = 15;
+		buttonsTargetY = -15;
 
 		colorArray = [];
 		sizeArray = [];
