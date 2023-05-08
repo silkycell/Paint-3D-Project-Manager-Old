@@ -47,6 +47,7 @@ class PlayState extends FlxState
 	public static var curSelected:ProjectFile;
 
 	public static var colorArray:Array<Null<FlxColor>> = [];
+	public static var sizeArray:Array<Null<Float>> = [];
 
 	public static var _projects:Array<ProjectFile> = [];
 	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
@@ -367,6 +368,7 @@ class PlayState extends FlxState
 		buttonsTargetY = 15;
 
 		colorArray = [];
+		sizeArray = [];
 
 		try
 		{

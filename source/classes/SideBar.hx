@@ -268,7 +268,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ "\nPath: "
 			+ Util.ifEmptyCheck(project.Path.substr(9))
 			+ "\nSize: "
-			+ FlxStringUtil.formatBytes(Util.getDirectorySize(ProjectFileUtil.getCheckpointFolder(project)), 2)
+			+ FlxStringUtil.formatBytes(ProjectFileUtil.getProjectSize(project), 2)
 			+ "\nLast Modified: "
 			+ Util.getProjectDate(project.DateTime);
 

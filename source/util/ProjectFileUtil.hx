@@ -146,4 +146,12 @@ class ProjectFileUtil
 
 		return result;
 	}
+
+	public static function getProjectSize(project:ProjectFile)
+	{
+		if (PlayState.sizeArray[PlayState._projects.indexOf(project)] != null)
+			return PlayState.sizeArray[PlayState._projects.indexOf(project)];
+		else
+			return PlayState.sizeArray[PlayState._projects.indexOf(project)] = Util.getDirectorySize(getCheckpointFolder(project));
+	}
 }
