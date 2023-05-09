@@ -113,23 +113,10 @@ class Util
 		return FlxColor.fromRGB(Std.int(color.red / divAmount), Std.int(color.green / divAmount), Std.int(color.blue / divAmount));
 	}
 
+	// IMGONNA. REDO THIS ITS MAKIN ME MAAAD
 	public static function contrastColor(color:FlxColor)
 	{
-		if (FlxG.save.data.darkModeEnabled)
-			return FlxColor.WHITE;
-
-		var newColor:FlxColor = color;
-		newColor.lightness = (color.lightness > 0.7) ? 0.4 : 0.7;
-		newColor.hue += 15;
-		newColor.saturation *= 1.2;
-		newColor = getDarkerColor(newColor, (areColorsTooSimilar(color, newColor)) ? 1.5 : 0.5);
-		return newColor;
-	}
-
-	public static function areColorsTooSimilar(a:FlxColor, b:FlxColor)
-	{
-		// todo
-		return false;
+		return FlxColor.WHITE;
 	}
 
 	public static function ifEmptyCheck(value:Dynamic)

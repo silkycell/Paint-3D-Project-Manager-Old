@@ -180,6 +180,12 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		#if debug
+		if (FlxG.keys.justPressed.SEVEN)
+			FlxG.switchState(new ColorDebugState());
+		#end
+
 		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
 
 		// secret DARK MODE
@@ -564,44 +570,6 @@ class PlayState extends FlxState
 						var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
 						for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
 						{
-<<<<<<< Updated upstream
-							var projectClone = Reflect.copy(project);
-							filteredFilename = projectClone.Name;
-
-							if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
-								projectClone.Name = '(WF) ' + projectClone.Name;
-
-							for (letter in ProjectFileUtil.disallowedChars)
-								filteredFilename.replace(letter, '_');
-
-							filteredFilename.substring(0, 260);
-							var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
-
-							for (i in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
-								validFileCheck += projDir + '\\' + i + '\n';
-
-							projectClone.Path = 'Projects\\' + projDir;
-							projectClone.URI = 'ms-appdata:///local/Projects/' + projDir + '/Thumbnail.png';
-							projectClone.SourceId = '';
-							projectClone.SourceFilePath = '';
-
-							projectClones.push(projectClone);
-
-							var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
-							for (file in dir)
-							{
-								Discord.updatePresence((dir.indexOf(file) + 1)
-									+ ' files out of '
-									+ (dir.length - 1),
-									'Exporting '
-									+ (projectsToExport.indexOf(project) + 1)
-									+ ' out of '
-									+ projectsToExport.length
-									+ ' Projects ', exportTime,
-									null, 'icon', Discord.versionInfo, 'export', 'Exporting');
-								exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
-							}
-=======
 							Discord.updatePresence((dir.indexOf(file) + 1)
 								+ ' files out of '
 								+ (dir.length - 1),
@@ -612,7 +580,6 @@ class PlayState extends FlxState
 								+ ' Projects ', exportTime,
 								null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 							exportZip.addBytes(File.getBytes(ProjectFileUtil.getCheckpointFolder(project) + '\\' + file), projDir + '\\' + file, true);
->>>>>>> Stashed changes
 						}
 					}
 
@@ -622,22 +589,12 @@ class PlayState extends FlxState
 					Discord.updatePresence('Saving ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
 						'icon', Discord.versionInfo, 'export', 'Exporting');
 
-<<<<<<< Updated upstream
-						var fDial = new FileDialog();
-						fDial.save(exportZip.finalize();
-							, 'p3d',
-							_folderPath
-							+ '\\'
-							+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
-							+ '.p3d', 'Save your exported projects.');
-=======
 					var fDial = new FileDialog();
 					fDial.save(exportZip.finalize(), 'p3d', _folderPath
 						+ '\\'
 						+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
 						+ '.p3d',
 						'Save your exported projects.');
->>>>>>> Stashed changes
 
 					fDial.onCancel.add(function()
 					{
