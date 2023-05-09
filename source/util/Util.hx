@@ -122,11 +122,11 @@ class Util
 		newColor.lightness = (color.lightness > 0.7) ? 0.4 : 0.7;
 		newColor.hue += 15;
 		newColor.saturation *= 1.2;
-		newColor = getDarkerColor(newColor, (areColorsTooSimilar(color, newColor)) ? 0.5 : 1.6);
+		newColor = getDarkerColor(newColor, (areColorsTooSimilar(color, newColor)) ? 1.5 : 0.5);
 		return newColor;
 	}
 
-	function areColorsTooSimilar(a:FlxColor, b:FlxColor)
+	public static function areColorsTooSimilar(a:FlxColor, b:FlxColor)
 	{
 		// todo
 		return false;
