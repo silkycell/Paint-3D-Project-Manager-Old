@@ -142,7 +142,7 @@ class PlayState extends FlxState
 				http.onError = function(error)
 				{
 					loadData();
-					trace('error: $error');
+					trace('Http error: $error');
 				}
 
 				http.request();
@@ -334,7 +334,7 @@ class PlayState extends FlxState
 		if (!canInteract)
 			return;
 
-		trace('Loading Project File...');
+		trace('Loading Projects.json File...');
 		canInteract = false;
 		var fDial = new FileDialog();
 		fDial.onSelect.add(function(file)
@@ -568,7 +568,7 @@ class PlayState extends FlxState
 							projectClones.push(projectClone);
 
 							var dir = FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project));
-							for (file in FileSystem.readDirectory(ProjectFileUtil.getCheckpointFolder(project)))
+							for (file in dir)
 							{
 								Discord.updatePresence((dir.indexOf(file) + 1)
 									+ ' files out of '
@@ -590,11 +590,12 @@ class PlayState extends FlxState
 							null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
 						var fDial = new FileDialog();
-						fDial.save(exportZip.finalize(), 'p3d', _folderPath
+						fDial.save(exportZip.finalize();
+							, 'p3d',
+							_folderPath
 							+ '\\'
 							+ (projectsToExport.length == 1 ? filteredFilename : "Projects")
-							+ '.p3d',
-							'Save your exported projects.');
+							+ '.p3d', 'Save your exported projects.');
 
 						fDial.onCancel.add(function()
 						{
@@ -677,7 +678,8 @@ class PlayState extends FlxState
 			{
 				var entries = new StringMap<ZipEntry>();
 
-				var zip = new ZipReader(File.getBytes(file));
+				var daBytes = File.getBytes(file);
+				var zip = new ZipReader(daBytes);
 				var entry:ZipEntry;
 
 				while ((entry = zip.getNextEntry()) != null)

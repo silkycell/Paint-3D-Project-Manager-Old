@@ -71,11 +71,11 @@ class Discord
 
 	static function onError(_code:Int, _message:String)
 	{
-		trace('Error! $_code : $_message');
+		trace('Discord Client Error! $_code : $_message');
 	}
 
 	static function onDisconnected(_code:Int, _message:String)
 	{
-		trace('Disconnected! $_code : $_message');
+		trace('Discord Client Disconnected! $_code : $_message');
 	}
 }

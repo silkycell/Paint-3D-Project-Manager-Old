@@ -24,6 +24,8 @@ class ProjectFileUtil
 {
 	public static var disallowedChars:Array<String> = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
 
+	final defaultThumb:BitmapData = BitmapData.fromFile('assets/images/thumbFallback.png');
+
 	public static function parseProjectJson(json:Array<Dynamic>)
 	{
 		var projects:Array<ProjectFile> = [];
@@ -65,17 +67,22 @@ class ProjectFileUtil
 
 	public static function getThumbnailData(project:ProjectFile)
 	{
+		if (project == null)
+		{
+			trace('project is null, returning default thumbnail...');
+			return defaultThumb;
+		}
 		try
 		{
 			if (BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png') != null)
 				return BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png');
 			else
-				return BitmapData.fromFile('assets/images/thumbFallback.png');
+				return defaultThumb;
 		}
 		catch (e)
 		{
-			trace("getThumbnail Error: " + e);
-			return BitmapData.fromFile('assets/images/thumbFallback.png');
+			trace('Error getting ${project.Name} thumbnail: ' + e);
+			return defaultThumb;
 		}
 	}
 

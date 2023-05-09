@@ -78,32 +78,17 @@ class Util
 		var t:Float = 0;
 		if (image != null)
 		{
-			if (image.transparent)
+			for (x in 0...image.width)
 			{
-				for (x in 0...image.width)
+				for (y in 0...image.height)
 				{
-					for (y in 0...image.height)
-					{
-						var c:FlxColor = image.getPixel32(x, y);
-						h = ((t = c.saturation * c.brightness * c.alphaFloat) > s) ? c.hue : h;
-						s = (t > s) ? c.saturation : s;
-						b = (t > s) ? c.brightness : s;
-					}
+					var c:FlxColor = image.getPixel(x, y);
+					h = ((t = c.saturation * c.brightness) > s) ? c.hue : h;
+					s = (t > s) ? c.saturation : s;
+					b = (t > s) ? c.brightness : s;
 				}
 			}
-			else
-			{
-				for (x in 0...image.width)
-				{
-					for (y in 0...image.height)
-					{
-						var c:FlxColor = image.getPixel(x, y);
-						h = ((t = c.saturation * c.brightness) > s) ? c.hue : h;
-						s = (t > s) ? c.saturation : s;
-						b = (t > s) ? c.brightness : s;
-					}
-				}
-			}
+
 			if (t == 0)
 			{
 				return 0xFFFFFFFF;
@@ -137,8 +122,14 @@ class Util
 		newColor.lightness = (color.lightness > 0.7) ? 0.4 : 0.7;
 		newColor.hue += 15;
 		newColor.saturation *= 1.2;
-		newColor = getDarkerColor(newColor, 0.6);
+		newColor = getDarkerColor(newColor, (areColorsTooSimilar(color, newColor)) ? 1.5 : 0.5);
 		return newColor;
+	}
+
+	public static function areColorsTooSimilar(a:FlxColor, b:FlxColor)
+	{
+		// todo
+		return false;
 	}
 
 	public static function ifEmptyCheck(value:Dynamic)

@@ -31,25 +31,11 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var infoText:FlxText;
 	var infoText2:FlxText;
 
-	var exportButton:FlxSpriteGroup = new FlxSpriteGroup();
-	var exportButtonBG:FlxSprite;
-	var exportButtonText:FlxText;
-
-	var importButton:FlxSpriteGroup = new FlxSpriteGroup();
-	var importButtonBG:FlxSprite;
-	var importButtonText:FlxText;
-
-	var deleteButton:FlxSpriteGroup = new FlxSpriteGroup();
-	var deleteButtonBG:FlxSprite;
-	var deleteButtonText:FlxText;
-
-	var browseButton:FlxSpriteGroup = new FlxSpriteGroup();
-	var browseButtonBG:FlxSprite;
-	var browseButtonText:FlxText;
-
-	var pathButton:FlxSpriteGroup = new FlxSpriteGroup();
-	var pathButtonBG:FlxSprite;
-	var pathButtonText:FlxText;
+	var exportButton:SideBarButton;
+	var importButton:SideBarButton;
+	var deleteButton:SideBarButton;
+	var browseButton:SideBarButton;
+	var pathButton:SideBarButton;
 
 	var thumb:Thumbnail;
 	var bg:FlxUI9SliceSprite;
@@ -90,98 +76,42 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		texts.add(infoText2);
 
-		infoText = new FlxText(10, 10, 700, '');
+		infoText = new FlxText(10, 10, 450, '');
 		infoText.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText);
 
-		for (text in texts.members)
-			text.color = Util.contrastColor(defaultColor);
+		// Buttons
+		exportButton = new SideBarButton(infoText.x, bg.height - 150 - infoText.x, 450, 150, 'Export', defaultColor, instance);
+		exportButton.callback = function()
+		{
+			instance.exportProjects();
+		}
 
-		// Export
+		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, 450 / 2.1, 150, 'Import', defaultColor, instance);
+		importButton.callback = function()
+		{
+			instance.importProjects();
+		}
 
-		exportButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450, 150), Util.sliceBounds);
-		exportButtonBG.color = defaultColor;
+		deleteButton = new SideBarButton(exportButton.x + (exportButton.width / 2) + (exportButton.width / 23), importButton.y, 450 / 2.1, 150, 'Delete',
+			defaultColor, instance);
+		deleteButton.callback = function()
+		{
+			instance.deleteProject();
+		}
 
-		exportButtonText = new FlxText(0, 0, 0, 'Export');
-		exportButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
+		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Browse', defaultColor, instance);
+		browseButton.callback = function()
+		{
+			instance.showFileDialog();
+		}
 
-		exportButtonText.updateHitbox();
-		Util.centerInRect(exportButtonText, FlxRect.weak(exportButtonBG.x, exportButtonBG.y, exportButtonBG.width, exportButtonBG.height));
-
-		exportButton.add(exportButtonBG);
-		exportButton.add(exportButtonText);
-
-		exportButton.x = infoText.x;
-		exportButton.y = bg.height - exportButtonBG.height - infoText.x;
-
-		// Import
-
-		importButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
-		importButtonBG.color = defaultColor;
-
-		importButtonText = new FlxText(0, 0, 0, 'Import');
-		importButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
-
-		importButtonText.updateHitbox();
-		Util.centerInRect(importButtonText, FlxRect.weak(importButtonBG.x, importButtonBG.y, importButtonBG.width, importButtonBG.height));
-
-		importButton.add(importButtonBG);
-		importButton.add(importButtonText);
-
-		importButton.x = exportButton.x;
-		importButton.y = exportButton.y - importButtonBG.height - 20;
-
-		// Delete
-
-		deleteButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
-		deleteButtonBG.color = defaultColor;
-
-		deleteButtonText = new FlxText(0, 0, 0, 'Delete');
-		deleteButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
-
-		deleteButtonText.updateHitbox();
-		Util.centerInRect(deleteButtonText, FlxRect.weak(deleteButtonBG.x, deleteButtonBG.y, deleteButtonBG.width, deleteButtonBG.height));
-
-		deleteButton.add(deleteButtonBG);
-		deleteButton.add(deleteButtonText);
-
-		deleteButton.x = exportButton.x + (exportButton.width / 2) + (exportButton.width / 23);
-		deleteButton.y = exportButton.y - deleteButtonBG.height - 20;
-
-		// Browse
-
-		browseButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
-		browseButtonBG.color = defaultColor;
-
-		browseButtonText = new FlxText(0, 0, 0, 'Browse');
-		browseButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
-
-		browseButtonText.updateHitbox();
-		Util.centerInRect(browseButtonText, FlxRect.weak(browseButtonBG.x, browseButtonBG.y, browseButtonBG.width, browseButtonBG.height));
-
-		browseButton.add(browseButtonBG);
-		browseButton.add(browseButtonText);
-
-		browseButton.x = importButton.x;
-		browseButton.y = importButton.y - browseButtonBG.height - 20;
-
-		// Path
-
-		pathButtonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 450 / 2.2, 150), Util.sliceBounds);
-		pathButtonBG.color = defaultColor;
-
-		pathButtonText = new FlxText(0, 0, 450 / 2.2, 'Appdata Path');
-		pathButtonText.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
-
-		pathButtonText.updateHitbox();
-		Util.centerInRect(pathButtonText, FlxRect.weak(pathButtonBG.x, pathButtonBG.y, pathButtonBG.width, pathButtonBG.height));
-
-		pathButton.add(pathButtonBG);
-		pathButton.add(pathButtonText);
-
-		pathButton.x = exportButton.x + (exportButton.width / 2) + (exportButton.width / 23);
-		pathButton.y = importButton.y - pathButtonBG.height - 20;
+		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Appdata Path', defaultColor, instance);
+		pathButton.callback = function()
+		{
+			Sys.command("explorer.exe " + '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
+		}
 
 		add(exportButton);
 		add(importButton);
@@ -198,66 +128,6 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		super.update(elapsed);
 
 		x = Util.lerp(x, defaultX, 0.2);
-
-		if (FlxG.mouse.overlaps(exportButton))
-		{
-			exportButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
-
-			if (FlxG.mouse.justReleased)
-				instance.exportProjects();
-		}
-		else
-		{
-			exportButtonBG.color = defaultColor;
-		}
-
-		if (FlxG.mouse.overlaps(importButton))
-		{
-			importButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
-
-			if (FlxG.mouse.justReleased)
-				instance.importProjects();
-		}
-		else
-		{
-			importButtonBG.color = defaultColor;
-		}
-
-		if (FlxG.mouse.overlaps(browseButton))
-		{
-			browseButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
-
-			if (FlxG.mouse.justReleased && instance.canInteract)
-				instance.showFileDialog();
-		}
-		else
-		{
-			browseButtonBG.color = defaultColor;
-		}
-
-		if (FlxG.mouse.overlaps(pathButton))
-		{
-			pathButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
-
-			if (FlxG.mouse.justReleased)
-				Sys.command("explorer.exe " + '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
-		}
-		else
-		{
-			pathButtonBG.color = defaultColor;
-		}
-
-		if (FlxG.mouse.overlaps(deleteButton))
-		{
-			deleteButtonBG.color = Util.getDarkerColor(defaultColor, 1.2);
-
-			if (FlxG.mouse.justReleased && instance.canInteract)
-				instance.deleteProject();
-		}
-		else
-		{
-			deleteButtonBG.color = defaultColor;
-		}
 	}
 
 	public function loadProject(project:ProjectFile)
@@ -273,7 +143,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ Util.getProjectDate(project.DateTime);
 
 		infoText.updateHitbox();
-		Util.centerInRect(infoText, FlxRect.weak(exportButtonBG.x, 0, exportButtonBG.width, browseButtonBG.y));
+		Util.centerInRect(infoText, FlxRect.weak(exportButton.bg.x, 0, exportButton.bg.width, browseButton.bg.y));
 
 		if (StringTools.contains(project.Path.toLowerCase(), 'workingfolder'))
 			infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id) + "\nSource ID: " + Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: "
@@ -287,18 +157,18 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// I HATE HAXE AUTOFORMATIING WHAT IS THIS
 		Util.centerInRect(infoText2,
-			FlxRect.weak(exportButtonBG.x
-				+ exportButtonBG.width, 20, FlxG.width
-				- exportButtonBG.x
-				+ exportButtonBG.width, thumb.thumbnail.y
+			FlxRect.weak(exportButton.bg.x
+				+ exportButton.bg.width, 20, FlxG.width
+				- exportButton.bg.x
+				+ exportButton.bg.width, thumb.thumbnail.y
 				- 25));
 
 		defaultColor = PlayState.getCurrentColor(project);
 
 		bg.color = Util.getDarkerColor(defaultColor, 1.4);
 
-		for (e in [exportButtonBG, importButtonBG, deleteButtonBG, browseButtonBG, pathButtonBG])
-			e.color = defaultColor;
+		for (e in [exportButton, importButton, deleteButton, browseButton, pathButton])
+			e.defaultColor = defaultColor;
 
 		updateTextColors();
 
@@ -306,7 +176,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		thumb.thumbnail.setGraphicSize(294, 165);
 		thumb.thumbnail.updateHitbox();
 
-		var tempRect:FlxRect = FlxRect.get(exportButtonBG.x + exportButtonBG.width, exportButtonBG.y, 425, 1);
+		var tempRect:FlxRect = FlxRect.get(exportButton.bg.x + exportButton.bg.width, exportButton.bg.y, 425, 1);
 		tempRect.bottom = FlxG.height - 75;
 
 		// yeaah
@@ -324,18 +194,15 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 	public function updateTextColors()
 	{
-		for (text in [
+		for (b in [
 			// WHY DOES IT FORMAT LIKE THIS WHEN I SAVE!!!
-			exportButtonText,
-			importButtonText,
-			deleteButtonText,
-			browseButtonText,
-			pathButtonText
-		])
-			text.color = Util.contrastColor(bg.color);
-
-		for (text in texts.members)
-			text.color = Util.contrastColor(bg.color);
+			exportButton.text,
+			importButton.text,
+			deleteButton.text,
+			browseButton.text,
+			pathButton.text
+		].concat(cast texts.members))
+			b.color = Util.contrastColor(bg.color);
 	}
 }
 
