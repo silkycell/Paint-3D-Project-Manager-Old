@@ -29,7 +29,7 @@ class MessageBox extends FlxSubState
 
 	var messageCam:FlxCamera;
 
-	public function new(mainColor:FlxColor, messageText:String, optionOne:String, ?optionTwo:String, ?countdown:Int, oneCallback:Void->Void,
+	public function new(mainColor:FlxColor, headerMessage:String, messageText:String, optionOne:String, ?optionTwo:String, oneCallback:Void->Void,
 			?twoCallback:Void->Void, BGColor:FlxColor = FlxColor.TRANSPARENT)
 	{
 		super(BGColor);
