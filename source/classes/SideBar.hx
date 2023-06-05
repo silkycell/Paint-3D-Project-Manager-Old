@@ -101,7 +101,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			instance.deleteProject();
 		}
 
-		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Browse', defaultColor, instance);
+		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Change Projects.json', defaultColor, instance, 30);
 		browseButton.callback = function()
 		{
 			instance.showFileDialog();

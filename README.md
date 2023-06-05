@@ -18,7 +18,7 @@ When you open the program for the first time, it'll take you to a page with all 
 ## Troubleshooting/Q&A
 ### I cant find my Projects.json!
 Press the "Appdata Path" on the main menu, then copy the file path. 
-Then, press "Browse" and paste it into the file dialouge.
+Then, press "Change Projects.json" and paste it into the file dialouge.
 
 ### I don't have a Projects.json!
 Open paint 3d and make a project, that should create a Projects.json for you.
