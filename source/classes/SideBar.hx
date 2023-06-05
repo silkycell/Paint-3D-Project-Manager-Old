@@ -191,6 +191,51 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			pathButton.text
 		].concat(cast texts.members))
 			b.color = Util.contrastColor(bg.color);
+class SideBarButton extends FlxSpriteGroup
+{
+	public var bg:FlxSprite;
+	public var text:FlxText;
+	public var defaultColor:FlxColor;
+	public var callback:Void->Void;
+
+	var instance:PlayState;
+
+	public function new(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, str:String = '', col:FlxColor = FlxColor.WHITE, instance:PlayState,
+			fontSize:Int = 40)
+	{
+		super();
+		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, width, height), Util.sliceBounds);
+
+		text = new FlxText(0, 0, width, str);
+		text.setFormat('assets/fonts/comic.ttf', fontSize, FlxColor.WHITE, FlxTextAlign.CENTER);
+		text.updateHitbox();
+		Util.centerInRect(text, FlxRect.weak(bg.x, bg.y, bg.width, bg.height));
+
+		add(bg);
+		add(text);
+
+		this.x = x;
+		this.y = y;
+		this.instance = instance;
+
+		defaultColor = col;
+	}
+
+	public override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (FlxG.mouse.overlaps(this))
+		{
+			bg.color = defaultColor.getDarkened(0.24);
+
+			if (FlxG.mouse.justReleased && instance.canInteract)
+				callback();
+		}
+		else
+		{
+			bg.color = defaultColor;
+		}
 	}
 }
 
