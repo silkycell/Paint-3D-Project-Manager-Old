@@ -54,7 +54,7 @@ class ColorDebugState extends FlxState
 
 	function updateColors()
 	{
-		bgColor = Util.getDarkerColor(currentColor, 1.4);
+		bgColor = currentColor.getDarkened(0.4);
 		bg.color = currentColor;
 		text.color = Util.contrastColor(currentColor);
 	}

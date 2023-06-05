@@ -76,11 +76,11 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		if (FlxG.mouse.overlaps(this))
 		{
-			bg.color = Util.getDarkerColor(defaultColor, 1.2);
+			bg.color = defaultColor.getDarkened(0.2);
 
 			if (FlxG.mouse.overlaps(checkBox))
 			{
-				checkBox.color = Util.getDarkerColor(defaultColor, 1.2);
+				checkBox.color = defaultColor.getDarkened(0.2);
 
 				if (FlxG.mouse.justReleased
 					&& instance.canInteract

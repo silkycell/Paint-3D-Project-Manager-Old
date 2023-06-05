@@ -57,7 +57,7 @@ class SideBarButton extends FlxSpriteGroup
 
 		if (FlxG.mouse.overlaps(this))
 		{
-			bg.color = Util.getDarkerColor(defaultColor, 1.2);
+			bg.color = defaultColor.getDarkened(0.2);
 
 			if (FlxG.mouse.justReleased && instance.canInteract)
 				callback();

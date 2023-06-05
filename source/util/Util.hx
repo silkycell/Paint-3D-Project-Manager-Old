@@ -108,15 +108,31 @@ class Util
 		rect.putWeak();
 	}
 
-	public static function getDarkerColor(color:FlxColor, divAmount:Float = 2)
-	{
-		return FlxColor.fromRGB(Std.int(color.red / divAmount), Std.int(color.green / divAmount), Std.int(color.blue / divAmount));
-	}
-
 	// IMGONNA. REDO THIS ITS MAKIN ME MAAAD
 	public static function contrastColor(color:FlxColor)
 	{
-		return FlxColor.WHITE;
+		return colorBrightnessCheck(FlxColor.WHITE, color);
+	}
+
+	public static function colorBrightnessCheck(color:FlxColor, bgColor:FlxColor)
+	{
+		var returnColor:FlxColor = color;
+
+		if (getColorDistance(color, bgColor) < 50)
+			returnColor = returnColor.getComplementHarmony();
+
+		return returnColor;
+	}
+
+	public static function getColorDistance(color:FlxColor, bgColor:FlxColor)
+	{
+		var diffR:Int = color.red - bgColor.red;
+		var diffG:Int = color.green - bgColor.green;
+		var diffB:Int = color.blue - bgColor.blue;
+
+		var distanceSquared:Int = diffR * diffR + diffG * diffG + diffB * diffB;
+
+		return Math.sqrt(distanceSquared);
 	}
 
 	public static function ifEmptyCheck(value:Dynamic)

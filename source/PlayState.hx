@@ -469,7 +469,7 @@ class PlayState extends FlxState
 		curSelected = project;
 
 		var daColor:FlxColor = getCurrentColor(project);
-		gridBG.color = Util.getDarkerColor(daColor, 1.3);
+		gridBG.color = daColor.getDarkened(0.3);
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);

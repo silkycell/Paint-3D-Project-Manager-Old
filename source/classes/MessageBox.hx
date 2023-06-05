@@ -68,7 +68,7 @@ class MessageBox extends FlxSubState
 			buttons.push(button);
 
 			var buttonBg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 200, 130), Util.sliceBounds);
-			buttonBg.color = Util.getDarkerColor(mainColor, 1.2);
+			buttonBg.color = mainColor.getDarkened(0.2);
 			buttonBg.screenCenter();
 			buttonBg.y += 100;
 
@@ -99,7 +99,7 @@ class MessageBox extends FlxSubState
 		{
 			if (FlxG.mouse.overlaps(button))
 			{
-				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.4);
+				getTypeFromGroup(button, FlxUI9SliceSprite).color = mainColor.getDarkened(0.4);
 
 				if (FlxG.mouse.justReleased)
 				{
@@ -114,7 +114,7 @@ class MessageBox extends FlxSubState
 			}
 			else
 			{
-				getTypeFromGroup(button, FlxUI9SliceSprite).color = Util.getDarkerColor(mainColor, 1.2);
+				getTypeFromGroup(button, FlxUI9SliceSprite).color = mainColor.getDarkened(0.2);
 			}
 		}
 	}

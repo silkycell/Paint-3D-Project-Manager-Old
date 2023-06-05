@@ -153,7 +153,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		defaultColor = PlayState.getCurrentColor(project);
 
-		bg.color = Util.getDarkerColor(defaultColor, 1.4);
+		bg.color = defaultColor.getDarkened(0.4);
 
 		for (e in [exportButton, importButton, deleteButton, browseButton, pathButton])
 			e.defaultColor = defaultColor;
