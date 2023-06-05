@@ -392,15 +392,7 @@ class PlayState extends FlxState
 			var pathArray = file.split('\\');
 			pathArray.pop();
 
-			_folderPath = '';
-
-			for (i in pathArray)
-			{
-				if (pathArray.indexOf(i) != pathArray.length - 1)
-					_folderPath += i + "\\";
-				else
-					_folderPath += i;
-			}
+			_folderPath = pathArray.join('\\');
 
 			projectFilePath = file;
 			FlxG.save.data.projectFilePath = projectFilePath;
@@ -520,15 +512,7 @@ class PlayState extends FlxState
 			Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
 				'icon', Discord.versionInfo, 'export', 'Exporting');
 
-			var messageAppend:String = '';
-
-			for (i in projectsToExport)
-			{
-				if (projectsToExport.indexOf(i) != projectsToExport.length - 1)
-					messageAppend += i.Name + ', ';
-				else
-					messageAppend += i.Name;
-			}
+			var messageAppend:String = projectsToExport.join(', ');
 
 			var message;
 			openSubState(new MessageBox(getCurrentColor(curSelected), 'Export Projects', 'Are you sure you want to export these projects?\n$messageAppend',
@@ -839,15 +823,7 @@ class PlayState extends FlxState
 		if (projectsToDelete.length == 0)
 			projectsToDelete = [curSelected];
 
-		var messageAppend:String = '';
-
-		for (i in projectsToDelete)
-		{
-			if (projectsToDelete.indexOf(i) != projectsToDelete.length - 1)
-				messageAppend += i.Name + ', ';
-			else
-				messageAppend += i.Name;
-		}
+		var messageAppend:String = projectsToDelete.join(', ');
 
 		openSubState(new MessageBox(getCurrentColor(curSelected), 'Project Deletion',
 			'Are you sure you want to delete the following projects?\n$messageAppend', 'Yes', 'No', function()
