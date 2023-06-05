@@ -12,6 +12,8 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxStringUtil;
+import lime.graphics.Image;
+import lime.graphics.ImageFileFormat;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
 import openfl.Assets;
@@ -247,7 +249,9 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 				var fDial = new FileDialog();
 				fDial.onSelect.add(function(file:String)
 				{
-					File.saveBytes(ProjectFileUtil.getCheckpointFolder(PlayState.curSelected) + '\\Thumbnail.png', File.getBytes(file));
+					var newThumb = Image.fromFile(file);
+					newThumb.resize(294, 165);
+					File.saveBytes(ProjectFileUtil.getCheckpointFolder(PlayState.curSelected) + '\\Thumbnail.png', newThumb.encode(ImageFileFormat.PNG));
 
 					instance.canInteract = true;
 					instance.loadJson(instance.projectFilePath);
