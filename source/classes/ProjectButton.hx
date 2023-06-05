@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -81,7 +82,9 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			{
 				checkBox.color = Util.getDarkerColor(defaultColor, 1.2);
 
-				if (FlxG.mouse.justReleased && instance.canInteract && PlayState.lastPressedTime < 0.1)
+				if (FlxG.mouse.justReleased
+					&& instance.canInteract
+					&& (PlayState.lastPressedTime < 0.2 && PlayState.lastMouseDelta.length < 5))
 				{
 					checkboxSelected = !checkboxSelected;
 					checkBox.animation.play('check', true, !checkboxSelected);
@@ -89,7 +92,9 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			}
 			else
 			{
-				if (FlxG.mouse.justReleased && PlayState.curSelected != project && PlayState.lastPressedTime < 0.1)
+				if (FlxG.mouse.justReleased
+					&& PlayState.curSelected != project
+					&& (PlayState.lastPressedTime < 0.2 && PlayState.lastMouseDelta.length < 5))
 					instance.selectProject(project);
 
 				checkBox.color = defaultColor;
