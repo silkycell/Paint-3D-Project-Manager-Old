@@ -637,15 +637,15 @@ class PlayState extends FlxState
 		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
 		fDial.onSelect.add(function(file)
 		{
-			var splitFile:Array<String>;
-			if (!['p3d'].contains((splitFile = file.split('.'))[splitFile.length - 1].toLowerCase()))
+			var splitFile:Array<String> = file.split('.');
+			if (!['p3d'].contains(splitFile[splitFile.length - 1].toLowerCase()))
 			{
-				Discord.updatePresenceDPO(Discord.defaultRich);
-				openSubState(new MessageBox(getCurrentColor(curSelected), 'Warning', 'This is not a P3D file!', 'Ok', null, function()
+				openSubState(new MessageBox(getCurrentColor(curSelected), 'Warning', 'This is not a P3D file!', 'Ok', 'Continue Anyway', function()
 				{
+					Discord.updatePresenceDPO(Discord.defaultRich);
 					canInteract = true;
-				}));
-				return;
+					return;
+				}, function() {}));
 			}
 
 			Util.deleteDirRecursively(_folderPath + '\\zipExport');
