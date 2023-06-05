@@ -406,14 +406,18 @@ class PlayState extends FlxState
 			FlxG.save.data.projectFilePath = projectFilePath;
 			FlxG.save.flush();
 
-			if (!FileSystem.exists(_folderPath + '\\.Bak'))
-				FileSystem.createDirectory(_folderPath + '\\.Bak');
+			pathArray.pop();
+			var bakFilePath = pathArray.join('\\') + '\\.Bak';
+			trace(bakFilePath);
+
+			if (!FileSystem.exists(bakFilePath))
+				FileSystem.createDirectory(bakFilePath);
 
 			var repeat:Int = 0;
-			while (FileSystem.exists(_folderPath + '\\.Bak\\Projects.json.bak' + repeat))
+			while (FileSystem.exists(bakFilePath + '\\Projects.json.bak' + repeat))
 				repeat += 1;
 
-			File.saveContent(_folderPath + '\\.Bak\\Projects.json.bak' + repeat, File.getContent(file));
+			File.saveContent(bakFilePath + '\\Projects.json.bak' + repeat, File.getContent(file));
 
 			_projects = ProjectFileUtil.parseProjectJson(ProjectFileUtil.removeDuplicates(Json.parse(sys.io.File.getContent(file))));
 

@@ -35,7 +35,7 @@ Delete the project you imported in P3DPM, and ask for a new one from the person 
 Check your Discord Rich Presence, it should say the files/projects remaining under there (don't question it)
 
 ### All of my projects in Paint 3D are gone!
-Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\Projects\.Bak` and copy the json with the highest number (eg: Projects.json.bak6), then replace the Projects.json with the file you copied (make sure to name it exactly the same!) 
+Go to `%localappdata%\Packages\Microsoft.MSPaint_8wekyb3d8bbwe\LocalState\.Bak` and copy the json with the highest number (eg: Projects.json.bak6), then replace the Projects.json with the file you copied (make sure to name it exactly the same!) 
 
 If your projects are still gone, keep doing this same method but with the 2nd highest, then 3rd highest, and so on. checking each time you replace it to see if your projects have come back or not
 
