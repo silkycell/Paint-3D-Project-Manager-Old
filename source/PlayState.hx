@@ -55,6 +55,8 @@ class PlayState extends FlxState
 
 	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10, 10);
 
+	public static var lastMouseDelta = FlxPoint.get();
+
 	var github:FlxSprite;
 
 	var buttonsTargetY:Float = -15;
@@ -180,6 +182,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		FlxG.watch.addQuick('mouse delta', Math.fround(lastMouseDelta.length * 10) / 10);
+		lastMouseDelta.set(Util.lerp(lastMouseDelta.x, FlxG.mouse.deltaScreenX, 0.7), Util.lerp(lastMouseDelta.y, FlxG.mouse.deltaScreenY, 0.7));
 
 		#if debug
 		if (FlxG.keys.justPressed.SEVEN)
