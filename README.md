@@ -1,4 +1,6 @@
 # Paint 3D Project Manager
+> Somehow more stable than Paint 3D Itself!
+
 ## How to use:
 When you open the program for the first time, it'll take you to a page with all of your projects. (If it takes you to a window dialogue, just choose your "Projects.json" file)
 
