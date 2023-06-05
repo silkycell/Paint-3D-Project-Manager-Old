@@ -40,14 +40,17 @@ class ColorDebugState extends FlxState
 	{
 		super.update(elapsed);
 
-		currentColor.red += (FlxG.keys.pressed.Q ? 1 : 0);
-		currentColor.red -= (FlxG.keys.pressed.A ? 1 : 0);
+		currentColor.hue += (FlxG.keys.pressed.Q ? elapsed * 3 : 0);
+		currentColor.hue -= (FlxG.keys.pressed.A ? elapsed * 3 : 0);
 
-		currentColor.green += (FlxG.keys.pressed.W ? 1 : 0);
-		currentColor.green -= (FlxG.keys.pressed.S ? 1 : 0);
+		currentColor.saturation += (FlxG.keys.pressed.W ? elapsed * 0.2 : 0);
+		currentColor.saturation -= (FlxG.keys.pressed.S ? elapsed * 0.2 : 0);
 
-		currentColor.blue += (FlxG.keys.pressed.E ? 1 : 0);
-		currentColor.blue -= (FlxG.keys.pressed.D ? 1 : 0);
+		currentColor.lightness += (FlxG.keys.pressed.E ? elapsed * 0.2 : 0);
+		currentColor.lightness -= (FlxG.keys.pressed.D ? elapsed * 0.2 : 0);
+
+		if (FlxG.keys.justPressed.R)
+			currentColor = FlxColor.RED;
 
 		updateColors();
 	}
@@ -57,6 +60,7 @@ class ColorDebugState extends FlxState
 		bgColor = currentColor.getDarkened(0.4);
 		bg.color = currentColor;
 		text.color = Util.contrastColor(currentColor);
+		text.text = currentColor.getColorInfo();
 	}
 }
 #end
