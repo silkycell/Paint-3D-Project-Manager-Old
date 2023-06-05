@@ -376,6 +376,7 @@ class PlayState extends FlxState
 		Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
 		buttonsTargetY = -15;
+		buttons.y = 10;
 
 		colorArray = [];
 		sizeArray = [];
@@ -427,16 +428,17 @@ class PlayState extends FlxState
 
 	function drawButtons(projects:Array<ProjectFile>)
 	{
-		for (button in buttons)
+		buttons.forEachAlive((button) ->
 		{
+			button.kill();
 			buttons.remove(button);
 			button.destroy();
-		}
+		});
 
 		for (project in projects)
 		{
 			var index = projects.indexOf(project);
-			var button = new ProjectButton(0, (110 * index), 0, project);
+			var button = new ProjectButton(0, 0, 0, project);
 			button.instance = this;
 
 			buttons.add(button);
@@ -454,11 +456,11 @@ class PlayState extends FlxState
 	{
 		buttons.sort(ProjectFileUtil.sortDate, FlxSort.DESCENDING);
 
-		for (button in buttons)
+		buttons.forEachAlive((button) ->
 		{
 			var index = buttons.members.indexOf(button);
 			button.y = 110 * index;
-		}
+		});
 	}
 
 	public function selectProject(project:ProjectFile)
