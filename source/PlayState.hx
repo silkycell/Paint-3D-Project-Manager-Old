@@ -103,7 +103,8 @@ class PlayState extends FlxState
 			{
 				if (FlxG.save.data.projectFilePath != null)
 				{
-					loadJson(FlxG.save.data.projectFilePath);
+					if (FileSystem.exists(FlxG.save.data.projectFilePath))
+						loadJson(FlxG.save.data.projectFilePath);
 				}
 				else
 				{
