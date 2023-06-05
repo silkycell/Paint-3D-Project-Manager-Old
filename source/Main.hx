@@ -14,10 +14,7 @@ class Main extends Sprite
 		// prevent mem leak shit ig
 		FlxG.signals.preStateCreate.add((s) ->
 		{
-			cpp.vm.Gc.run(false);
 			cpp.vm.Gc.run(true);
-			cpp.vm.Gc.compact();
-			cpp.vm.Gc.run(false);
 			FlxG.bitmap.clearCache();
 		});
 	}
