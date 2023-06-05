@@ -303,7 +303,6 @@ class PlayState extends FlxState
 					{
 						if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
 						{
-							@await
 							Util.deleteDirRecursively(_folderPath + '\\' + file);
 
 							FileSystem.deleteDirectory(_folderPath + '\\' + file);
@@ -684,24 +683,18 @@ class PlayState extends FlxState
 
 				var loopTable = [];
 				for (key in entries.keys())
-					@await loopTable.push(key);
+					loopTable.push(key);
 
 				for (entry in entries.keys())
-					@await zipFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
+					zipFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
 
 				var missingFiles:Array<String> = [];
 				if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
 				{
 					for (i in File.getContent(_folderPath + '\\zipExport\\fileCheck.txt').split('\n'))
 					{
-						@async
-						function checkMissing()
-						{
-							if (!FileSystem.exists(_folderPath + '\\zipExport\\' + i))
-								missingFiles.push(i);
-						}
-
-						@await checkMissing();
+						if (!FileSystem.exists(_folderPath + '\\zipExport\\' + i))
+							missingFiles.push(i);
 					}
 				}
 
@@ -710,7 +703,7 @@ class PlayState extends FlxState
 				function continueImporting()
 				{
 					for (entry in entries.keys())
-						@await moveFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
+						moveFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
 
 					Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
@@ -724,9 +717,7 @@ class PlayState extends FlxState
 
 					for (project in Util.getArrayDifference(ProjectFileUtil.removeDuplicates(concatJson), concatJson))
 					{
-						@await
 						Util.deleteDirRecursively(ProjectFileUtil.getCheckpointFolder(project));
-
 						FileSystem.deleteDirectory(ProjectFileUtil.getCheckpointFolder(project));
 					}
 
@@ -776,7 +767,6 @@ class PlayState extends FlxState
 		});
 	}
 
-	@async
 	function zipFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
 		Discord.updatePresence('$cur files out of $max', 'Importing Projects', importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
@@ -797,7 +787,6 @@ class PlayState extends FlxState
 		File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
 	}
 
-	@async
 	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
 	{
 		Discord.updatePresence('$cur files out of $max', 'Moving Projects', importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
