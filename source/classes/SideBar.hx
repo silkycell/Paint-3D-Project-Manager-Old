@@ -83,35 +83,21 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		// Buttons
 		exportButton = new SideBarButton(infoText.x, bg.height - 150 - infoText.x, 450, 150, 'Export', defaultColor, instance);
-		exportButton.callback = function()
-		{
-			instance.exportProjects();
-		}
+		exportButton.callback = function() instance.exportProjects();
 
 		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, 450 / 2.1, 150, 'Import', defaultColor, instance);
-		importButton.callback = function()
-		{
-			instance.importProjects();
-		}
+		importButton.callback = function() instance.importProjects();
 
 		deleteButton = new SideBarButton(exportButton.x + (exportButton.width / 2) + (exportButton.width / 23), importButton.y, 450 / 2.1, 150, 'Delete',
 			defaultColor, instance);
-		deleteButton.callback = function()
-		{
-			instance.deleteProject();
-		}
+		deleteButton.callback = function() instance.deleteProject();
 
 		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Change Projects.json', defaultColor, instance, 30);
-		browseButton.callback = function()
-		{
-			instance.showFileDialog();
-		}
+		browseButton.callback = function() instance.showFileDialog();
 
 		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Appdata Path', defaultColor, instance);
-		pathButton.callback = function()
-		{
-			Sys.command("explorer.exe " + '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
-		}
+		pathButton.callback = function() Sys.command("explorer.exe "
+			+ '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
 
 		add(exportButton);
 		add(importButton);
