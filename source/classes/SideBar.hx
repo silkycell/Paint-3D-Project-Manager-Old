@@ -182,15 +182,14 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 	public function updateTextColors()
 	{
-		for (b in [
-			// WHY DOES IT FORMAT LIKE THIS WHEN I SAVE!!!
-			exportButton.text,
-			importButton.text,
-			deleteButton.text,
-			browseButton.text,
-			pathButton.text
-		].concat(cast texts.members))
+		for (b in texts.members)
 			b.color = Util.contrastColor(bg.color);
+
+		for (b in [exportButton, importButton, deleteButton, browseButton, pathButton])
+			b.text.color = Util.contrastColor(b.defaultColor);
+	}
+}
+
 class SideBarButton extends FlxSpriteGroup
 {
 	public var bg:FlxSprite;
