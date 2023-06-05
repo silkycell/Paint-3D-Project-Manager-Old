@@ -406,7 +406,6 @@ class PlayState extends FlxState
 
 			pathArray.pop();
 			var bakFilePath = pathArray.join('\\') + '\\.Bak';
-			trace(bakFilePath);
 
 			if (!FileSystem.exists(bakFilePath))
 				FileSystem.createDirectory(bakFilePath);
