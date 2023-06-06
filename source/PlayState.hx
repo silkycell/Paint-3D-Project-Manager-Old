@@ -321,6 +321,7 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.pressed.BACKSPACE)
 			FlxG.camera.zoom = 1;
+		#end
 
 		if (FlxG.keys.justPressed.F5)
 			FlxG.resetState();
@@ -333,7 +334,6 @@ class PlayState extends FlxState
 				button.checkBox.animation.play('check', true, !button.checkboxSelected);
 			}
 		}
-		#end
 
 		gridBG.x += 12 * elapsed;
 		gridBG.y += 12 * elapsed;
