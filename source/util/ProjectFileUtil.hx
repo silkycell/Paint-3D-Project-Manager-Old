@@ -31,12 +31,7 @@ class ProjectFileUtil
 		var projects:Array<ProjectFile> = [];
 
 		for (project in json)
-		{
-			if (StringTools.contains(project.Path.toLowerCase(), 'workingfolder'))
-				projects.insert(0, project);
-			else
-				projects.push(project);
-		}
+			projects.push(project);
 
 		if (projects.length == 0)
 		{

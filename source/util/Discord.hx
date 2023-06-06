@@ -37,7 +37,7 @@ class Discord
 
 	public static function initialize()
 	{
-		var DiscordDaemon = sys.thread.Thread.create(() ->
+		sys.thread.Thread.create(() ->
 		{
 			new Discord();
 		});

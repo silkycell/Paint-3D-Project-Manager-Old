@@ -73,12 +73,12 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		texts.add(thumbHint);
 
-		infoText2 = new FlxText(bg.width, 10, 350, '');
+		infoText2 = new FlxText(bg.width, 10, 350);
 		infoText2.setFormat('assets/fonts/comic.ttf', 18, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText2);
 
-		infoText = new FlxText(10, 10, 450, '');
+		infoText = new FlxText(10, 10, 450);
 		infoText.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText);

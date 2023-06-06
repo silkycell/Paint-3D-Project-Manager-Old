@@ -14,18 +14,16 @@ import util.Util;
 
 class MessageBox extends FlxSubState
 {
+	var bg:FlxUI9SliceSprite;
 	var box:FlxSpriteGroup = new FlxSpriteGroup();
 
+	var text:FlxText;
+
+	var buttons:Array<FlxSpriteGroup> = [];
 	var oneCallback:Void->Void;
 	var twoCallback:Void->Void;
 
 	var mainColor:FlxColor;
-
-	var bg:FlxUI9SliceSprite;
-
-	var text:FlxText;
-
-	public var buttons:Array<FlxSpriteGroup> = [];
 
 	var messageCam:FlxCamera;
 

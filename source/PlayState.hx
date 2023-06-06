@@ -364,9 +364,7 @@ class PlayState extends FlxState
 	public static function getCurrentColor(cur:ProjectFile):FlxColor
 	{
 		if (FlxG.save.data.darkModeEnabled)
-		{
 			return 0x2F2D31;
-		}
 
 		if (CacheManager.getCachedItem('color', cur) == null)
 			CacheManager.setCachedItem('color', cur, Util.saturatedColor(ProjectFileUtil.getThumbnail(cur)));
@@ -433,7 +431,6 @@ class PlayState extends FlxState
 
 		for (project in projects)
 		{
-			var index = projects.indexOf(project);
 			var button = new ProjectButton(0, 0, 0, project);
 			button.instance = this;
 
@@ -522,7 +519,6 @@ class PlayState extends FlxState
 					messageAppend += i.Name;
 			}
 
-			var message;
 			openSubState(new MessageBox(getCurrentColor(curSelected), 'Export Projects', 'Are you sure you want to export these projects?\n$messageAppend',
 				'Yes', 'No', function()
 			{
@@ -531,7 +527,7 @@ class PlayState extends FlxState
 				Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, exportTime,
 					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
-				message = new MessageBox(getCurrentColor(curSelected), 'Exporting',
+				var message = new MessageBox(getCurrentColor(curSelected), 'Exporting',
 					'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', '', null);
 				openSubState(message);
 
@@ -645,6 +641,7 @@ class PlayState extends FlxState
 		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
 		fDial.onSelect.add(function(file)
 		{
+			// THIS DOESNT FUCKING WORK
 			var splitFile:Array<String> = file.split('.');
 			if (!['p3d'].contains(splitFile[splitFile.length - 1].toLowerCase()))
 			{
