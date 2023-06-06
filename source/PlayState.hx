@@ -241,9 +241,9 @@ class PlayState extends FlxState
 
 		buttonsTargetY = FlxMath.bound(buttonsTargetY, FlxG.height - buttons.height - 5, 15);
 
-		if (canInteract)
+		if (canInteract && FlxG.mouse.screenX < 400)
 		{
-			if (FlxG.mouse.screenX < 400 && FlxG.mouse.justMoved && lastPressedTime >= 0.1)
+			if (FlxG.mouse.justMoved && lastPressedTime >= 0.1)
 				buttonsTargetY += FlxG.mouse.deltaScreenY * 1.2;
 
 			buttonsTargetY += (FlxG.mouse.wheel * 150);
