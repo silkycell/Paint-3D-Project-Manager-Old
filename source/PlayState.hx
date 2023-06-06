@@ -23,6 +23,7 @@ import openfl.display.BitmapData;
 import openfl.utils.Assets;
 import sys.FileSystem;
 import sys.io.File;
+import util.CacheManager;
 import util.Discord;
 import util.ProjectFileUtil;
 import util.Util;
@@ -45,10 +46,6 @@ class PlayState extends FlxState
 
 	static var init:Bool;
 	public static var curSelected:ProjectFile;
-
-	public static var colorArray:Array<Null<FlxColor>> = [];
-	public static var sizeArray:Array<Null<Float>> = [];
-	public static var thumbnailPool:Map<ProjectFile, BitmapData> = [];
 
 	public static var _projects:Array<ProjectFile> = [];
 	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
@@ -77,7 +74,10 @@ class PlayState extends FlxState
 			FlxG.save.data.darkModeEnabled = false;
 
 		if (!init)
+		{
+			util.CacheManager.initialize();
 			Discord.initialize();
+		}
 
 		gridBG = new FlxBackdrop('assets/images/grid.png');
 		gridBG.antialiasing = false;
@@ -368,9 +368,9 @@ class PlayState extends FlxState
 			return 0x2F2D31;
 		}
 
-		if (colorArray[_projects.indexOf(cur)] == null)
-			colorArray[_projects.indexOf(cur)] = Util.saturatedColor(ProjectFileUtil.getThumbnail(cur));
-		return colorArray[_projects.indexOf(cur)];
+		if (CacheManager.getCachedItem('color', cur) == null)
+			CacheManager.setCachedItem('color', cur, Util.saturatedColor(ProjectFileUtil.getThumbnail(cur)));
+		return CacheManager.getCachedItem('color', cur);
 	}
 
 	public function loadJson(file:String)
@@ -383,11 +383,7 @@ class PlayState extends FlxState
 		buttonsTargetY = -15;
 		buttons.y = 10;
 
-		colorArray = [];
-		sizeArray = [];
-
-		for (i in thumbnailPool.keys())
-			thumbnailPool.remove(i);
+		CacheManager.clearAllCached();
 
 		try
 		{

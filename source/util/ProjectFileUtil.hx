@@ -59,10 +59,10 @@ class ProjectFileUtil
 
 	public static function getThumbnail(project:ProjectFile)
 	{
-		if (PlayState.thumbnailPool.get(project) == null)
-			return PlayState.thumbnailPool[project] = getThumbnailData(project);
-		else
-			return PlayState.thumbnailPool[project];
+		if (CacheManager.getCachedItem('thumbnail', project) == null)
+			CacheManager.setCachedItem('thumbnail', project, getThumbnailData(project));
+
+		return CacheManager.getCachedItem('thumbnail', project);
 	}
 
 	public static function getThumbnailData(project:ProjectFile)
@@ -160,9 +160,9 @@ class ProjectFileUtil
 
 	public static function getProjectSize(project:ProjectFile)
 	{
-		if (PlayState.sizeArray[PlayState._projects.indexOf(project)] != null)
-			return PlayState.sizeArray[PlayState._projects.indexOf(project)];
-		else
-			return PlayState.sizeArray[PlayState._projects.indexOf(project)] = Util.getDirectorySize(getCheckpointFolder(project));
+		if (CacheManager.getCachedItem('size', project) == null)
+			CacheManager.setCachedItem('size', project, Util.getDirectorySize(getCheckpointFolder(project)));
+
+		return CacheManager.getCachedItem('size', project);
 	}
 }
