@@ -152,8 +152,7 @@ class PlayState extends FlxState
 					{
 						trace('version online: ' + data + ', your version: ' + version);
 						openSubState(new MessageBox(FlxColor.GRAY, 'Update',
-							'Hold on,  you\'re on an outdated version!\nNow, updating isn\'t exactly *necessary*. But if I were you, i\'d update, cause there can be bugs! Bad ones! Evil ones, even!\nYour version: $version\n Current version: $data',
-							'Update', 'Ignore', function()
+							'Hold on,  you\'re on an outdated version!\nYour version: $version\n Current version: $data', 'Update', 'Ignore', function()
 						{
 							FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
 							Sys.exit(0);
