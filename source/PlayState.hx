@@ -37,7 +37,7 @@ using StringTools;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.4b';
+	public static var version:String = '0.2.0b';
 	public static var instance:PlayState;
 
 	var gridBG:FlxBackdrop;
