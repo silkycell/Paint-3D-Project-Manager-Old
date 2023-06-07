@@ -146,8 +146,9 @@ class PlayState extends FlxState
 			#if !debug
 			if (!init)
 			{
+				trace('Checking for updates...');
 				var http = new haxe.Http("https://raw.githubusercontent.com/FoxelTheFennic/Paint-3D-Project-Manager/main/version.txt");
-
+				http.cnxTimeout = 5;
 				http.onData = function(data:String)
 				{
 					if (!StringTools.contains(data, version))
