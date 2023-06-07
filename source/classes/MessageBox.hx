@@ -12,7 +12,7 @@ import flixel.util.FlxColor;
 import openfl.geom.Rectangle;
 import util.Util;
 
-class MessageBox extends FlxSubState
+class MessageBox extends BasePopupSubstate
 {
 	var bg:FlxUI9SliceSprite;
 	var box:FlxSpriteGroup = new FlxSpriteGroup();
@@ -28,9 +28,9 @@ class MessageBox extends FlxSubState
 	var messageCam:FlxCamera;
 
 	public function new(mainColor:FlxColor, headerMessage:String, messageText:String, optionOne:String, ?optionTwo:String, oneCallback:Void->Void,
-			?twoCallback:Void->Void, BGColor:FlxColor = FlxColor.TRANSPARENT)
+			?twoCallback:Void->Void)
 	{
-		super(BGColor);
+		super(mainColor);
 
 		this.mainColor = mainColor;
 		this.oneCallback = oneCallback;
@@ -119,6 +119,13 @@ class MessageBox extends FlxSubState
 
 	public function closeAnim()
 	{
+		FlxTween.num(bgColor.alphaFloat, 0, 0.3, {ease: FlxEase.cubeOut}, function(num:Float)
+		{
+			var areYouKiddingMe = bgColor;
+			areYouKiddingMe.alphaFloat = num;
+			bgColor = areYouKiddingMe;
+		});
+
 		FlxTween.tween(box, {"scale.x": 2, "scale.y": 0}, 0.3, {
 			ease: FlxEase.cubeOut,
 			onComplete: function(twn:FlxTween)

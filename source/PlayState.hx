@@ -37,7 +37,7 @@ using StringTools;
 
 class PlayState extends FlxState
 {
-	public static var version:String = '0.1.4b';
+	public static var version:String = '0.2.0b';
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
@@ -619,7 +619,7 @@ class PlayState extends FlxState
 				Discord.updatePresenceDPO(Discord.defaultRich);
 				canInteract = true;
 				return;
-			}, 0x36FFFFFF));
+			}));
 		}
 		catch (e)
 		{
