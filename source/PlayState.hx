@@ -637,24 +637,8 @@ class PlayState extends FlxState
 
 		Discord.updatePresence('Importing Projects', null, null, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 
-		trace('Importing Projects...');
-		var fDial = new FileDialog();
-		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
-		fDial.onSelect.add(function(file)
+		function tryZipAnyway(file:String)
 		{
-			// THIS DOESNT FUCKING WORK
-			var splitFile:Array<String> = file.split('.');
-			if (!['p3d'].contains(splitFile[splitFile.length - 1].toLowerCase()))
-			{
-				openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Warning', 'This is not a P3D file!', 'Ok', 'Continue Anyway',
-					function()
-					{
-						Discord.updatePresenceDPO(Discord.defaultRich);
-						canInteract = true;
-						return;
-					}, function() {}));
-			}
-
 			Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
 			importTime = Std.int(Date.now().getTime() / 1000);
@@ -765,6 +749,30 @@ class PlayState extends FlxState
 					continueImporting();
 				}
 			}, 100);
+		}
+
+		trace('Importing Projects...');
+		var fDial = new FileDialog();
+		fDial.browse(FileDialogType.OPEN, 'p3d', null, 'Open a Paint 3D Project file.');
+		fDial.onSelect.add(function(file)
+		{
+			if (haxe.io.Path.extension(file).toLowerCase() != 'p3d')
+			{
+				openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Warning',
+					'Selected file is not a .p3d file!\nTrying to open this file anyway may result in a crash.', 'Cancel', 'Continue', function()
+				{
+					Discord.updatePresenceDPO(Discord.defaultRich);
+					canInteract = true;
+					return;
+				}, function()
+				{
+					tryZipAnyway(file);
+				}));
+			}
+			else
+			{
+				tryZipAnyway(file);
+			}
 		});
 
 		fDial.onCancel.add(function()
