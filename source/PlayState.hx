@@ -1,5 +1,6 @@
 package;
 
+import classes.CallbackButton;
 import classes.MessageBox;
 import classes.ProjectButton;
 import classes.SideBar;
@@ -54,7 +55,7 @@ class PlayState extends FlxState
 
 	public static var lastMouseDelta = FlxPoint.get();
 
-	var github:FlxSprite;
+	var github:CallbackButton;
 
 	var buttonsTargetY:Float = -15;
 	var lastPresses:Array<FlxKey> = [];
@@ -89,11 +90,33 @@ class PlayState extends FlxState
 
 		add(buttons);
 
-		github = new FlxSprite().loadGraphic("assets/images/github.png");
+		github = new CallbackButton(function(object)
+		{
+			FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
+		});
+
+		github.HoverCallback = function(object)
+		{
+			object.alpha = 1;
+			object.scale.x = Util.lerp(object.scale.x, 0.12, 0.2);
+			object.scale.y = Util.lerp(object.scale.y, 0.12, 0.2);
+			object.angle = Util.lerp(object.angle, -5, 0.2);
+		};
+
+		github.UnhoverCallback = function(object)
+		{
+			object.alpha = 0.5;
+			object.scale.x = Util.lerp(object.scale.x, 0.098, 0.2);
+			object.scale.y = Util.lerp(object.scale.y, 0.098, 0.2);
+			object.angle = Util.lerp(object.angle, 0, 0.2);
+		};
+
+		github.loadGraphic("assets/images/github.png");
 		github.setGraphicSize(50);
 		github.updateHitbox();
+		github.alpha = 0.5;
 		github.antialiasing = true;
-		github.y = 25;
+		github.y = 10;
 		github.x = FlxG.width - github.width - 15;
 		add(github);
 
@@ -219,24 +242,6 @@ class PlayState extends FlxState
 					FlxG.resetState();
 				}
 			}
-		}
-
-		if (FlxG.mouse.overlaps(github))
-		{
-			github.alpha = 1;
-			github.scale.x = Util.lerp(github.scale.x, 0.12, 0.2);
-			github.scale.y = Util.lerp(github.scale.y, 0.12, 0.2);
-			github.angle = Util.lerp(github.angle, -5, 0.2);
-
-			if (FlxG.mouse.justReleased)
-				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
-		}
-		else
-		{
-			github.alpha = 0.5;
-			github.scale.x = Util.lerp(github.scale.x, 0.098, 0.2);
-			github.scale.y = Util.lerp(github.scale.y, 0.098, 0.2);
-			github.angle = Util.lerp(github.angle, 0, 0.2);
 		}
 
 		buttonsTargetY = FlxMath.bound(buttonsTargetY, FlxG.height - buttons.height - 5, 15);
