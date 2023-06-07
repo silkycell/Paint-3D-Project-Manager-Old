@@ -25,8 +25,6 @@ import util.Util;
 
 class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
-	public var instance:PlayState;
-
 	var project:ProjectFile;
 
 	var texts:FlxSpriteGroup = new FlxSpriteGroup();
@@ -47,11 +45,9 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 	var thumbHint:FlxText;
 
-	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0, instance:PlayState)
+	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0)
 	{
 		super(x, y, MaxSize);
-
-		this.instance = instance;
 
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
@@ -60,7 +56,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		bg.color = defaultColor;
 		add(bg);
 
-		thumb = new Thumbnail(instance);
+		thumb = new Thumbnail();
 		thumb.thumbnail.updateHitbox();
 		thumb.thumbnail.x = bg.width - thumb.thumbnail.width - 43;
 		thumb.thumbnail.y = bg.height - thumb.thumbnail.height - 10;
@@ -84,20 +80,20 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		texts.add(infoText);
 
 		// Buttons
-		exportButton = new SideBarButton(infoText.x, bg.height - 150 - infoText.x, 450, 150, 'Export', defaultColor, instance);
-		exportButton.callback = function() instance.exportProjects();
+		exportButton = new SideBarButton(infoText.x, bg.height - 150 - infoText.x, 450, 150, 'Export', defaultColor);
+		exportButton.callback = function() PlayState.instance.exportProjects();
 
-		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, 450 / 2.1, 150, 'Import', defaultColor, instance);
-		importButton.callback = function() instance.importProjects();
+		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, 450 / 2.1, 150, 'Import', defaultColor);
+		importButton.callback = function() PlayState.instance.importProjects();
 
 		deleteButton = new SideBarButton(exportButton.x + (exportButton.width / 2) + (exportButton.width / 23), importButton.y, 450 / 2.1, 150, 'Delete',
-			defaultColor, instance);
-		deleteButton.callback = function() instance.deleteProject();
+			defaultColor);
+		deleteButton.callback = function() PlayState.instance.deleteProject();
 
-		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Change Projects.json', defaultColor, instance, 30);
-		browseButton.callback = function() instance.showFileDialog();
+		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Change Projects.json', defaultColor, 30);
+		browseButton.callback = function() PlayState.instance.showFileDialog();
 
-		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Appdata Path', defaultColor, instance);
+		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Appdata Path', defaultColor);
 		pathButton.callback = function() Sys.command("explorer.exe "
 			+ '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
 
@@ -199,10 +195,7 @@ class SideBarButton extends FlxSpriteGroup
 	public var defaultColor:FlxColor;
 	public var callback:Void->Void;
 
-	var instance:PlayState;
-
-	public function new(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, str:String = '', col:FlxColor = FlxColor.WHITE, instance:PlayState,
-			fontSize:Int = 40)
+	public function new(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, str:String = '', col:FlxColor = FlxColor.WHITE, fontSize:Int = 40)
 	{
 		super();
 		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, width, height), Util.sliceBounds);
@@ -217,7 +210,6 @@ class SideBarButton extends FlxSpriteGroup
 
 		this.x = x;
 		this.y = y;
-		this.instance = instance;
 
 		defaultColor = col;
 	}
@@ -230,7 +222,7 @@ class SideBarButton extends FlxSpriteGroup
 		{
 			bg.color = defaultColor.getDarkened(0.24);
 
-			if (FlxG.mouse.justReleased && instance.canInteract)
+			if (FlxG.mouse.justReleased && PlayState.instance.canInteract)
 				callback();
 		}
 		else
@@ -247,13 +239,9 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 	public var greyOverlay:FlxSpriteGroup;
 	public var buttonBG:FlxSprite;
 
-	var instance:PlayState;
-
-	public function new(instance:PlayState, x:Float = 0, y:Float = 0, maxSize:Int = 0)
+	public function new(x:Float = 0, y:Float = 0, maxSize:Int = 0)
 	{
 		super(x, y, maxSize);
-
-		this.instance = instance;
 
 		buttonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceBounds);
 		updateColor();
@@ -285,13 +273,13 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 	{
 		super.update(elapsed);
 
-		if (FlxG.mouse.overlaps(greyOverlay) && instance.canInteract)
+		if (FlxG.mouse.overlaps(greyOverlay) && PlayState.instance.canInteract)
 		{
 			greyOverlay.alpha = 0.5;
 
 			if (FlxG.mouse.justReleased)
 			{
-				instance.canInteract = false;
+				PlayState.instance.canInteract = false;
 				var fDial = new FileDialog();
 				fDial.onSelect.add(function(file:String)
 				{
@@ -299,12 +287,12 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 					newThumb.resize(294, 165);
 					File.saveBytes(ProjectFileUtil.getCheckpointFolder(PlayState.curSelected) + '\\Thumbnail.png', newThumb.encode(ImageFileFormat.PNG));
 
-					instance.canInteract = true;
-					instance.loadJson(instance.projectFilePath);
+					PlayState.instance.canInteract = true;
+					PlayState.instance.loadJson(PlayState.instance.projectFilePath);
 				});
 				fDial.onCancel.add(function()
 				{
-					instance.canInteract = true;
+					PlayState.instance.canInteract = true;
 				});
 				fDial.browse(FileDialogType.OPEN, 'png', null, "Select a PNG file to replace this project's thumbnail.");
 			}

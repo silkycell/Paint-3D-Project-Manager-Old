@@ -19,7 +19,6 @@ import util.Util;
 
 class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
-	public var instance:PlayState;
 	public var project:ProjectFile;
 	public var checkboxSelected:Bool;
 
@@ -83,7 +82,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 				checkBox.color = defaultColor.getDarkened(0.2);
 
 				if (FlxG.mouse.justReleased
-					&& instance.canInteract
+					&& PlayState.instance.canInteract
 					&& (PlayState.lastPressedTime < 0.2 && PlayState.lastMouseDelta.length < 5))
 				{
 					checkboxSelected = !checkboxSelected;
@@ -95,7 +94,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 				if (FlxG.mouse.justReleased
 					&& PlayState.curSelected != project
 					&& (PlayState.lastPressedTime < 0.2 && PlayState.lastMouseDelta.length < 5))
-					instance.selectProject(project);
+					PlayState.instance.selectProject(project);
 
 				checkBox.color = defaultColor;
 			}

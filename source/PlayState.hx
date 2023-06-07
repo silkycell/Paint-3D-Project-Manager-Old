@@ -38,6 +38,7 @@ using StringTools;
 class PlayState extends FlxState
 {
 	public static var version:String = '0.2.0b';
+	public static var instance:PlayState;
 
 	var gridBG:FlxBackdrop;
 	var sideBar:SideBar;
@@ -64,6 +65,8 @@ class PlayState extends FlxState
 	{
 		super.create();
 
+		instance = this;
+
 		curSelected = null;
 		_projects = [];
 
@@ -85,7 +88,7 @@ class PlayState extends FlxState
 		gridBG.scale.set(4, 4);
 		add(gridBG);
 
-		sideBar = new SideBar(400, 0, 0, this);
+		sideBar = new SideBar(400, 0, 0);
 		add(sideBar);
 
 		add(buttons);
@@ -437,7 +440,6 @@ class PlayState extends FlxState
 		for (project in projects)
 		{
 			var button = new ProjectButton(0, 0, 0, project);
-			button.instance = this;
 
 			buttons.add(button);
 		}
