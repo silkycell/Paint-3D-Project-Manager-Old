@@ -13,6 +13,7 @@ class CacheManager
 		cacheMap['thumbnail'] = new Map<ProjectFile, BitmapData>();
 		cacheMap['color'] = new Map<ProjectFile, FlxColor>();
 		cacheMap['size'] = new Map<ProjectFile, Float>();
+		cacheMap['objectcount'] = new Map<ProjectFile, Float>();
 	}
 
 	public static function getCachedItem(map:String, key:ProjectFile)

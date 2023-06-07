@@ -131,15 +131,17 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ Util.getProjectDate(project.DateTime);
 
 		infoText.updateHitbox();
+
 		Util.centerInRect(infoText, FlxRect.weak(exportButton.bg.x, 0, exportButton.bg.width, browseButton.bg.y));
 
+		infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id);
+
 		if (StringTools.contains(project.Path.toLowerCase(), 'workingfolder'))
-			infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id) + "\nSource ID: " + Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: "
-				+ Util.ifEmptyCheck(project.SourceFilePath) + "\nVersion: " + Util.ifEmptyCheck(project.Version) + "\nIsRecovered: "
-				+ Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: " + Util.ifEmptyCheck(project.IsPreviouslySaved);
-		else
-			infoText2.text = "ID: " + Util.ifEmptyCheck(project.Id) + "\nVersion: " + Util.ifEmptyCheck(project.Version) + "\nIsRecovered: "
-				+ Util.ifEmptyCheck(project.IsRecovered) + "\nIsPreviouslySaved: " + Util.ifEmptyCheck(project.IsPreviouslySaved);
+			infoText2.text += "\nSource ID: " + Util.ifEmptyCheck(project.SourceId) + "\nSourceFilePath: " + Util.ifEmptyCheck(project.SourceFilePath);
+
+		infoText2.text += "\nProject Version " + Util.ifEmptyCheck(project.Version) + "\nIsRecovered: " + Util.ifEmptyCheck(project.IsRecovered)
+			+ "\nIsPreviouslySaved: " + Util.ifEmptyCheck(project.IsPreviouslySaved) + "\nObject Count: "
+			+ Util.ifEmptyCheck(ProjectFileUtil.getObjectCount(project));
 
 		infoText2.updateHitbox();
 

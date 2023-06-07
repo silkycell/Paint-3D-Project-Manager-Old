@@ -5,6 +5,7 @@ import classes.ProjectButton;
 import flixel.FlxG;
 import flixel.util.FlxSort;
 import openfl.display.BitmapData;
+import sys.FileSystem;
 
 typedef ProjectFile =
 {
@@ -119,6 +120,11 @@ class ProjectFileUtil
 		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
 	}
 
+	public inline static function sortObjectCount(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		return FlxSort.byValues(Order, getObjectCount(a.project), getObjectCount(b.project));
+	}
+
 	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton)
 	{
 		var aN = a.project.Name.toUpperCase();
@@ -159,5 +165,29 @@ class ProjectFileUtil
 			CacheManager.setCachedItem('size', project, Util.getDirectorySize(getCheckpointFolder(project)));
 
 		return CacheManager.getCachedItem('size', project);
+	}
+
+	public static function getObjectCount(project:ProjectFile)
+	{
+		if (CacheManager.getCachedItem('objectcount', project) == null)
+		{
+			if (FileSystem.readDirectory(getCheckpointFolder(project)) == null)
+				return 0;
+
+			var objectList:Array<String> = [];
+
+			for (file in FileSystem.readDirectory(getCheckpointFolder(project)))
+			{
+				if (StringTools.contains(file.toLowerCase(), 'nodes_'))
+				{
+					if (!objectList.contains(file.split('_')[1]))
+						objectList.push(file.split('_')[1]);
+				}
+			}
+
+			CacheManager.setCachedItem('objectcount', project, objectList.length);
+		}
+
+		return CacheManager.getCachedItem('objectcount', project);
 	}
 }
