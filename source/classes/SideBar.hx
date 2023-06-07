@@ -305,7 +305,7 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 		greyOverlay.setPosition(thumbnail.x, thumbnail.y);
 	}
 
-	public function updateColor()
+	public inline function updateColor()
 	{
 		buttonBG.color = ProjectFileUtil.getCurrentColor(PlayState.curSelected);
 	}
