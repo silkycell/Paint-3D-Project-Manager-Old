@@ -680,8 +680,19 @@ class PlayState extends FlxState
 				for (key in entries.keys())
 					loopTable.push(key);
 
-				for (entry in entries.keys())
-					zipFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
+				try
+				{
+					for (entry in entries.keys())
+						zipFiles(entry, entries, loopTable.indexOf(entry) + 1, loopTable.length);
+				}
+				catch (e)
+				{
+					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Error Importing Project!', '$e', 'Ok', null, function()
+					{
+						FlxG.resetState();
+					}));
+					return;
+				}
 
 				var missingFiles:Array<String> = [];
 				if (FileSystem.exists(_folderPath + '\\zipExport\\fileCheck.txt'))
@@ -779,7 +790,10 @@ class PlayState extends FlxState
 		if (entryPath != '\\' && !FileSystem.exists(_folderPath + '\\zipExport' + entryPath))
 			FileSystem.createDirectory(_folderPath + '\\zipExport' + entryPath);
 
-		File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
+		if (FileSystem.exists(_folderPath + '\\zipExport\\' + entry))
+			File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
+		else
+			throw 'Import failed!\nThis might happen if the filesize is too small.';
 	}
 
 	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
