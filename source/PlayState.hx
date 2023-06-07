@@ -41,6 +41,8 @@ class PlayState extends FlxState
 	public static var instance:PlayState;
 
 	var gridBG:FlxBackdrop;
+	var targetColor:FlxColor = FlxColor.WHITE;
+
 	var sideBar:SideBar;
 
 	public var projectFilePath:String;
@@ -218,6 +220,8 @@ class PlayState extends FlxState
 		#end
 
 		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
+
+		gridBG.color = FlxColor.interpolate(gridBG.color, targetColor, 0.2);
 
 		// secret DARK MODE
 		if (FlxG.keys.justPressed.ANY)
@@ -457,7 +461,7 @@ class PlayState extends FlxState
 		curSelected = project;
 
 		var daColor:FlxColor = ProjectFileUtil.getCurrentColor(project);
-		gridBG.color = daColor.getDarkened(0.3);
+		targetColor = daColor.getDarkened(0.3);
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
