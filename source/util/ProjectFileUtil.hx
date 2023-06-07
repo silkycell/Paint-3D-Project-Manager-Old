@@ -53,52 +53,6 @@ class ProjectFileUtil
 		return projects;
 	}
 
-	// hi guys its me razzytism
-	public static inline function getProjectDate(time:Float):String
-	{
-		if (time <= 0)
-			return '(empty)';
-		else
-		{
-			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
-			return DateTools.format(date, '%D\n%r');
-		}
-	}
-
-	public static function getThumbnail(project:ProjectFile)
-	{
-		if (CacheManager.getCachedItem('thumbnail', project) == null)
-			CacheManager.setCachedItem('thumbnail', project, getThumbnailData(project));
-
-		return CacheManager.getCachedItem('thumbnail', project);
-	}
-
-	public static function getThumbnailData(project:ProjectFile)
-	{
-		if (project == null)
-		{
-			trace('project is null, returning default thumbnail...');
-			return defaultThumb;
-		}
-		try
-		{
-			if (BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png') != null)
-				return BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png');
-			else
-				return defaultThumb;
-		}
-		catch (e)
-		{
-			trace('Error getting ${project.Name} thumbnail: ' + e);
-			return defaultThumb;
-		}
-	}
-
-	public static function getCheckpointFolder(project:ProjectFile)
-	{
-		return PlayState._folderPath + '\\' + project.Path.substr(9);
-	}
-
 	public static function removeDuplicates(objects:Array<ProjectFile>)
 	{
 		var unique:Array<ProjectFile> = [];
@@ -120,29 +74,6 @@ class ProjectFileUtil
 		}
 
 		return unique;
-	}
-
-	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton)
-	{
-		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
-	}
-
-	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton)
-	{
-		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
-	}
-
-	public inline static function sortObjectCount(Order:Int, a:ProjectButton, b:ProjectButton)
-	{
-		return FlxSort.byValues(Order, getObjectCount(a.project), getObjectCount(b.project));
-	}
-
-	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton)
-	{
-		var aN = a.project.Name.toUpperCase();
-		var bN = b.project.Name.toUpperCase();
-
-		return aN > bN ? Order : -Order;
 	}
 
 	public static function generateID()
@@ -171,12 +102,53 @@ class ProjectFileUtil
 		return result;
 	}
 
+	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
+	}
+
+	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
+	}
+
+	public inline static function sortObjectCount(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		return FlxSort.byValues(Order, getObjectCount(a.project), getObjectCount(b.project));
+	}
+
+	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		var aN = a.project.Name.toUpperCase();
+		var bN = b.project.Name.toUpperCase();
+
+		return aN > bN ? Order : -Order;
+	}
+
+	public static function getThumbnail(project:ProjectFile)
+	{
+		if (CacheManager.getCachedItem('thumbnail', project) == null)
+			CacheManager.setCachedItem('thumbnail', project, getThumbnailData(project));
+
+		return CacheManager.getCachedItem('thumbnail', project);
+	}
+
 	public static function getProjectSize(project:ProjectFile)
 	{
 		if (CacheManager.getCachedItem('size', project) == null)
 			CacheManager.setCachedItem('size', project, Util.getDirectorySize(getCheckpointFolder(project)));
 
 		return CacheManager.getCachedItem('size', project);
+	}
+
+	public static function getCurrentColor(cur:ProjectFile)
+	{
+		if (FlxG.save.data.darkModeEnabled)
+			return 0x2F2D31;
+
+		if (CacheManager.getCachedItem('color', cur) == null)
+			CacheManager.setCachedItem('color', cur, Util.saturatedColor(ProjectFileUtil.getThumbnail(cur)));
+		return CacheManager.getCachedItem('color', cur);
 	}
 
 	public static function getObjectCount(project:ProjectFile)
@@ -201,5 +173,43 @@ class ProjectFileUtil
 		}
 
 		return CacheManager.getCachedItem('objectcount', project);
+	}
+
+	// hi guys its me razzytism
+	public static inline function getProjectDate(time:Float):String
+	{
+		if (time <= 0)
+			return '(empty)';
+		else
+		{
+			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
+			return DateTools.format(date, '%D\n%r');
+		}
+	}
+
+	public static function getCheckpointFolder(project:ProjectFile)
+	{
+		return PlayState._folderPath + '\\' + project.Path.substr(9);
+	}
+
+	public static function getThumbnailData(project:ProjectFile)
+	{
+		if (project == null)
+		{
+			trace('project is null, returning default thumbnail...');
+			return defaultThumb;
+		}
+		try
+		{
+			if (BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png') != null)
+				return BitmapData.fromFile(getCheckpointFolder(project) + '\\Thumbnail.png');
+			else
+				return defaultThumb;
+		}
+		catch (e)
+		{
+			trace('Error getting ${project.Name} thumbnail: ' + e);
+			return defaultThumb;
+		}
 	}
 }

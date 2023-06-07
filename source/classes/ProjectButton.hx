@@ -34,7 +34,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		super(x, y, MaxSize);
 		this.project = project;
 
-		defaultColor = PlayState.getCurrentColor(project);
+		defaultColor = ProjectFileUtil.getCurrentColor(project);
 
 		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 380, 100), Util.sliceBounds);
 		bg.color = defaultColor;
