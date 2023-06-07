@@ -671,7 +671,8 @@ class PlayState extends FlxState
 				}
 				catch (e)
 				{
-					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Error Importing Project!', '$e', 'Ok', null, function()
+					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Error Importing Project!',
+						'Import failed!\nThis might happen if the filesize is too small.', 'Ok', null, function()
 					{
 						FlxG.resetState();
 					}));
@@ -801,7 +802,7 @@ class PlayState extends FlxState
 		if (FileSystem.exists(_folderPath + '\\zipExport\\' + entry))
 			File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
 		else
-			throw 'Import failed!\nThis might happen if the filesize is too small.';
+			throw;
 	}
 
 	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
