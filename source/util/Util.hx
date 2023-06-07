@@ -158,18 +158,6 @@ class Util
 		}
 	}
 
-	// hi guys its me razzytism
-	public static inline function getProjectDate(time:Float):String
-	{
-		if (time <= 0)
-			return '(empty)';
-		else
-		{
-			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
-			return DateTools.format(date, '%D\n%r');
-		}
-	}
-
 	public static inline function lerp(a:Float, b:Float, t:Float)
 	{
 		return FlxMath.lerp(a, b, FlxMath.bound(t * 60 * FlxG.elapsed, 0, 1));

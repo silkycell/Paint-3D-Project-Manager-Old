@@ -53,6 +53,18 @@ class ProjectFileUtil
 		return projects;
 	}
 
+	// hi guys its me razzytism
+	public static inline function getProjectDate(time:Float):String
+	{
+		if (time <= 0)
+			return '(empty)';
+		else
+		{
+			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
+			return DateTools.format(date, '%D\n%r');
+		}
+	}
+
 	public static function getThumbnail(project:ProjectFile)
 	{
 		if (CacheManager.getCachedItem('thumbnail', project) == null)

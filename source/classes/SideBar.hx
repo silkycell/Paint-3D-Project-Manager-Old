@@ -124,7 +124,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 			+ "\nSize: "
 			+ FlxStringUtil.formatBytes(ProjectFileUtil.getProjectSize(project), 2)
 			+ "\nLast Modified: "
-			+ Util.getProjectDate(project.DateTime);
+			+ ProjectFileUtil.getProjectDate(project.DateTime);
 
 		infoText.updateHitbox();
 
