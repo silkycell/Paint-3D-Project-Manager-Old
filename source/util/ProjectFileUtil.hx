@@ -96,7 +96,7 @@ class ProjectFileUtil
 			var isDuplicate = false;
 			for (obj2 in unique)
 			{
-				if (obj1.Id == obj2.Id || obj1.Path == obj2.Path)
+				if (obj1.Path == obj2.Path)
 				{
 					isDuplicate = true;
 					break;
