@@ -802,7 +802,7 @@ class PlayState extends FlxState
 		if (FileSystem.exists(_folderPath + '\\zipExport\\' + entry))
 			File.saveBytes(_folderPath + '\\zipExport\\' + entry, Zip.getBytes(entries.get(entry)));
 		else
-			throw;
+			throw null; // apparently you can just do throw;
 	}
 
 	function moveFiles(entry:String, entries:StringMap<ZipEntry>, cur:Int, max:Int)
