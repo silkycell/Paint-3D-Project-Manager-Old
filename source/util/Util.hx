@@ -26,50 +26,6 @@ class Util
 {
 	public static var sliceBounds = [66, 66, 132, 132];
 
-	public static function calculateAverageColor(image:BitmapData)
-	{
-		var r:Float = 0;
-		var g:Float = 0;
-		var b:Float = 0;
-		var t:Float = 0;
-		if (image != null)
-		{
-			if (image.transparent)
-			{
-				for (x in 0...image.width)
-				{
-					for (y in 0...image.height)
-					{
-						var c:FlxColor = image.getPixel32(x, y);
-						r += c.redFloat * c.lightness * c.alpha;
-						g += c.greenFloat * c.lightness * c.alpha;
-						b += c.blueFloat * c.lightness * c.alpha;
-						t += c.lightness * c.alpha;
-					}
-				}
-			}
-			else
-			{
-				for (x in 0...image.width)
-				{
-					for (y in 0...image.height)
-					{
-						var c:FlxColor = image.getPixel(x, y);
-						r += c.redFloat * c.lightness;
-						g += c.greenFloat * c.lightness;
-						b += c.blueFloat * c.lightness;
-						t += c.lightness;
-					}
-				}
-			}
-			if (t == 0)
-			{
-				return 0xFFFFFFFF;
-			}
-		}
-		return FlxColor.fromRGBFloat(r / t, g / t, b / t);
-	}
-
 	public static function saturatedColor(image:BitmapData)
 	{
 		var h:Float = 0;
