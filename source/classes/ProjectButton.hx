@@ -27,7 +27,8 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var thumb:FlxSprite;
 	var bg:FlxUI9SliceSprite;
 	var text:FlxText;
-	var defaultColor:FlxColor;
+
+	public var defaultColor:FlxColor;
 
 	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0, project:ProjectFile)
 	{

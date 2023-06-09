@@ -8,6 +8,8 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
+import flixel.addons.ui.FlxUIDropDownMenu;
+import flixel.addons.ui.FlxUIState;
 import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
@@ -35,7 +37,7 @@ import zip.ZipWriter;
 
 using StringTools;
 
-class PlayState extends FlxState
+class PlayState extends FlxUIState
 {
 	public static var version:String = '0.2.0b';
 	public static var instance:PlayState;
@@ -62,6 +64,8 @@ class PlayState extends FlxState
 
 	var buttonsTargetY:Float = -15;
 	var lastPresses:Array<FlxKey> = [];
+
+	var sortTypeDropdown:FlxUIDropDownMenu;
 
 	override public function create()
 	{
@@ -124,6 +128,27 @@ class PlayState extends FlxState
 		github.y = 10;
 		github.x = FlxG.width - github.width - 15;
 		add(github);
+
+		curSortType = (FlxG.save.data.curSortType == null ? 'Last Modified' : FlxG.save.data.curSortType);
+		FlxG.save.data.curSortType = curSortType;
+
+		// silky please make this fit the actual ui thanks
+		var dumbarray = [
+			"Last Modified",
+			'File Size (Small > Large)',
+			'File Size (Large > Small)',
+			'Object Count (Small > Large)',
+			'Object Count (Large > Small)',
+			'Alphabetically (Z-A)',
+			'Alphabetically (A-Z)',
+			"Color"
+		];
+		sortTypeDropdown = new FlxUIDropDownMenu(FlxG.width * 0.6, 15, FlxUIDropDownMenu.makeStrIdLabelArray(dumbarray), (str) ->
+		{
+			FlxG.save.data.curSortType = curSortType = str;
+			sortButtons(buttons);
+		});
+		add(sortTypeDropdown);
 
 		function doFirstLoad()
 		{
@@ -446,14 +471,36 @@ class PlayState extends FlxState
 		canInteract = true;
 	}
 
+	// TODO
+	public static var curSortType:String = 'Last Modified';
+
 	public function sortButtons(buttons:FlxTypedSpriteGroup<ProjectButton>)
 	{
-		buttons.sort(ProjectFileUtil.sortDate, FlxSort.DESCENDING);
+		switch (curSortType.toLowerCase())
+		{
+			case 'last modified':
+				buttons.sort(ProjectFileUtil.sortDate, FlxSort.DESCENDING);
+			case 'file size (small > large)':
+				buttons.sort(ProjectFileUtil.sortSize, FlxSort.ASCENDING);
+			case 'file size (large > small)':
+				buttons.sort(ProjectFileUtil.sortSize, FlxSort.DESCENDING);
+			case 'object count (small > large)':
+				buttons.sort(ProjectFileUtil.sortObjectCount, FlxSort.ASCENDING);
+			case 'object count (large > small)':
+				buttons.sort(ProjectFileUtil.sortObjectCount, FlxSort.DESCENDING);
+			case 'alphabetically (a-z)':
+				buttons.sort(ProjectFileUtil.sortAlphabetically, FlxSort.ASCENDING);
+			case 'alphabetically (z-a)':
+				buttons.sort(ProjectFileUtil.sortAlphabetically, FlxSort.DESCENDING);
+			case 'color':
+				buttons.sort(ProjectFileUtil.sortHue, FlxSort.ASCENDING);
+		}
 
 		buttons.forEachAlive((button) ->
 		{
 			var index = buttons.members.indexOf(button);
 			button.y = 110 * index;
+			button.y += buttonsTargetY;
 		});
 	}
 

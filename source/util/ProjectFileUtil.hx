@@ -107,6 +107,11 @@ class ProjectFileUtil
 		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
 	}
 
+	public inline static function sortHue(Order:Int, a:ProjectButton, b:ProjectButton)
+	{
+		return FlxSort.byValues(Order, a.defaultColor.hue, b.defaultColor.hue);
+	}
+
 	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton)
 	{
 		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
