@@ -28,8 +28,17 @@ class CacheManager
 
 	public static function clearCachePool(map:String)
 	{
-		for (i in cacheMap[map].keys())
-			cacheMap[map].remove(i);
+		if (map == 'thumbnail')
+		{
+			// ACTUALLY remove the bitmaps from memory
+			var funnyCache:openfl.utils.AssetCache = cast openfl.utils.Assets.cache;
+			funnyCache.bitmapData = new Map<String, BitmapData>();
+			cacheMap['thumbnail'].clear();
+		}
+		else
+		{
+			cacheMap[map].clear();
+		}
 	}
 
 	public static function clearAllCached()
