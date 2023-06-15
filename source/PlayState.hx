@@ -13,6 +13,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.text.FlxText.FlxTextAlign;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import haxe.Json;
@@ -99,7 +100,9 @@ class PlayState extends FlxUIState
 
 		add(buttons);
 
-		searchBar = new FlxUIInputText(10, 10, 400, '', 50);
+		searchBar = new FlxUIInputText(10, 10, 380, '', 47);
+		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
+		searchBar.backgroundColor = FlxColor.GRAY;
 		searchBar.callback = function(text, action)
 		{
 			if (action == 'input' || action == 'backspace')
@@ -552,6 +555,9 @@ class PlayState extends FlxUIState
 
 		var daColor:FlxColor = ProjectFileUtil.getProjectColor(project);
 		targetColor = daColor.getDarkened(0.3);
+		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
+		searchBar.backgroundColor = daColor.getDarkened(0.1);
+		searchBar.borderSize = 0;
 		gridBG.color = targetColor;
 
 		sideBar.x = FlxG.width;
