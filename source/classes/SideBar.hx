@@ -26,6 +26,10 @@ import util.Util;
 class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
 	var project:ProjectFile;
+	var defaultX:Float;
+
+	var defaultColor:FlxColor;
+	var bg:FlxUI9SliceSprite;
 
 	var texts:FlxSpriteGroup = new FlxSpriteGroup();
 	var infoText:FlxText;
@@ -38,11 +42,6 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var pathButton:SideBarButton;
 
 	var thumb:Thumbnail;
-	var bg:FlxUI9SliceSprite;
-	var defaultColor:FlxColor;
-
-	var defaultX:Float;
-
 	var thumbHint:FlxText;
 
 	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0)

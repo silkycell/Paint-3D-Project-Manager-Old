@@ -15,6 +15,9 @@ import util.Util;
 
 class MessageBox extends BasePopupSubstate
 {
+	var mainColor:FlxColor;
+
+	var messageCam:FlxCamera;
 	var bg:FlxUI9SliceSprite;
 	var box:FlxSpriteGroup = new FlxSpriteGroup();
 
@@ -23,10 +26,6 @@ class MessageBox extends BasePopupSubstate
 	var buttons:Array<FlxSpriteGroup> = [];
 	var oneCallback:Void->Void;
 	var twoCallback:Void->Void;
-
-	var mainColor:FlxColor;
-
-	var messageCam:FlxCamera;
 
 	public function new(mainColor:FlxColor, headerMessage:String, messageText:String, itemArray:Array<String>, optionOne:String, ?optionTwo:String,
 			oneCallback:Void->Void, ?twoCallback:Void->Void)

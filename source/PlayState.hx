@@ -38,35 +38,29 @@ using StringTools;
 
 class PlayState extends FlxUIState
 {
+	static var init:Bool;
+
 	public static var version:String = '0.2.0b';
 	public static var instance:PlayState;
 
-	var gridBG:FlxBackdrop;
-	var targetColor:FlxColor = FlxColor.WHITE;
-
-	var sideBar:SideBar;
+	public static var curSelected:ProjectFile;
+	public static var _projects:Array<ProjectFile> = [];
+	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
 
 	public var projectFilePath:String;
 	public var canInteract:Bool = true;
 
-	static var init:Bool;
-	public static var curSelected:ProjectFile;
+	var gridBG:FlxBackdrop;
+	var targetBGColor:FlxColor = FlxColor.WHITE;
 
-	public static var _projects:Array<ProjectFile> = [];
-	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
-
-	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10);
+	var sideBar:SideBar;
+	var sortTypeDropdown:FlxUIDropDownMenu;
 	var searchBar:FlxUIInputText;
-
-	public static var lastMouseDelta = FlxPoint.get();
-
 	var github:CallbackButton;
 
+	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10);
 	var buttonsTargetY:Float;
 	var buttonsDefaultY:Float = 90;
-	var lastPresses:Array<FlxKey> = [];
-
-	var sortTypeDropdown:FlxUIDropDownMenu;
 
 	override public function create()
 	{
@@ -254,6 +248,8 @@ class PlayState extends FlxUIState
 		init = true;
 	}
 
+	public static var lastMouseDelta = FlxPoint.get();
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -271,7 +267,7 @@ class PlayState extends FlxUIState
 
 		buttons.y = Util.lerp(buttons.y, buttonsTargetY, 0.2);
 
-		gridBG.color = FlxColor.interpolate(gridBG.color, targetColor, 0.2);
+		gridBG.color = FlxColor.interpolate(gridBG.color, targetBGColor, 0.2);
 		gridBG.x += 12 * elapsed;
 		gridBG.y += 12 * elapsed;
 
@@ -280,6 +276,9 @@ class PlayState extends FlxUIState
 	}
 
 	public static var lastPressedTime:Float = 0;
+
+	var lastPresses:Array<FlxKey> = [];
+
 	static var secretArray:Array<FlxKey> = [ZERO, FOUR, ONE, TWO];
 
 	function keysCheck(elapsed:Float)
@@ -554,11 +553,11 @@ class PlayState extends FlxUIState
 		curSelected = project;
 
 		var daColor:FlxColor = ProjectFileUtil.getProjectColor(project);
-		targetColor = daColor.getDarkened(0.3);
+		targetBGColor = daColor.getDarkened(0.3);
 		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = daColor.getDarkened(0.1);
 		searchBar.borderSize = 0;
-		gridBG.color = targetColor;
+		gridBG.color = targetBGColor;
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
