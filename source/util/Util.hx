@@ -26,7 +26,7 @@ class Util
 {
 	public static var sliceBounds = [66, 66, 132, 132];
 
-	public static function saturatedColor(image:BitmapData)
+	public static function saturatedColor(image:BitmapData):FlxColor
 	{
 		var h:Float = 0;
 		var s:Float = 0;

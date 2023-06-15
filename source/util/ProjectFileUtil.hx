@@ -126,7 +126,7 @@ class ProjectFileUtil
 		var aN = a.project.Name.toUpperCase();
 		var bN = b.project.Name.toUpperCase();
 
-		return aN > bN ? Order : -Order;
+		return aN < bN ? Order : -Order;
 	}
 
 	public static function getThumbnail(project:ProjectFile)

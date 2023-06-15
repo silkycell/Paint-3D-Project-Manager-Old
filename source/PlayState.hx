@@ -131,16 +131,20 @@ class PlayState extends FlxUIState
 		FlxG.save.data.curSortType = curSortType;
 
 		// silky please make this fit the actual ui thanks
+		// Dont call me silky also ok ill od it later
 		var dumbarray = [
 			"Last Modified",
 			'File Size (Small > Large)',
 			'File Size (Large > Small)',
 			'Object Count (Small > Large)',
 			'Object Count (Large > Small)',
-			'Alphabetically (Z-A)',
 			'Alphabetically (A-Z)',
-			"Color"
+			'Alphabetically (Z-A)'
 		];
+
+		if (!FlxG.save.data.darkModeEnabled)
+			dumbarray.push('Hue');
+
 		sortTypeDropdown = new FlxUIDropDownMenu(FlxG.width * 0.6, 15, FlxUIDropDownMenu.makeStrIdLabelArray(dumbarray), (str) ->
 		{
 			FlxG.save.data.curSortType = curSortType = str;
@@ -490,7 +494,7 @@ class PlayState extends FlxUIState
 				buttons.sort(ProjectFileUtil.sortAlphabetically, FlxSort.ASCENDING);
 			case 'alphabetically (z-a)':
 				buttons.sort(ProjectFileUtil.sortAlphabetically, FlxSort.DESCENDING);
-			case 'color':
+			case 'hue':
 				buttons.sort(ProjectFileUtil.sortHue, FlxSort.ASCENDING);
 		}
 
