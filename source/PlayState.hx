@@ -20,7 +20,6 @@ import haxe.ds.StringMap;
 import haxe.format.JsonPrinter;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
-import openfl.display.BitmapData;
 import openfl.utils.Assets;
 import sys.FileSystem;
 import sys.io.File;
