@@ -19,16 +19,16 @@ import util.Util;
 
 class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
+	public var defaultColor:FlxColor;
 	public var project:ProjectFile;
-	public var checkboxSelected:Bool;
 
+	var bg:FlxUI9SliceSprite;
+
+	public var checkboxSelected:Bool;
 	public var checkBox:FlxSprite;
 
 	var thumb:FlxSprite;
-	var bg:FlxUI9SliceSprite;
 	var text:FlxText;
-
-	public var defaultColor:FlxColor;
 
 	override public function new(x:Float = 0, y:Float = 0, MaxSize:Int = 0, project:ProjectFile)
 	{
