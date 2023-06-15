@@ -2,12 +2,14 @@ package classes;
 
 import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil;
 import openfl.geom.Rectangle;
 import util.Util;
 
@@ -26,8 +28,8 @@ class MessageBox extends BasePopupSubstate
 
 	var messageCam:FlxCamera;
 
-	public function new(mainColor:FlxColor, headerMessage:String, messageText:String, optionOne:String, ?optionTwo:String, oneCallback:Void->Void,
-			?twoCallback:Void->Void)
+	public function new(mainColor:FlxColor, headerMessage:String, messageText:String, itemArray:Array<String>, optionOne:String, ?optionTwo:String,
+			oneCallback:Void->Void, ?twoCallback:Void->Void)
 	{
 		super(mainColor);
 
@@ -47,9 +49,15 @@ class MessageBox extends BasePopupSubstate
 		text.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.screenCenter();
-		text.y -= 60;
+		text.y -= (itemArray.length > 0 ? 150 : 60);
 
 		box.add(text);
+
+		var testText = new FlxText(0, 0, bg.width, itemArray.join('\n'));
+		testText.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
+		testText.updateHitbox();
+		testText.screenCenter();
+		box.add(testText);
 
 		// if the popup has no buttons
 		if (optionOne == '')
