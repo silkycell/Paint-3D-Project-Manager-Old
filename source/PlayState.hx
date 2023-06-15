@@ -5,8 +5,6 @@ import classes.MessageBox;
 import classes.ProjectButton;
 import classes.SideBar;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.addons.ui.FlxUIState;
