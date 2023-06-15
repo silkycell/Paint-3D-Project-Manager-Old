@@ -146,7 +146,7 @@ class ProjectFileUtil
 		return CacheManager.getCachedItem('size', project);
 	}
 
-	public static function getCurrentColor(cur:ProjectFile):FlxColor
+	public static function getProjectColor(cur:ProjectFile):FlxColor
 	{
 		if (FlxG.save.data.darkModeEnabled)
 			return 0x2F2D31;
