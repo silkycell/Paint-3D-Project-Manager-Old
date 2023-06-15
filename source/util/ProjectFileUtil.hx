@@ -3,6 +3,7 @@ package util;
 import PlayState;
 import classes.ProjectButton;
 import flixel.FlxG;
+import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import openfl.display.BitmapData;
 import sys.FileSystem;
@@ -26,7 +27,7 @@ class ProjectFileUtil
 	public static var disallowedChars:Array<String> = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
 	public static var defaultThumb:BitmapData;
 
-	public static function parseProjectJson(json:Array<Dynamic>)
+	public static function parseProjectJson(json:Array<Dynamic>):Array<ProjectFile>
 	{
 		var projects:Array<ProjectFile> = [];
 
@@ -52,7 +53,7 @@ class ProjectFileUtil
 		return projects;
 	}
 
-	public static function removeDuplicates(objects:Array<ProjectFile>)
+	public static function removeDuplicates(objects:Array<ProjectFile>):Array<ProjectFile>
 	{
 		var unique:Array<ProjectFile> = [];
 
@@ -75,7 +76,7 @@ class ProjectFileUtil
 		return unique;
 	}
 
-	public static function generateID()
+	public static function generateID():String
 	{
 		var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var result = '{';
@@ -101,27 +102,27 @@ class ProjectFileUtil
 		return result;
 	}
 
-	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton)
+	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
 		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
 	}
 
-	public inline static function sortHue(Order:Int, a:ProjectButton, b:ProjectButton)
+	public inline static function sortHue(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
 		return FlxSort.byValues(Order, a.defaultColor.hue, b.defaultColor.hue);
 	}
 
-	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton)
+	public inline static function sortSize(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
 		return FlxSort.byValues(Order, getProjectSize(a.project), getProjectSize(b.project));
 	}
 
-	public inline static function sortObjectCount(Order:Int, a:ProjectButton, b:ProjectButton)
+	public inline static function sortObjectCount(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
 		return FlxSort.byValues(Order, getObjectCount(a.project), getObjectCount(b.project));
 	}
 
-	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton)
+	public inline static function sortAlphabetically(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
 		var aN = a.project.Name.toUpperCase();
 		var bN = b.project.Name.toUpperCase();
@@ -129,7 +130,7 @@ class ProjectFileUtil
 		return aN < bN ? Order : -Order;
 	}
 
-	public static function getThumbnail(project:ProjectFile)
+	public static function getThumbnail(project:ProjectFile):BitmapData
 	{
 		if (CacheManager.getCachedItem('thumbnail', project) == null)
 			CacheManager.setCachedItem('thumbnail', project, getThumbnailData(project));
@@ -137,7 +138,7 @@ class ProjectFileUtil
 		return CacheManager.getCachedItem('thumbnail', project);
 	}
 
-	public static function getProjectSize(project:ProjectFile)
+	public static function getProjectSize(project:ProjectFile):Int
 	{
 		if (CacheManager.getCachedItem('size', project) == null)
 			CacheManager.setCachedItem('size', project, Util.getDirectorySize(getCheckpointFolder(project)));
@@ -145,7 +146,7 @@ class ProjectFileUtil
 		return CacheManager.getCachedItem('size', project);
 	}
 
-	public static function getCurrentColor(cur:ProjectFile)
+	public static function getCurrentColor(cur:ProjectFile):FlxColor
 	{
 		if (FlxG.save.data.darkModeEnabled)
 			return 0x2F2D31;
@@ -155,7 +156,7 @@ class ProjectFileUtil
 		return CacheManager.getCachedItem('color', cur);
 	}
 
-	public static function getObjectCount(project:ProjectFile)
+	public static function getObjectCount(project:ProjectFile):Int
 	{
 		if (CacheManager.getCachedItem('objectcount', project) == null)
 		{
@@ -191,12 +192,12 @@ class ProjectFileUtil
 		}
 	}
 
-	public static function getCheckpointFolder(project:ProjectFile)
+	public static function getCheckpointFolder(project:ProjectFile):String
 	{
 		return PlayState._folderPath + '\\' + project.Path.substr(9);
 	}
 
-	public static function getThumbnailData(project:ProjectFile)
+	public static function getThumbnailData(project:ProjectFile):BitmapData
 	{
 		if (project == null)
 		{

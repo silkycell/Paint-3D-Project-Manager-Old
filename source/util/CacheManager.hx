@@ -18,12 +18,12 @@ class CacheManager
 		ProjectFileUtil.defaultThumb = Assets.getBitmapData('assets/images/thumbFallback.png');
 	}
 
-	public static function getCachedItem(map:String, key:ProjectFile)
+	public static function getCachedItem(map:String, key:ProjectFile):Dynamic
 	{
 		return cacheMap[map][key];
 	}
 
-	public static function setCachedItem(map:String, key:ProjectFile, object:Dynamic)
+	public static function setCachedItem(map:String, key:ProjectFile, object:Dynamic):Dynamic
 	{
 		return cacheMap[map][key] = object;
 	}

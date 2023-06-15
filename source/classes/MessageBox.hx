@@ -134,7 +134,7 @@ class MessageBox extends BasePopupSubstate
 		});
 	}
 
-	function getTypeFromGroup(group:FlxSpriteGroup, object:Dynamic)
+	function getTypeFromGroup(group:FlxSpriteGroup, object:Dynamic):Dynamic
 	{
 		for (item in group)
 		{
