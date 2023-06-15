@@ -508,6 +508,7 @@ class PlayState extends FlxUIState
 
 		var daColor:FlxColor = ProjectFileUtil.getCurrentColor(project);
 		targetColor = daColor.getDarkened(0.3);
+		gridBG.color = targetColor;
 
 		sideBar.x = FlxG.width;
 		sideBar.loadProject(project);
