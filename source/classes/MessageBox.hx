@@ -38,7 +38,7 @@ class MessageBox extends BasePopupSubstate
 		messageCam = new FlxCamera();
 		FlxG.cameras.add(messageCam);
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 700, 400), Util.sliceBounds);
+		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 700, 400), Util.sliceBounds);
 		bg.screenCenter();
 		bg.color = mainColor;
 		box.add(bg);
@@ -64,7 +64,7 @@ class MessageBox extends BasePopupSubstate
 			var button = new FlxSpriteGroup();
 			buttons.push(button);
 
-			var buttonBg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 200, 130), Util.sliceBounds);
+			var buttonBg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 200, 130), Util.sliceBounds);
 			buttonBg.color = mainColor.getDarkened(0.2);
 			buttonBg.screenCenter();
 			buttonBg.y += 100;

@@ -24,7 +24,6 @@ typedef ProjectFile =
 class ProjectFileUtil
 {
 	public static var disallowedChars:Array<String> = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-
 	public static var defaultThumb:BitmapData = BitmapData.fromFile('assets/images/thumbFallback.png');
 
 	public static function parseProjectJson(json:Array<Dynamic>)
