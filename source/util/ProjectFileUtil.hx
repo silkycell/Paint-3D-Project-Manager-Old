@@ -132,18 +132,18 @@ class ProjectFileUtil
 
 	public static function getThumbnail(project:ProjectFile):BitmapData
 	{
-		if (CacheManager.getCachedItem('thumbnail', project) == null)
-			CacheManager.setCachedItem('thumbnail', project, getThumbnailData(project));
+		if (CacheManager.getCachedItem(THUMBNAIL, project) == null)
+			CacheManager.setCachedItem(THUMBNAIL, project, getThumbnailData(project));
 
-		return CacheManager.getCachedItem('thumbnail', project);
+		return CacheManager.getCachedItem(THUMBNAIL, project);
 	}
 
 	public static function getProjectSize(project:ProjectFile):Int
 	{
-		if (CacheManager.getCachedItem('size', project) == null)
-			CacheManager.setCachedItem('size', project, Util.getDirectorySize(getCheckpointFolder(project)));
+		if (CacheManager.getCachedItem(SIZE, project) == null)
+			CacheManager.setCachedItem(SIZE, project, Util.getDirectorySize(getCheckpointFolder(project)));
 
-		return CacheManager.getCachedItem('size', project);
+		return CacheManager.getCachedItem(SIZE, project);
 	}
 
 	public static function getProjectColor(cur:ProjectFile):FlxColor
@@ -151,14 +151,14 @@ class ProjectFileUtil
 		if (FlxG.save.data.darkModeEnabled)
 			return 0x2F2D31;
 
-		if (CacheManager.getCachedItem('color', cur) == null)
-			CacheManager.setCachedItem('color', cur, Util.saturatedColor(ProjectFileUtil.getThumbnail(cur)));
-		return CacheManager.getCachedItem('color', cur);
+		if (CacheManager.getCachedItem(COLOR, cur) == null)
+			CacheManager.setCachedItem(COLOR, cur, Util.saturatedColor(ProjectFileUtil.getThumbnail(cur)));
+		return CacheManager.getCachedItem(COLOR, cur);
 	}
 
 	public static function getObjectCount(project:ProjectFile):Int
 	{
-		if (CacheManager.getCachedItem('objectcount', project) == null)
+		if (CacheManager.getCachedItem(OBJECTCOUNT, project) == null)
 		{
 			if (FileSystem.readDirectory(getCheckpointFolder(project)) == null)
 				return 0;
@@ -174,10 +174,10 @@ class ProjectFileUtil
 				}
 			}
 
-			CacheManager.setCachedItem('objectcount', project, objectList.length);
+			CacheManager.setCachedItem(OBJECTCOUNT, project, objectList.length);
 		}
 
-		return CacheManager.getCachedItem('objectcount', project);
+		return CacheManager.getCachedItem(OBJECTCOUNT, project);
 	}
 
 	// hi guys its me razzytism
