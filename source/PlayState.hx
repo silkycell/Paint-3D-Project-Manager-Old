@@ -182,7 +182,7 @@ class PlayState extends FlxUIState
 					{
 						trace('version online: ' + data + ', your version: ' + version);
 						openSubState(new MessageBox(FlxColor.GRAY, 'Update',
-							'Hold on,  you\'re on an outdated version!\nYour version: $version\n Current version: $data', 'Update', 'Ignore', function()
+							'Hold on,  you\'re on an outdated version!\nYour version: $version\n Current version: $data', null, 'Update', 'Ignore', function()
 						{
 							FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/releases/latest");
 							Sys.exit(0);
@@ -216,7 +216,7 @@ class PlayState extends FlxUIState
 		{
 			FlxG.save.data.hasSeenReadMeNotif = true;
 			openSubState(new MessageBox(FlxColor.GRAY, 'Welcome',
-				'Hello and welcome to P3D Project Manager!\nWould you like me to take you to the instructions/info page?', 'Yes', 'No', function()
+				'Hello and welcome to P3D Project Manager!\nWould you like me to take you to the instructions/info page?', null, 'Yes', 'No', function()
 			{
 				FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager/blob/main/README.md");
 				doFirstLoad();
@@ -295,8 +295,8 @@ class PlayState extends FlxUIState
 			if (FlxG.keys.pressed.CONTROL)
 			{
 				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Rebuild Json',
-					'Would you like to rebuild your Projects.json? (WARNING: THIS WILL ERASE ALL OF YOUR PROJECT NAMES, AND OTHER ISSUES MAY OCCOUR)', 'Yes',
-					'No', function()
+					'Would you like to rebuild your Projects.json? (WARNING: THIS WILL ERASE ALL OF YOUR PROJECT NAMES, AND OTHER ISSUES MAY OCCOUR)', null,
+					'Yes', 'No', function()
 				{
 					var newProjectJson:Array<ProjectFile> = [];
 
@@ -330,24 +330,25 @@ class PlayState extends FlxUIState
 			else
 			{
 				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Remove Non-Linked Folders',
-					'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', function()
-				{
-					var safeFolders = [];
-					for (project in _projects)
-						safeFolders.push(ProjectFileUtil.getCheckpointFolder(project));
-
-					safeFolders.push(_folderPath + '\\.Bak');
-
-					for (file in FileSystem.readDirectory(_folderPath))
+					'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', null, 'Yes', 'No',
+					function()
 					{
-						if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
-						{
-							Util.deleteDirRecursively(_folderPath + '\\' + file);
+						var safeFolders = [];
+						for (project in _projects)
+							safeFolders.push(ProjectFileUtil.getCheckpointFolder(project));
 
-							FileSystem.deleteDirectory(_folderPath + '\\' + file);
+						safeFolders.push(_folderPath + '\\.Bak');
+
+						for (file in FileSystem.readDirectory(_folderPath))
+						{
+							if (FileSystem.isDirectory(_folderPath + '\\' + file) && !safeFolders.contains(_folderPath + '\\' + file))
+							{
+								Util.deleteDirRecursively(_folderPath + '\\' + file);
+
+								FileSystem.deleteDirectory(_folderPath + '\\' + file);
+							}
 						}
-					}
-				}));
+					}));
 			}
 		}
 
@@ -560,18 +561,13 @@ class PlayState extends FlxUIState
 			Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, null, null,
 				'icon', Discord.versionInfo, 'export', 'Exporting');
 
-			var messageAppend:String = '';
+			var nameList:Array<String> = [];
 
 			for (i in projectsToExport)
-			{
-				if (projectsToExport.indexOf(i) != projectsToExport.length - 1)
-					messageAppend += i.Name + ', ';
-				else
-					messageAppend += i.Name;
-			}
+				nameList.push(i.Name);
 
 			openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Export Projects',
-				'Are you sure you want to export these projects?\n$messageAppend', 'Yes', 'No', function()
+				'Are you sure you want to export the following projects?', nameList, 'Yes', 'No', function()
 			{
 				persistentUpdate = true;
 				exportTime = Std.int(Date.now().getTime() / 1000);
@@ -579,7 +575,7 @@ class PlayState extends FlxUIState
 					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
 				var message = new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Exporting',
-					'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', '', null);
+					'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', null, '', '', null);
 				openSubState(message);
 
 				var validFileCheck:String = '';
@@ -696,7 +692,7 @@ class PlayState extends FlxUIState
 
 			persistentUpdate = true;
 			var message = new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Importing',
-				'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
+				'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', null, '', function() {});
 			openSubState(message);
 
 			Timer.delay(function() // Ditto reason as export
@@ -722,7 +718,7 @@ class PlayState extends FlxUIState
 				catch (e)
 				{
 					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Error Importing Project!',
-						'Import failed!\nThis might happen if the filesize is too small.', 'Ok', null, function()
+						'Import failed!\nThis might happen if the filesize is too small.', null, 'Ok', null, function()
 					{
 						FlxG.resetState();
 					}));
@@ -772,7 +768,7 @@ class PlayState extends FlxUIState
 					Discord.updatePresenceDPO(Discord.defaultRich);
 					message.closeAnim();
 					persistentUpdate = false;
-					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Importing', 'Importing Complete!', 'Ok', null, function()
+					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Importing', 'Importing Complete!', null, 'Ok', null, function()
 					{
 						// loadJson(_folderPath + '\\Projects.json');
 						FlxG.resetState();
@@ -784,7 +780,7 @@ class PlayState extends FlxUIState
 					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Missing Files',
 						'Woah there! This project has ' + missingFiles.length +
 						' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
-						'Continue', 'Cancel', function()
+						null, 'Continue', 'Cancel', function()
 					{
 						continueImporting();
 					}, function()
@@ -810,7 +806,7 @@ class PlayState extends FlxUIState
 			if (haxe.io.Path.extension(file).toLowerCase() != 'p3d')
 			{
 				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Warning',
-					'Selected file is not a .p3d file!\nTrying to open this file anyway may result in a crash.', 'Cancel', 'Continue', function()
+					'Selected file is not a .p3d file!\nTrying to open this file anyway may result in a crash.', null, 'Cancel', 'Continue', function()
 				{
 					Discord.updatePresenceDPO(Discord.defaultRich);
 					canInteract = true;
@@ -893,21 +889,16 @@ class PlayState extends FlxUIState
 		if (projectsToDelete.length == 0)
 			projectsToDelete = [curSelected];
 
-		var messageAppend:String = '';
+		var nameList:Array<String> = [];
 
 		for (i in projectsToDelete)
-		{
-			if (projectsToDelete.indexOf(i) != projectsToDelete.length - 1)
-				messageAppend += i.Name + ', ';
-			else
-				messageAppend += i.Name;
-		}
+			nameList.push(i.Name);
 
 		openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Project Deletion',
-			'Are you sure you want to delete the following projects?\n$messageAppend', 'Yes', 'No', function()
+			'Are you sure you want to delete the following projects?', nameList, 'Yes', 'No', function()
 		{
 			openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Project Deletion',
-				'Are you *REALLY* sure? You will not be able to recover these projects unless you made a backup!', 'Yes', 'No', function()
+				'Are you *REALLY* sure? You will not be able to recover these projects unless you made a backup!', null, 'Yes', 'No', function()
 			{
 				for (project in projectsToDelete)
 				{
@@ -925,7 +916,7 @@ class PlayState extends FlxUIState
 				File.saveContent(_folderPath + '\\Projects.json', Json.stringify(ProjectFileUtil.removeDuplicates(_projects)));
 
 				// just using white for this one because otherwise it'll load a null color and it'll be pitch black
-				openSubState(new MessageBox(0xEEEEEE, 'Project Deletion', 'Deletion Complete!', 'Ok', null, function()
+				openSubState(new MessageBox(0xEEEEEE, 'Project Deletion', 'Deletion Complete!', null, 'Ok', null, function()
 				{
 					canInteract = true;
 					FlxG.resetState();
