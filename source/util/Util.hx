@@ -65,12 +65,12 @@ class Util
 	}
 
 	// IMGONNA. REDO THIS ITS MAKIN ME MAAAD
-	public static function contrastColor(color:FlxColor)
+	public static function contrastColor(color:FlxColor):FlxColor
 	{
 		return colorBrightnessCheck(FlxColor.WHITE, color);
 	}
 
-	public static function colorBrightnessCheck(color:FlxColor, bgColor:FlxColor)
+	public static function colorBrightnessCheck(color:FlxColor, bgColor:FlxColor):FlxColor
 	{
 		var returnColor:FlxColor = color;
 
@@ -80,7 +80,7 @@ class Util
 		return returnColor;
 	}
 
-	public static function getColorDistance(color:FlxColor, bgColor:FlxColor)
+	public static function getColorDistance(color:FlxColor, bgColor:FlxColor):Float
 	{
 		var diffR:Int = color.red - bgColor.red;
 		var diffG:Int = color.green - bgColor.green;
@@ -91,13 +91,13 @@ class Util
 		return Math.sqrt(distanceSquared);
 	}
 
-	public static function ifEmptyCheck(value:Dynamic)
+	public static function ifEmptyCheck(value:Dynamic):String
 	{
 		var string:String = Std.string(value);
 		return (string == '' ? '(empty)' : string);
 	}
 
-	public static function getDirectorySize(path:String)
+	public static function getDirectorySize(path:String):Int
 	{
 		if (FileSystem.exists(path))
 		{
@@ -114,7 +114,7 @@ class Util
 		}
 	}
 
-	public static inline function lerp(a:Float, b:Float, t:Float)
+	public static inline function lerp(a:Float, b:Float, t:Float):Float
 	{
 		return FlxMath.lerp(a, b, FlxMath.bound(t * 60 * FlxG.elapsed, 0, 1));
 	}
@@ -131,7 +131,7 @@ class Util
         );
     ')
 	#end
-	static public function sendMsgBox(desc:String = "", res:Int = 0)
+	static public function sendMsgBox(desc:String = "", res:Int = 0):Int
 	{
 		return res;
 	}
@@ -156,7 +156,7 @@ class Util
 		}
 	}
 
-	public static function getArrayDifference(arr1:Array<Dynamic>, arr2:Array<Dynamic>)
+	public static function getArrayDifference(arr1:Array<Dynamic>, arr2:Array<Dynamic>):Array<Dynamic>
 	{
 		var diff:Array<Dynamic> = [];
 
