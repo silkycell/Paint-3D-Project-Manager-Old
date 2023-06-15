@@ -49,15 +49,18 @@ class MessageBox extends BasePopupSubstate
 		text.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.screenCenter();
-		text.y -= (itemArray.length > 0 ? 150 : 60);
+		text.y -= (itemArray != null ? 150 : 60);
 
 		box.add(text);
 
-		var testText = new FlxText(0, 0, bg.width, itemArray.join('\n'));
-		testText.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
-		testText.updateHitbox();
-		testText.screenCenter();
-		box.add(testText);
+		if (itemArray != null)
+		{
+			var testText = new FlxText(0, 0, bg.width, itemArray.join('\n'));
+			testText.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
+			testText.updateHitbox();
+			testText.screenCenter();
+			box.add(testText);
+		}
 
 		// if the popup has no buttons
 		if (optionOne == '')
