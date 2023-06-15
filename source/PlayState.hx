@@ -294,7 +294,7 @@ class PlayState extends FlxUIState
 		{
 			if (FlxG.keys.pressed.CONTROL)
 			{
-				openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Rebuild Json',
+				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Rebuild Json',
 					'Would you like to rebuild your Projects.json? (WARNING: THIS WILL ERASE ALL OF YOUR PROJECT NAMES, AND OTHER ISSUES MAY OCCOUR)', 'Yes',
 					'No', function()
 				{
@@ -329,7 +329,7 @@ class PlayState extends FlxUIState
 			}
 			else
 			{
-				openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Remove Non-Linked Folders',
+				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Remove Non-Linked Folders',
 					'Would you like to remove all non linked folders?\n(If you found this by accident, i\'d reccomend cancelling)', 'Yes', 'No', function()
 				{
 					var safeFolders = [];
@@ -510,7 +510,7 @@ class PlayState extends FlxUIState
 	{
 		curSelected = project;
 
-		var daColor:FlxColor = ProjectFileUtil.getCurrentColor(project);
+		var daColor:FlxColor = ProjectFileUtil.getProjectColor(project);
 		targetColor = daColor.getDarkened(0.3);
 		gridBG.color = targetColor;
 
@@ -570,7 +570,7 @@ class PlayState extends FlxUIState
 					messageAppend += i.Name;
 			}
 
-			openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Export Projects',
+			openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Export Projects',
 				'Are you sure you want to export these projects?\n$messageAppend', 'Yes', 'No', function()
 			{
 				persistentUpdate = true;
@@ -578,7 +578,7 @@ class PlayState extends FlxUIState
 				Discord.updatePresence('Exporting ' + (projectsToExport.length > 1 ? projectsToExport.length + ' Projects' : 'a Project'), null, exportTime,
 					null, 'icon', Discord.versionInfo, 'export', 'Exporting');
 
-				var message = new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Exporting',
+				var message = new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Exporting',
 					'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', '', null);
 				openSubState(message);
 
@@ -695,7 +695,7 @@ class PlayState extends FlxUIState
 			Discord.updatePresence('Importing Projects', null, importTime, null, 'icon', Discord.versionInfo, 'import', 'Importing');
 
 			persistentUpdate = true;
-			var message = new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Importing',
+			var message = new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Importing',
 				'(P3DPM may freeze multiple times throughout this, please do not be alarmed!)', '', function() {});
 			openSubState(message);
 
@@ -721,7 +721,7 @@ class PlayState extends FlxUIState
 				}
 				catch (e)
 				{
-					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Error Importing Project!',
+					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Error Importing Project!',
 						'Import failed!\nThis might happen if the filesize is too small.', 'Ok', null, function()
 					{
 						FlxG.resetState();
@@ -772,7 +772,7 @@ class PlayState extends FlxUIState
 					Discord.updatePresenceDPO(Discord.defaultRich);
 					message.closeAnim();
 					persistentUpdate = false;
-					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Importing', 'Importing Complete!', 'Ok', null, function()
+					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Importing', 'Importing Complete!', 'Ok', null, function()
 					{
 						// loadJson(_folderPath + '\\Projects.json');
 						FlxG.resetState();
@@ -781,7 +781,7 @@ class PlayState extends FlxUIState
 
 				if (missingFiles.length > 0)
 				{
-					openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Missing Files',
+					openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Missing Files',
 						'Woah there! This project has ' + missingFiles.length +
 						' missing file(s)!\nYou can continue to finish the import, but it is recommended to ask for a new export of the project.',
 						'Continue', 'Cancel', function()
@@ -809,7 +809,7 @@ class PlayState extends FlxUIState
 		{
 			if (haxe.io.Path.extension(file).toLowerCase() != 'p3d')
 			{
-				openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Warning',
+				openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Warning',
 					'Selected file is not a .p3d file!\nTrying to open this file anyway may result in a crash.', 'Cancel', 'Continue', function()
 				{
 					Discord.updatePresenceDPO(Discord.defaultRich);
@@ -903,10 +903,10 @@ class PlayState extends FlxUIState
 				messageAppend += i.Name;
 		}
 
-		openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Project Deletion',
+		openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Project Deletion',
 			'Are you sure you want to delete the following projects?\n$messageAppend', 'Yes', 'No', function()
 		{
-			openSubState(new MessageBox(ProjectFileUtil.getCurrentColor(curSelected), 'Project Deletion',
+			openSubState(new MessageBox(ProjectFileUtil.getProjectColor(curSelected), 'Project Deletion',
 				'Are you *REALLY* sure? You will not be able to recover these projects unless you made a backup!', 'Yes', 'No', function()
 			{
 				for (project in projectsToDelete)

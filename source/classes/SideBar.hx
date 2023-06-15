@@ -150,7 +150,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 				+ exportButton.bg.width, thumb.thumbnail.y
 				- 25));
 
-		defaultColor = ProjectFileUtil.getCurrentColor(project);
+		defaultColor = ProjectFileUtil.getProjectColor(project);
 
 		bg.color = defaultColor.getDarkened(0.4);
 
@@ -308,6 +308,6 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 
 	public inline function updateColor()
 	{
-		buttonBG.color = ProjectFileUtil.getCurrentColor(PlayState.curSelected);
+		buttonBG.color = ProjectFileUtil.getProjectColor(PlayState.curSelected);
 	}
 }
