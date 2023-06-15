@@ -7,6 +7,7 @@ import classes.SideBar;
 import flixel.FlxG;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.ui.FlxUIDropDownMenu;
+import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUIState;
 import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
@@ -53,13 +54,15 @@ class PlayState extends FlxUIState
 	public static var _projects:Array<ProjectFile> = [];
 	public static var _folderPath = '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects';
 
-	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10, 10);
+	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10);
+	var searchBar:FlxUIInputText;
 
 	public static var lastMouseDelta = FlxPoint.get();
 
 	var github:CallbackButton;
 
-	var buttonsTargetY:Float = -15;
+	var buttonsTargetY:Float;
+	var buttonsDefaultY:Float = 90;
 	var lastPresses:Array<FlxKey> = [];
 
 	var sortTypeDropdown:FlxUIDropDownMenu;
@@ -95,6 +98,24 @@ class PlayState extends FlxUIState
 		add(sideBar);
 
 		add(buttons);
+
+		searchBar = new FlxUIInputText(10, 10, 400, '', 50);
+		searchBar.callback = function(text, action)
+		{
+			if (action == 'input' || action == 'backspace')
+			{
+				var filter:Array<ProjectButton> = [];
+
+				for (button in buttons)
+				{
+					if (button.project.Name.contains(text))
+						filter.push(button);
+				}
+
+				sortButtons(buttons, true, filter);
+			}
+		};
+		add(searchBar);
 
 		github = new CallbackButton(function(object)
 		{
@@ -230,25 +251,37 @@ class PlayState extends FlxUIState
 		init = true;
 	}
 
-	public static var lastPressedTime:Float = 0;
-
-	static var secretArray:Array<FlxKey> = [ZERO, FOUR, ONE, TWO];
-
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		FlxG.watch.addQuick('mouse delta', Math.fround(lastMouseDelta.length * 10) / 10);
 		lastMouseDelta.set(Util.lerp(lastMouseDelta.x, FlxG.mouse.deltaScreenX, 0.7), Util.lerp(lastMouseDelta.y, FlxG.mouse.deltaScreenY, 0.7));
+		buttonsTargetY = FlxMath.bound(buttonsTargetY, FlxG.height - buttons.height - 5, buttonsDefaultY);
 
-		#if debug
-		if (FlxG.keys.justPressed.F6)
-			FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
-		#end
+		if (canInteract && FlxG.mouse.screenX < 400)
+		{
+			if (FlxG.mouse.justMoved && lastPressedTime >= 0.1)
+				buttonsTargetY += FlxG.mouse.deltaScreenY * 1.2;
 
-		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
+			buttonsTargetY += (FlxG.mouse.wheel * 150);
+		}
+
+		buttons.y = Util.lerp(buttons.y, buttonsTargetY, 0.2);
 
 		gridBG.color = FlxColor.interpolate(gridBG.color, targetColor, 0.2);
+		gridBG.x += 12 * elapsed;
+		gridBG.y += 12 * elapsed;
+
+		if (!searchBar.hasFocus)
+			keysCheck(elapsed);
+	}
+
+	public static var lastPressedTime:Float = 0;
+	static var secretArray:Array<FlxKey> = [ZERO, FOUR, ONE, TWO];
+
+	function keysCheck(elapsed:Float)
+	{
+		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
 
 		// secret DARK MODE
 		if (FlxG.keys.justPressed.ANY)
@@ -276,18 +309,6 @@ class PlayState extends FlxUIState
 				}
 			}
 		}
-
-		buttonsTargetY = FlxMath.bound(buttonsTargetY, FlxG.height - buttons.height - 5, 15);
-
-		if (canInteract && FlxG.mouse.screenX < 400)
-		{
-			if (FlxG.mouse.justMoved && lastPressedTime >= 0.1)
-				buttonsTargetY += FlxG.mouse.deltaScreenY * 1.2;
-
-			buttonsTargetY += (FlxG.mouse.wheel * 150);
-		}
-
-		buttons.y = Util.lerp(buttons.y, buttonsTargetY, 0.2);
 
 		if (FlxG.keys.justPressed.R)
 		{
@@ -360,6 +381,9 @@ class PlayState extends FlxUIState
 
 		if (FlxG.keys.pressed.BACKSPACE)
 			FlxG.camera.zoom = 1;
+
+		if (FlxG.keys.justPressed.F6)
+			FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
 		#end
 
 		if (FlxG.keys.justPressed.F5)
@@ -373,9 +397,6 @@ class PlayState extends FlxUIState
 				button.checkBox.animation.play('check', true, !button.checkboxSelected);
 			}
 		}
-
-		gridBG.x += 12 * elapsed;
-		gridBG.y += 12 * elapsed;
 	}
 
 	public function showFileDialog()
@@ -405,10 +426,9 @@ class PlayState extends FlxUIState
 		if (!canInteract)
 			return;
 
-		Util.deleteDirRecursively(_folderPath + '\\zipExport');
+		buttonsTargetY = buttonsDefaultY;
 
-		buttonsTargetY = -15;
-		buttons.y = 10;
+		Util.deleteDirRecursively(_folderPath + '\\zipExport');
 
 		CacheManager.clearAllCached();
 
@@ -467,7 +487,6 @@ class PlayState extends FlxUIState
 
 		sortButtons(buttons);
 		selectProject(projects[0]);
-
 		trace('Finished loading Project File!');
 
 		canInteract = true;
@@ -476,7 +495,7 @@ class PlayState extends FlxUIState
 	// TODO
 	public static var curSortType:String = 'Last Modified';
 
-	public function sortButtons(buttons:FlxTypedSpriteGroup<ProjectButton>)
+	public function sortButtons(buttons:FlxTypedSpriteGroup<ProjectButton>, useFilter = false, ?filter:Array<ProjectButton>)
 	{
 		switch (curSortType.toLowerCase())
 		{
@@ -498,12 +517,33 @@ class PlayState extends FlxUIState
 				buttons.sort(ProjectFileUtil.sortHue, FlxSort.ASCENDING);
 		}
 
-		buttons.forEachAlive((button) ->
+		buttons.y = 0;
+		buttonsTargetY = buttonsDefaultY;
+
+		var shownButtons = [];
+
+		if (useFilter && filter != null)
 		{
-			var index = buttons.members.indexOf(button);
+			buttons.forEachAlive((button) ->
+			{
+				if (filter.contains(button))
+					shownButtons.push(button);
+				else
+					button.y = -5000; // juuuust to make sure its off screen
+			});
+		}
+		else
+		{
+			shownButtons = buttons.members;
+		}
+
+		for (button in shownButtons)
+		{
+			var index = shownButtons.indexOf(button);
 			button.y = 110 * index;
-			button.y += buttonsTargetY;
-		});
+		};
+
+		buttons.y = buttonsTargetY;
 	}
 
 	public function selectProject(project:ProjectFile)
