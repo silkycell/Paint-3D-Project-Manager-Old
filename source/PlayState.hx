@@ -242,8 +242,8 @@ class PlayState extends FlxUIState
 		lastMouseDelta.set(Util.lerp(lastMouseDelta.x, FlxG.mouse.deltaScreenX, 0.7), Util.lerp(lastMouseDelta.y, FlxG.mouse.deltaScreenY, 0.7));
 
 		#if debug
-		if (FlxG.keys.justPressed.SEVEN)
-			FlxG.switchState(new ColorDebugState());
+		if (FlxG.keys.justPressed.F6)
+			FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
 		#end
 
 		lastPressedTime = (FlxG.mouse.pressed) ? lastPressedTime + elapsed : 0;
