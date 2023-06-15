@@ -52,7 +52,8 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height), Util.sliceBounds);
+		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height),
+			Util.sliceBounds);
 		bg.color = defaultColor;
 		add(bg);
 
@@ -198,7 +199,7 @@ class SideBarButton extends FlxSpriteGroup
 	public function new(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, str:String = '', col:FlxColor = FlxColor.WHITE, fontSize:Int = 40)
 	{
 		super();
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, width, height), Util.sliceBounds);
+		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, width, height), Util.sliceBounds);
 
 		text = new FlxText(0, 0, width, str);
 		text.setFormat('assets/fonts/comic.ttf', fontSize, FlxColor.WHITE, FlxTextAlign.CENTER);
@@ -243,7 +244,7 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 	{
 		super(x, y, maxSize);
 
-		buttonBG = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceBounds);
+		buttonBG = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceBounds);
 		updateColor();
 		add(buttonBG);
 
@@ -261,7 +262,7 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 		grey.updateHitbox();
 		greyOverlay.add(grey);
 
-		var uploadIcon = new FlxSprite().loadGraphic("assets/images/upload.png");
+		var uploadIcon = new FlxSprite().loadGraphic(Assets.getBitmapData('assets/images/upload.png'));
 		uploadIcon.scale.set(.6, .6);
 		uploadIcon.updateHitbox();
 		uploadIcon.x = (grey.width / 2) - (uploadIcon.width / 2);

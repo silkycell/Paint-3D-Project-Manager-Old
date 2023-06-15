@@ -37,7 +37,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		defaultColor = ProjectFileUtil.getCurrentColor(project);
 
-		bg = new FlxUI9SliceSprite(0, 0, 'assets/images/roundedUi.png', new Rectangle(0, 0, 380, 100), Util.sliceBounds);
+		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 380, 100), Util.sliceBounds);
 		bg.color = defaultColor;
 		add(bg);
 
@@ -54,7 +54,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		text.y = (bg.height / 2) - (text.height / 2);
 
 		checkBox = new FlxSprite(bg.width);
-		checkBox.frames = FlxAtlasFrames.fromSparrow('assets/images/checkbox.png', 'assets/images/checkbox.xml');
+		checkBox.frames = FlxAtlasFrames.fromSparrow(Assets.getBitmapData('assets/images/checkbox.png'), Assets.getText('assets/images/checkbox.xml'));
 		checkBox.scale.set(0.3, 0.3);
 
 		checkBox.animation.addByPrefix('check', 'boxAnim', 24, false);
