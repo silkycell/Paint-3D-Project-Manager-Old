@@ -14,6 +14,8 @@ class CacheManager
 		cacheMap['color'] = new Map<ProjectFile, FlxColor>();
 		cacheMap['size'] = new Map<ProjectFile, Float>();
 		cacheMap['objectcount'] = new Map<ProjectFile, Float>();
+
+		ProjectFileUtil.defaultThumb = Assets.getBitmapData('assets/images/thumbFallback.png');
 	}
 
 	public static function getCachedItem(map:String, key:ProjectFile)
@@ -34,6 +36,9 @@ class CacheManager
 			var funnyCache:openfl.utils.AssetCache = cast openfl.utils.Assets.cache;
 			funnyCache.bitmapData = new Map<String, BitmapData>();
 			cacheMap['thumbnail'].clear();
+
+			// make sure fallback thumbnail isn't deleted, though.
+			ProjectFileUtil.defaultThumb = Assets.getBitmapData('assets/images/thumbFallback.png');
 		}
 		else
 		{
