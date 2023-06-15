@@ -688,6 +688,9 @@ class PlayState extends FlxUIState
 
 					fDial.onSave.add(function(file:String)
 					{
+						if (haxe.io.Path.extension(file).toLowerCase() != 'p3d')
+							FileSystem.rename(file, file + '.p3d');
+
 						Discord.updatePresenceDPO(Discord.defaultRich);
 						message.closeAnim();
 						persistentUpdate = false;
