@@ -42,7 +42,6 @@
 	<haxelib name="hxcpp-debug-server" if="debug"/>
 	<haxelib name="zip" />
 	<haxelib name="format" />
-	<haxelib name="tink_await" />
 	<haxelib name="discord_rpc" />
 
 	<!--In case you want to use the addons package-->
