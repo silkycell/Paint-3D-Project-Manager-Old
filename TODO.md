@@ -1,12 +1,6 @@
-- Move .bak to install folder
 - Author system
 - Discord server
 - Settings menu
-- Add sorting options (eg: sort by date, sort by file size, ect)
 - Add project merging
-- Make thumbnails load once on project file loading
-- Add failsafe for not importing json
-- Add error screen (make it parody other error screens and have there be multiple)
-- Add tutorial
-- Add "this project already exists" notif
-- Fix NOL on deleting all projects (and importing...?)
+- Add multi p3d selection
+- Add new ui shit
