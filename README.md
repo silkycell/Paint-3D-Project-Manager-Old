@@ -51,4 +51,4 @@ Please make a new issue under the "Issues" tab, or contact me on [discord (silky
 
 
 # Credits:
-Icon by [stev](https://twitter.com/weeweecrease)
+Icon by [stev](https://twitter.com/thebevchev)
