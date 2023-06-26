@@ -14,6 +14,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText.FlxTextAlign;
+import flixel.text.FlxText.FlxTextBorderStyle;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import haxe.Json;
@@ -97,6 +98,8 @@ class PlayState extends FlxUIState
 		searchBar = new FlxUIInputText(10, 10, 380, '', 47);
 		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = FlxColor.GRAY;
+		// searchBar.borderStyle = FlxTextBorderStyle.NONE; THIS DOESN'T WORK I GUESS??
+		searchBar.caretColor = Util.contrastColor(searchBar.backgroundColor);
 		searchBar.callback = function(text, action)
 		{
 			if (action == 'input' || action == 'backspace')
@@ -591,6 +594,7 @@ class PlayState extends FlxUIState
 		targetBGColor = daColor.getDarkened(0.3);
 		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = daColor.getDarkened(0.1);
+		searchBar.caretColor = Util.contrastColor(searchBar.backgroundColor);
 		searchBar.borderSize = 0;
 		gridBG.color = targetBGColor;
 
