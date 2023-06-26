@@ -2,7 +2,6 @@ package classes;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.group.FlxSpriteGroup;
@@ -27,7 +26,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	var defaultX:Float;
 
 	var defaultColor:FlxColor;
-	var bg:FlxUI9SliceSprite;
+	var bg:FlxSprite;
 
 	var texts:FlxSpriteGroup = new FlxSpriteGroup();
 	var infoText:FlxText;
@@ -49,8 +48,8 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		defaultX = x;
 		defaultColor = FlxColor.GRAY;
 
-		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, (FlxG.width - x) + 33, FlxG.height),
-			Util.sliceBounds);
+		bg = new FlxSprite();
+		Util.createRoundedRect(bg, Std.int((FlxG.width - x) + 33), FlxG.height, 50);
 		bg.color = defaultColor;
 		add(bg);
 
@@ -81,17 +80,17 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		exportButton = new SideBarButton(infoText.x, bg.height - 150 - infoText.x, 450, 150, 'Export', defaultColor);
 		exportButton.callback = function() PlayState.instance.exportProjects();
 
-		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, 450 / 2.1, 150, 'Import', defaultColor);
+		importButton = new SideBarButton(exportButton.x, bg.height - 320 - infoText.x, Std.int(450 / 2.1), 150, 'Import', defaultColor);
 		importButton.callback = function() PlayState.instance.importProjects();
 
-		deleteButton = new SideBarButton(exportButton.x + (exportButton.width / 2) + (exportButton.width / 23), importButton.y, 450 / 2.1, 150, 'Delete',
-			defaultColor);
+		deleteButton = new SideBarButton(exportButton.x + (exportButton.width / 2) + (exportButton.width / 23), importButton.y, Std.int(450 / 2.1), 150,
+			'Delete', defaultColor);
 		deleteButton.callback = function() PlayState.instance.deleteProject();
 
-		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Change Projects.json', defaultColor, 30);
+		browseButton = new SideBarButton(importButton.x, importButton.y - 150 - 20, Std.int(450 / 2.1), 150, 'Change Projects.json', defaultColor, 30);
 		browseButton.callback = function() PlayState.instance.showFileDialog();
 
-		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, 450 / 2.1, 150, 'Appdata Path', defaultColor);
+		pathButton = new SideBarButton(deleteButton.x, importButton.y - 150 - 20, Std.int(450 / 2.1), 150, 'Appdata Path', defaultColor);
 		pathButton.callback = function() Sys.command("explorer.exe "
 			+ '${Sys.getEnv("LocalAppData")}\\Packages\\Microsoft.MSPaint_8wekyb3d8bbwe\\LocalState\\Projects');
 
@@ -193,10 +192,11 @@ class SideBarButton extends FlxSpriteGroup
 	public var defaultColor:FlxColor;
 	public var callback:Void->Void;
 
-	public function new(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, str:String = '', col:FlxColor = FlxColor.WHITE, fontSize:Int = 40)
+	public function new(x:Float = 0, y:Float = 0, width:Int = 1, height:Int = 1, str:String = '', col:FlxColor = FlxColor.WHITE, fontSize:Int = 40)
 	{
 		super();
-		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, width, height), Util.sliceBounds);
+		bg = new FlxSprite();
+		Util.createRoundedRect(bg, width, height, 45);
 
 		text = new FlxText(0, 0, width, str);
 		text.setFormat(Util.curFont, fontSize, FlxColor.WHITE, FlxTextAlign.CENTER);
@@ -241,7 +241,8 @@ class Thumbnail extends FlxTypedSpriteGroup<FlxSprite>
 	{
 		super(x, y, maxSize);
 
-		buttonBG = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 294 + 40, 165 + 40), Util.sliceBounds);
+		buttonBG = new FlxSprite();
+		Util.createRoundedRect(buttonBG, 334, 205, 35);
 		updateColor();
 		add(buttonBG);
 

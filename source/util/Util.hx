@@ -2,9 +2,11 @@ package util;
 
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil;
 import openfl.display.BitmapData;
 import sys.FileSystem;
 
@@ -25,7 +27,13 @@ import sys.FileSystem;
 class Util
 {
 	public static var curFont = 'assets/fonts/comic.ttf';
-	public static var sliceBounds = [66, 66, 132, 132];
+
+	public static function createRoundedRect(sprite:FlxSprite, width:Int, height:Int, cornerRoundedSize:Int)
+	{
+		sprite.makeGraphic(width, height, FlxColor.TRANSPARENT);
+		FlxSpriteUtil.drawRoundRect(sprite, 0, 0, width, height, cornerRoundedSize, cornerRoundedSize, FlxColor.WHITE);
+		sprite.updateHitbox();
+	}
 
 	public static function saturatedColor(image:BitmapData):FlxColor
 	{

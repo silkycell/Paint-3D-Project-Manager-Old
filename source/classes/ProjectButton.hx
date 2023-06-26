@@ -2,7 +2,6 @@ package classes;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.math.FlxPoint;
@@ -21,7 +20,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	public var defaultColor:FlxColor;
 	public var project:ProjectFile;
 
-	var bg:FlxUI9SliceSprite;
+	var bg:FlxSprite;
 
 	public var checkboxSelected:Bool;
 	public var checkBox:FlxSprite;
@@ -36,7 +35,8 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		defaultColor = ProjectFileUtil.getProjectColor(project);
 
-		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, 380, 100), Util.sliceBounds);
+		bg = new FlxSprite();
+		Util.createRoundedRect(bg, 380, 100, 40);
 		bg.color = defaultColor;
 		add(bg);
 
