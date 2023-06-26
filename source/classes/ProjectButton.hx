@@ -15,7 +15,6 @@ import openfl.filters.ColorMatrixFilter;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import util.ProjectFileUtil;
-import util.Util;
 
 class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
@@ -49,7 +48,7 @@ class ProjectButton extends FlxTypedSpriteGroup<flixel.FlxSprite>
 
 		text = new FlxText(thumb.x + thumb.width + 5, 0, 155,
 			(StringTools.contains(project.Path.toLowerCase(), 'workingfolder') ? '(WF) ' + project.Name : project.Name));
-		text.setFormat('assets/fonts/comic.ttf', 15, Util.contrastColor(defaultColor), FlxTextAlign.CENTER);
+		text.setFormat(Util.curFont, 15, Util.contrastColor(defaultColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.y = (bg.height / 2) - (text.height / 2);
 

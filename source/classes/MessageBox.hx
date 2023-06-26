@@ -11,7 +11,6 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import openfl.geom.Rectangle;
-import util.Util;
 
 class MessageBox extends BasePopupSubstate
 {
@@ -45,7 +44,7 @@ class MessageBox extends BasePopupSubstate
 		box.add(bg);
 
 		text = new FlxText(0, 0, bg.width / 1.30, messageText);
-		text.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
+		text.setFormat(Util.curFont, 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 		text.updateHitbox();
 		text.screenCenter();
 		text.y -= (itemArray != null ? 150 : 60);
@@ -55,7 +54,7 @@ class MessageBox extends BasePopupSubstate
 		if (itemArray != null)
 		{
 			var testText = new FlxText(0, 0, bg.width, itemArray.join('\n'));
-			testText.setFormat('assets/fonts/comic.ttf', 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
+			testText.setFormat(Util.curFont, 25, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 			testText.updateHitbox();
 			testText.screenCenter();
 			box.add(testText);
@@ -83,7 +82,7 @@ class MessageBox extends BasePopupSubstate
 				buttonBg.x += ((buttonBg.width / 2) + 10) * (i == 0 ? -1 : 1);
 
 			text = new FlxText(0, 0, 0, (i == 0 ? optionOne : optionTwo));
-			text.setFormat('assets/fonts/comic.ttf', 40, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
+			text.setFormat(Util.curFont, 40, Util.contrastColor(mainColor), FlxTextAlign.CENTER);
 
 			text.updateHitbox();
 

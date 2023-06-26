@@ -28,7 +28,6 @@ import sys.io.File;
 import util.CacheManager;
 import util.Discord;
 import util.ProjectFileUtil;
-import util.Util;
 import zip.Zip;
 import zip.ZipEntry;
 import zip.ZipReader;
@@ -96,7 +95,7 @@ class PlayState extends FlxUIState
 		add(buttons);
 
 		searchBar = new FlxUIInputText(10, 10, 380, '', 47);
-		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
+		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = FlxColor.GRAY;
 		searchBar.callback = function(text, action)
 		{
@@ -590,7 +589,7 @@ class PlayState extends FlxUIState
 
 		var daColor:FlxColor = ProjectFileUtil.getProjectColor(project);
 		targetBGColor = daColor.getDarkened(0.3);
-		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
+		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = daColor.getDarkened(0.1);
 		searchBar.borderSize = 0;
 		gridBG.color = targetBGColor;

@@ -24,6 +24,7 @@ import sys.FileSystem;
 #end
 class Util
 {
+	public static var curFont = 'assets/fonts/comic.ttf';
 	public static var sliceBounds = [66, 66, 132, 132];
 
 	public static function saturatedColor(image:BitmapData):FlxColor

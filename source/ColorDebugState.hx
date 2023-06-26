@@ -7,7 +7,6 @@ import flixel.FlxState;
 import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import util.Util;
 
 using StringTools;
 
@@ -30,7 +29,7 @@ class ColorDebugState extends FlxState
 		add(bg);
 
 		text = new FlxText(0, 0, 500, 'Welcome to the color debug thing idk\nyour MOM. okay buddy');
-		text.setFormat('assets/fonts/comic.ttf', 40, FlxColor.WHITE, FlxTextAlign.CENTER);
+		text.setFormat(Util.curFont, 40, FlxColor.WHITE, FlxTextAlign.CENTER);
 		text.updateHitbox();
 		Util.centerInRect(text, FlxRect.weak(bg.x, bg.y, bg.width, bg.height));
 		add(text);

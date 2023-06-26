@@ -16,12 +16,10 @@ import lime.graphics.Image;
 import lime.graphics.ImageFileFormat;
 import lime.ui.FileDialog;
 import lime.ui.FileDialogType;
-import openfl.Assets;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 import sys.io.File;
 import util.ProjectFileUtil;
-import util.Util;
 
 class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {
@@ -62,7 +60,7 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		thumb.thumbnail.y = bg.height - thumb.thumbnail.height - 10;
 
 		thumbHint = new FlxText(thumb.thumbnail.x, thumb.thumbnail.y, 350, 'Thumbnail:');
-		thumbHint.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
+		thumbHint.setFormat(Util.curFont, 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 		thumbHint.updateHitbox();
 		thumbHint.y -= thumbHint.height + 1;
 		thumbHint.x += (thumb.thumbnail.width / 2) - (thumbHint.width / 2);
@@ -70,12 +68,12 @@ class SideBar extends FlxTypedSpriteGroup<flixel.FlxSprite>
 		texts.add(thumbHint);
 
 		infoText2 = new FlxText(bg.width, 10, 350);
-		infoText2.setFormat('assets/fonts/comic.ttf', 18, FlxColor.WHITE, FlxTextAlign.CENTER);
+		infoText2.setFormat(Util.curFont, 18, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText2);
 
 		infoText = new FlxText(10, 10, 450);
-		infoText.setFormat('assets/fonts/comic.ttf', 25, FlxColor.WHITE, FlxTextAlign.CENTER);
+		infoText.setFormat(Util.curFont, 25, FlxColor.WHITE, FlxTextAlign.CENTER);
 
 		texts.add(infoText);
 
@@ -201,7 +199,7 @@ class SideBarButton extends FlxSpriteGroup
 		bg = new FlxUI9SliceSprite(0, 0, Assets.getBitmapData('assets/images/roundedUi.png'), new Rectangle(0, 0, width, height), Util.sliceBounds);
 
 		text = new FlxText(0, 0, width, str);
-		text.setFormat('assets/fonts/comic.ttf', fontSize, FlxColor.WHITE, FlxTextAlign.CENTER);
+		text.setFormat(Util.curFont, fontSize, FlxColor.WHITE, FlxTextAlign.CENTER);
 		text.updateHitbox();
 		Util.centerInRect(text, FlxRect.weak(bg.x, bg.y, bg.width, bg.height));
 
