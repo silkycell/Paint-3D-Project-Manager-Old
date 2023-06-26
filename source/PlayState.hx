@@ -673,8 +673,6 @@ class PlayState extends FlxUIState
 						var projectClone = Reflect.copy(project);
 						filteredFilename = projectClone.Name;
 
-						if (StringTools.contains(projectClone.Path.toLowerCase(), 'workingfolder'))
-							projectClone.Name = '(WF) ' + projectClone.Name;
 
 						for (letter in ProjectFileUtil.disallowedChars)
 							filteredFilename.replace(letter, '_');
