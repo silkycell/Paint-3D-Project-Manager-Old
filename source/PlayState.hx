@@ -673,6 +673,7 @@ class PlayState extends FlxUIState
 						var projectClone = Reflect.copy(project);
 						filteredFilename = projectClone.Name;
 
+						projectClone.IsRecovered = false;
 
 						for (letter in ProjectFileUtil.disallowedChars)
 							filteredFilename.replace(letter, '_');
