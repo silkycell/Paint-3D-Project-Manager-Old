@@ -74,10 +74,10 @@ class MessageBox extends BasePopupSubstate
 			buttons.push(button);
 
 			var buttonBg = new FlxSprite();
-			Util.createRoundedRect(buttonBg, 200, 130, 25);
+			Util.createRoundedRect(buttonBg, 250, 80, 25);
 			buttonBg.color = mainColor.getDarkened(0.2);
 			buttonBg.screenCenter();
-			buttonBg.y += 100;
+			buttonBg.y += (bg.height / 2) - (buttonBg.height / 2) - 25;
 
 			if (optionTwo != null)
 				buttonBg.x += ((buttonBg.width / 2) + 10) * (i == 0 ? -1 : 1);
