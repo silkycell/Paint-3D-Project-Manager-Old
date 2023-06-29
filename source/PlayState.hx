@@ -636,7 +636,7 @@ class PlayState extends FlxUIState
 						projectClone.IsRecovered = false;
 
 						for (letter in ProjectFileUtil.disallowedChars)
-							filteredFilename.replace(letter, '_');
+							filteredFilename = filteredFilename.replace(letter, '_');
 
 						filteredFilename.substring(0, 260);
 						var projDir = filteredFilename + ' (' + FlxG.random.int(0, 99999999) + ')';
