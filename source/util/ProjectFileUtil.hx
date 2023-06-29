@@ -24,7 +24,7 @@ typedef ProjectFile =
 
 class ProjectFileUtil
 {
-	public static var disallowedChars:Array<String> = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+	public static var disallowedChars:Array<String> = ['\\', '/', ':', '*', '?', '"', '<', '>', '|', '"'];
 	public static var defaultThumb:BitmapData;
 
 	public static function parseProjectJson(json:Array<Dynamic>):Array<ProjectFile>
