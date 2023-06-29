@@ -1,4 +1,5 @@
 - Author system
+- Discord server
 - Settings menu
 - Add project merging
 - Add multi p3d selection

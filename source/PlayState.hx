@@ -14,7 +14,6 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText.FlxTextAlign;
-import flixel.text.FlxText.FlxTextBorderStyle;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import haxe.Json;
@@ -29,6 +28,7 @@ import sys.io.File;
 import util.CacheManager;
 import util.Discord;
 import util.ProjectFileUtil;
+import util.Util;
 import zip.Zip;
 import zip.ZipEntry;
 import zip.ZipReader;
@@ -57,7 +57,6 @@ class PlayState extends FlxUIState
 	var sortTypeDropdown:FlxUIDropDownMenu;
 	var searchBar:FlxUIInputText;
 	var github:CallbackButton;
-	var discord:CallbackButton;
 
 	var buttons:FlxTypedSpriteGroup<ProjectButton> = new FlxTypedSpriteGroup(10);
 	var buttonsTargetY:Float;
@@ -96,10 +95,8 @@ class PlayState extends FlxUIState
 		add(buttons);
 
 		searchBar = new FlxUIInputText(10, 10, 380, '', 47);
-		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
+		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(FlxColor.GRAY), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = FlxColor.GRAY;
-		// searchBar.borderStyle = FlxTextBorderStyle.NONE; THIS DOESN'T WORK I GUESS??
-		searchBar.caretColor = Util.contrastColor(searchBar.backgroundColor);
 		searchBar.callback = function(text, action)
 		{
 			if (action == 'input' || action == 'backspace')
@@ -117,7 +114,35 @@ class PlayState extends FlxUIState
 		};
 		add(searchBar);
 
-		createLinkButtons();
+		github = new CallbackButton(function(object)
+		{
+			FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
+		});
+
+		github.HoverCallback = function(object)
+		{
+			object.alpha = 1;
+			object.scale.x = Util.lerp(object.scale.x, 0.12, 0.2);
+			object.scale.y = Util.lerp(object.scale.y, 0.12, 0.2);
+			object.angle = Util.lerp(object.angle, -5, 0.2);
+		};
+
+		github.UnhoverCallback = function(object)
+		{
+			object.alpha = 0.5;
+			object.scale.x = Util.lerp(object.scale.x, 0.098, 0.2);
+			object.scale.y = Util.lerp(object.scale.y, 0.098, 0.2);
+			object.angle = Util.lerp(object.angle, 0, 0.2);
+		};
+
+		github.loadGraphic(Assets.getBitmapData('assets/images/github.png'));
+		github.setGraphicSize(50);
+		github.updateHitbox();
+		github.alpha = 0.5;
+		github.antialiasing = true;
+		github.y = 10;
+		github.x = FlxG.width - github.width - 15;
+		add(github);
 
 		curSortType = (FlxG.save.data.curSortType == null ? 'Last Modified' : FlxG.save.data.curSortType);
 		FlxG.save.data.curSortType = curSortType;
@@ -376,69 +401,6 @@ class PlayState extends FlxUIState
 		}
 	}
 
-	function createLinkButtons()
-	{
-		github = new CallbackButton(function(object)
-		{
-			FlxG.openURL("https://github.com/FoxelTheFennic/Paint-3D-Project-Manager");
-		});
-
-		discord = new CallbackButton(function(object)
-		{
-			FlxG.openURL("https://discord.gg/gAcbWeBuGP");
-		});
-
-		github.HoverCallback = function(object)
-		{
-			object.alpha = 1;
-			object.scale.x = Util.lerp(object.scale.x, 0.12, 0.2);
-			object.scale.y = Util.lerp(object.scale.y, 0.12, 0.2);
-			object.angle = Util.lerp(object.angle, -5, 0.2);
-		};
-
-		discord.HoverCallback = function(object)
-		{
-			object.alpha = 1;
-			object.scale.x = Util.lerp(object.scale.x, 0.12, 0.2);
-			object.scale.y = Util.lerp(object.scale.y, 0.12, 0.2);
-			object.angle = Util.lerp(object.angle, -5, 0.2);
-		};
-
-		github.UnhoverCallback = function(object)
-		{
-			object.alpha = 0.5;
-			object.scale.x = Util.lerp(object.scale.x, 0.098, 0.2);
-			object.scale.y = Util.lerp(object.scale.y, 0.098, 0.2);
-			object.angle = Util.lerp(object.angle, 0, 0.2);
-		};
-
-		discord.UnhoverCallback = function(object)
-		{
-			object.alpha = 0.5;
-			object.scale.x = Util.lerp(object.scale.x, 0.098, 0.2);
-			object.scale.y = Util.lerp(object.scale.y, 0.098, 0.2);
-			object.angle = Util.lerp(object.angle, 0, 0.2);
-		};
-
-		github.loadGraphic(Assets.getBitmapData('assets/images/github.png'));
-		github.setGraphicSize(50);
-		github.updateHitbox();
-		github.alpha = 0.5;
-		github.antialiasing = true;
-		github.y = 10;
-		github.x = FlxG.width - github.width - 15;
-		add(github);
-
-		discord.loadGraphic(Assets.getBitmapData('assets/images/discord.png'));
-		discord.setGraphicSize(50);
-		discord.updateHitbox();
-		discord.alpha = 0.5;
-		discord.antialiasing = true;
-		discord.y = github.y + (github.height / 2) - (discord.height / 2);
-		discord.x = FlxG.width - discord.width - github.width - 30;
-		add(discord);
-	}
-
 	public function showFileDialog()
 	{
 		if (!canInteract)
@@ -592,9 +554,8 @@ class PlayState extends FlxUIState
 
 		var daColor:FlxColor = ProjectFileUtil.getProjectColor(project);
 		targetBGColor = daColor.getDarkened(0.3);
-		searchBar.setFormat(Util.curFont, 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
+		searchBar.setFormat('assets/fonts/comic.ttf', 30, Util.contrastColor(daColor), FlxTextAlign.CENTER);
 		searchBar.backgroundColor = daColor.getDarkened(0.1);
-		searchBar.caretColor = Util.contrastColor(searchBar.backgroundColor);
 		searchBar.borderSize = 0;
 		gridBG.color = targetBGColor;
 
@@ -602,7 +563,6 @@ class PlayState extends FlxUIState
 		sideBar.loadProject(project);
 
 		github.color = Util.contrastColor(daColor);
-		discord.color = Util.contrastColor(daColor);
 
 		switch (project.Id.toLowerCase()) // secrettts
 		{
