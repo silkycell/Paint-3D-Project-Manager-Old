@@ -21,14 +21,16 @@ class CallbackButton extends FlxSprite
 
 		if (FlxG.mouse.overlaps(this))
 		{
-			HoverCallback(this);
+			if (HoverCallback != null)
+				HoverCallback(this);
 
 			if (FlxG.mouse.justReleased)
 				ClickCallback(this);
 		}
 		else
 		{
-			UnhoverCallback(this);
+			if (UnhoverCallback != null)
+				UnhoverCallback(this);
 		}
 	}
 }
