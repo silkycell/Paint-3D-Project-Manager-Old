@@ -1,9 +1,8 @@
 package classes;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 
-class CallbackButton extends FlxSprite
+class CallbackButton extends NegativeBoundsSprite
 {
 	public var ClickCallback:CallbackButton->Void;
 	public var HoverCallback:CallbackButton->Void;

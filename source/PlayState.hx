@@ -14,6 +14,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText.FlxTextAlign;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import haxe.Json;
@@ -55,6 +56,8 @@ class PlayState extends FlxUIState
 
 	var sideBar:SideBar;
 	var sortTypeDropdown:FlxUIDropDownMenu;
+	var sortDirectionSprite:CallbackButton;
+	var sortDirection:Int = FlxSort.DESCENDING;
 	var searchBar:FlxUIInputText;
 	var github:CallbackButton;
 
@@ -168,6 +171,22 @@ class PlayState extends FlxUIState
 			sortButtons(buttons);
 		});
 		add(sortTypeDropdown);
+
+		var baseScale:Float = 0;
+		sortDirectionSprite = new CallbackButton(function(button)
+		{
+			sortDirection = (sortDirection == FlxSort.ASCENDING ? FlxSort.DESCENDING : FlxSort.ASCENDING);
+			FlxTween.cancelTweensOf(button, ["scale.y"]);
+			FlxTween.tween(button, {"scale.y": baseScale * sortDirection}, 0.2);
+			trace(baseScale);
+			trace(baseScale * (button.ID == 0 ? 1 : -1));
+		},
+			sortTypeDropdown.x + sortTypeDropdown.width, (sortTypeDropdown.y / 2), Assets.getBitmapData('assets/images/sortDirection.png'));
+		sortDirectionSprite.setGraphicSize(50);
+		sortDirectionSprite.updateHitbox();
+		baseScale = sortDirectionSprite.scale.y;
+		sortDirectionSprite.y -= (sortDirectionSprite.height / 2);
+		add(sortDirectionSprite);
 
 		function doFirstLoad()
 		{
