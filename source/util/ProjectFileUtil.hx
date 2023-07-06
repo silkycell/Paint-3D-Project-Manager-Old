@@ -104,7 +104,7 @@ class ProjectFileUtil
 
 	public inline static function sortDate(Order:Int, a:ProjectButton, b:ProjectButton):Int
 	{
-		return FlxSort.byValues(Order, a.project.DateTime, b.project.DateTime);
+		return FlxSort.byValues(Order, getProjectDate(a.project.DateTime).getTime(), getProjectDate(b.project.DateTime).getTime());
 	}
 
 	public inline static function sortHue(Order:Int, a:ProjectButton, b:ProjectButton):Int
@@ -181,15 +181,17 @@ class ProjectFileUtil
 	}
 
 	// hi guys its me razzytism
-	public static inline function getProjectDate(time:Float):String
+	public static inline function getProjectDateFormatted(time:Float):String
 	{
 		if (time <= 0)
 			return '(empty)';
 		else
-		{
-			var date:Date = Date.fromTime((time - 116444736000000000) / 10000);
-			return DateTools.format(date, '%D\n%r');
-		}
+			return DateTools.format(getProjectDate(time), '%D\n%r');
+	}
+
+	public static inline function getProjectDate(time:Float):Date
+	{
+		return Date.fromTime((time - 116444736000000000) / 10000);
 	}
 
 	public static function getCheckpointFolder(project:ProjectFile):String
